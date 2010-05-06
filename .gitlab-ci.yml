@@ -47,7 +47,7 @@ staging:
   before_script:
     - yarn
     - 'echo web: node dev > Procfile'
-    - tar zcv --wildcards --exclude='*/node_modules/*' --exclude='.git' -f master.tgz davidsdevel-accounts davidsdevel-blogs davidsdevel-pages davidsdevel-posts davidsdevel-socials davidsdevel-stats davidsdevel-users index.js dev.js yarn.lock package.json Procfile
+    - tar zcv --wildcards --exclude='*/node_modules/*' --exclude='.git' -f master.tgz lib middlewares davidsdevel-accounts davidsdevel-blogs davidsdevel-pages davidsdevel-posts davidsdevel-socials davidsdevel-stats davidsdevel-users index.js dev.js yarn.lock package.json Procfile
     - node uploadBuild
   script:
     - curl -n -X POST https://api.heroku.com/apps/${HEROKU_APP}/builds -d "${BUILD_JSON}" -H "${CONTENT_TYPE}" -H "${ACCEPT}" -H "${AUTH}"
