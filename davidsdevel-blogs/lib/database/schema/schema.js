@@ -3,7 +3,6 @@ const {Schema} = require('mongoose');
 const Category = new Schema({
 	name: {
 		type: String,
-		unique: true,
 		required: true
 	},
 	alias: {
@@ -24,7 +23,7 @@ module.exports = new Schema({
 	plan: {
 		type: String,
 		required: true,
-		enum: ['free', 'pro', 'premium'],
+		enum: ['beta', 'free', 'pro'],
 		default: 'free'
 	},
 	isVisible: {

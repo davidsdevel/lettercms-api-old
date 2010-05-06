@@ -6,7 +6,7 @@ module.exports = async function() {
   const id = await Model.createPage(subdomain, req.body);
 
   res.json({
-    message: 'OK',
+    status: 'OK',
     id
   });
 }

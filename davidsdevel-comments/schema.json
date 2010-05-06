@@ -1,0 +1,13 @@
+{
+  "_id":"g68ih",
+  "subdomain":"davidsdevel",
+  "content": "Hello",
+  "username": "<name + lastname>",
+  "userID": "<userID>",
+  "userEmail": "<email>",
+  "publishedAt": "<Date>",
+  "respondTo": "<comment-id>",
+  "likes": "<Number>",
+  "dislikes": "<Number>",
+  "isReported": "<Boolean>"
+}

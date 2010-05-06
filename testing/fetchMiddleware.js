@@ -7,7 +7,7 @@ async function fetch(url, options = {}) {
   const splitted = url.split('/api/');
 
   const routerPath = join(base, `davidsdevel-${splitted[1].replace('/', 's/api/').replace(/\?.*$/, '')}s/${url.replace('/' + splitted[1], '')}`);
-
+  console.log(routerPath)
   const query = {};
 
   const querySplitted = url.split('?');

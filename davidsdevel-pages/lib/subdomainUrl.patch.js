@@ -44,7 +44,7 @@ module.exports = async function() {
     });
 
   res.json({
-    message: 'OK',
+    status: 'OK',
     data
   });
 }

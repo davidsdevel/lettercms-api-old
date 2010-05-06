@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "node dev",
-    "test": "jest --runInBand --detectOpenHandles"
+    "test": "jest --detectOpenHandles"
   },
   "repository": {
     "type": "git",
@@ -20,8 +20,6 @@
   },
   "homepage": "https://gitlab.com/lettercms/api#readme",
   "dependencies": {
-    "@lettercms/sdk": "./SDK",
-    "@lettercms/utils": "./utils",
     "bcrypt": "^5.0.1",
     "express": "^4.17.1",
     "formidable": "^1.2.2",

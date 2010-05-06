@@ -6,6 +6,9 @@ class Server {
     this.isConnected = false;
   }
   async connect() {
+    if (this.isConnected)
+      return Promise.resolve();
+
     return new Promise((resolve, reject) => {
       this.server = app.listen(3009, err => {
         if (err)
@@ -17,7 +20,7 @@ class Server {
       })
     })
   }
-  async connect() {
+  async disconnect() {
     return new Promise((resolve) => {
       this.server.close(() => {
         this.isConnected = false;

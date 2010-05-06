@@ -21,10 +21,16 @@ prepare-production:
     - master
 
 test:
+  image: docker:latest
+  stage: test
   services:
+    - docker:dind
     - mongo
   variables:
     MONGO_URL: 'mongodb://mongo/testing'
+  before_script:
+    - docker build -t microservices
+    - docker run -d -p 3009:3009 microservices
   only:
     - production
 

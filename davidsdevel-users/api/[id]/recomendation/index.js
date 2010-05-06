@@ -4,6 +4,6 @@ const POST = require('../../../lib/recomendation.post');
 const Model = require('../../../lib/database');
 
 module.exports = manageMethods(Model, {
-  GET,
-  POST
+  /*GET,
+  POST*/
 });

@@ -27,7 +27,7 @@ module.exports = async function() {
 
     const fbData = await Model.Facebook.findOne({
       subdomain
-    }, null, parsedFields);
+    }, parsedFields);
 
     socials.facebook = fbData;
   }
@@ -35,7 +35,7 @@ module.exports = async function() {
   if (sendAll || socialIncludes.indexOf('instagram') > -1) {
     const igData = await Model.Instagram.findOne({
       subdomain
-    }, null, parsedFields);
+    }, parsedFields);
 
     socials.instagram = igData;
   }

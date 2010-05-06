@@ -9,7 +9,9 @@ const POST = async function() {
   const form = formidable({ multiples: true });
 
   form.parse(req, async (err, fields, {file}) => {
-    const url = `http://localhost:3009/api/image/davidsdevel/${file.name}`;
+    const name = fields.name || file.name;
+
+    const url = `http://localhost:3009/api/image/davidsdevel/${name}`;
 
     const blob = fs.readFileSync(file.path);
 
@@ -19,10 +21,11 @@ const POST = async function() {
       type: file.type,
       blob,
       thumbnail: url,
-      name: file.name
+      name
     });
 
     res.json({
+      status: 'OK',
       url,
       thumbnail: url,
       _id
@@ -35,7 +38,7 @@ const GET = async function() {
 
   const {subdomain} = req.query; 
 
-  const data = await Model.find({subdomain}, 'url thumbnail')
+  const data = await Model.find({subdomain}, 'url thumbnail');
 
   res.json(data);
 }

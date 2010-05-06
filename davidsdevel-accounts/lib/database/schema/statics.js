@@ -26,7 +26,10 @@ Accounts.statics.login = async function(email, password) {
     const pass = await bcrypt.compare(password, account.password);
 
     if (pass) {
-      const accessToken = jwt.sign({subdomain: account.subdomain}, process.env.JWT_AUTH);
+      const accessToken = jwt.sign({
+        subdomain: account.subdomain,
+        account: account._id
+      }, process.env.JWT_AUTH);
       
       return Promise.resolve({
         id: account._id,

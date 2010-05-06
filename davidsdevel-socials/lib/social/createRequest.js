@@ -3,17 +3,24 @@ const toQuery = require('@lettercms/sdk/cjs/lib/utils/objectToQueryString').defa
 
 const endpoint = 'https://graph.facebook.com';
 
-console.log(toQuery)
-
 module.exports = async (path, method, data) => {
-  const hasQuery = !!data
-  const isGet = method === 'GET'
+  const hasNotMethod = typeof method === 'object' && !data;
 
-  const query = toQuery(data);
+  const dataParam = hasNotMethod ? method : data;
+  const methodParam = hasNotMethod ? 'GET' : method;
+  
+  const hasQuery = !!data
+  const isGet = methodParam === 'GET';
+
+  const query = toQuery(dataParam);
+  let body;
+  if (!isGet)
+    body = query.replace(/^\?/, '');
 
   try {
     const res = await fetch(`${endpoint}${path}${isGet && hasQuery ? query : ''}`, {
-      method
+      method: methodParam,
+      body
     });
 
     return res.json();

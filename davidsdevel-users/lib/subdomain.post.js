@@ -6,7 +6,7 @@ module.exports = async function() {
   const data = await Model.create({...req.body, subdomain});
 
   res.json({
-    message: 'OK',
+    status: 'OK',
     data
   });
 }

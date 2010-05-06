@@ -1,3 +1,5 @@
+process.env.FB_APP_ID = '337231497026333'
+process.env.FB_APP_SECRET = 'd381bb7dcf6bd6c6adb0806985de7d49'
 process.env.LETTER_ACCESS_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc0FkbWluIjp0cnVlLCJpYXQiOjE2MTY4MjU1MDN9.BlS_E05w8AUhQvsVH0A_T28QC3l3nwqM3e2hP4Qa1RA'
 process.env.JWT_AUTH = 'davidsdevel';
 
@@ -18,6 +20,13 @@ const debugServer = debug('server');
 
 const dirs = [];
 const routes = {};
+
+const validOrigins = [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'https://lettercms.herokuapp.com',
+  'https://lettercms-api.herokuapp.com'
+];
 
 main.forEach(e => {
 	const stat = lstatSync(join(__dirname, e));
@@ -60,8 +69,7 @@ dirs.forEach(e => {
 
 app
   .use(express.urlencoded({ extended: true }))
-	.use(express.json())
-	.get('/', (_, res) => res.sendFile(join(__dirname, 'testing.html')))
+	.use(express.json());
 
 const apis = Object.keys(routes);
 
@@ -75,19 +83,25 @@ apis.forEach(apiName => {
 		const router = require(join(api.files[i]));
 
 		app.all(newRoute, (req, res, next) => {
-			res.old_send = res.send;
+			res.old_json = res.json;
 
-			res.send = resp => {
+			res.json = resp => {
 				debugResponse(resp);
-				return res.old_send(resp);
+				return res.old_json(resp);
 			}
 
 			req.query = Object.assign({}, req.query, req.params);
 
 			if (req.method === 'OPTIONS') {
-
   			res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-  			res.header("Access-Control-Allow-Origin", '*'); // update to match the domain you will make the request from
+
+  			const origin = req.get('origin');
+
+			  if (validOrigins.indexOf(origin) > -1)
+			    res.header("Access-Control-Allow-Origin", origin); // update to match the domain you will make the request from
+			  else
+			    res.header("Access-Control-Allow-Origin", '*'); // update to match the domain you will make the request from
+
   			res.header("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE");
   			res.header("Access-Control-Allow-Credentials", "true");
 

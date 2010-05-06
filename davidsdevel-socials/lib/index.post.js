@@ -11,14 +11,14 @@ module.exports = async function() {
 
   if (hasIg && !images && images.length !== 1) 
     return res.json({
-      message: ' Instagram must have (1) image'
+      message: 'Instagram must have (1) image'
     });
 
 
   if (feeds.indexOf('facebook') > -1) {
     /*const {token, pageId} = await Model.Facebook.findOne({
       subdomain
-    }, null, 'pageId token');*/
+    }, 'pageId token');*/
     const pageId = '552760701890501';
     const token = 'EAAEytdOWWx0BAJzdRFJsVr8DiMe5aPwEFP0BShHcoxVsLCJVj6xbcjbaSmelESGIZBmzO7fwtus8rfHoLZCQwp5uet7kAsGeXJyZBnN0JkkcLm0ZArShoPZBUWHdZBREEGqpWg1wQtdYY9gJi0ixYLzDLgaLAsI5whexZAbT0RUcQZDZD';
 
@@ -33,7 +33,7 @@ module.exports = async function() {
 
     /*const {token, userId} = await Model.Instagram.findOne({
       subdomain
-    }, null, 'userId token');*/
+    }, 'userId token');*/
 
     const ig = new Instagram(userId, token);
 

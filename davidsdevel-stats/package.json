@@ -13,8 +13,8 @@
   },
   "homepage": "https://gitlab.com/davidsdevel/davidsdevel-microservices#readme",
   "dependencies": {
-    "@lettercms/sdk": "./SDK",
-    "@lettercms/utils": "./utils",
+    "@lettercms/sdk": "*",
+    "@lettercms/utils": "*",
     "geoip-lite": "^1.4.2",
     "i18n-iso-countries": "^6.0.0",
     "jsonwebtoken": "^8.5.1",

@@ -21,6 +21,7 @@ module.exports = async function() {
     const longLive = await exchangeToken(accessToken);
 
     if (type === 'facebook') {
+
       const {name, username, cover} = await api(`/${id}`, {
         access_token: longLive,
         fields: 'name,username,cover'
@@ -28,21 +29,28 @@ module.exports = async function() {
 
       await Model.Facebook.create({
         subdomain,
-        id,
+        pageId: id,
         token: longLive,
         name,
         username,
-        cover,
+        cover: cover.source,
         picture: `https://graph.facebook.com/${id}/picture`
       });
     }
 
     if (type === 'instagram') {
-      const {name, profile_picture_url, username} = await api(`/${id}`, {
+      const {instagram_business_account} = await api(`/${id}`, {
+        access_token: longLive,
+        fields: 'instagram_business_account'
+      });
+
+      const {name, profile_picture_url, username} = await api(`/${instagram_business_account.id}`, {
+        access_token: longLive,
         fields: 'name,profile_picture_url,username'
       });
 
       await Model.Instagram.create({
+        userId: id,
         subdomain,
         token: longLive,
         name,
@@ -52,7 +60,7 @@ module.exports = async function() {
     }
 
     res.json({
-      message: 'OK'
+      status: 'OK'
     });
   }
 }

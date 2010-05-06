@@ -21,9 +21,11 @@ class FacebookSDK extends Base {
 
     const fetchOptions = {
       message,
-      link,
       ...imagesPaths
     };
+
+    if (link)
+      fetchOptions.link = link
 
     if (schedule) {
       fetchOptions.scheduled_publish_time = schedule;

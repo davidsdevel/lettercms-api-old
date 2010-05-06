@@ -6,14 +6,14 @@ module.exports = async function() {
     Model: {Accounts}
   } = this;
 
-  const {subdomain} = req;
+  const {subdomain, account} = req;
 
-  const data = await find(Object.assign({}, req.query, {accounts: true}), Accounts, {
+  const data = await find({
+    ...req.query,
+    accounts: true
+  }, Accounts, {
     subdomain,
-    $or: [
-      {role: 'collaborator'},
-      {role: 'single'}
-    ]
+    $where: `this._id !== "${account}"`
   });
 
   res.json(data);

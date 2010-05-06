@@ -13,9 +13,8 @@
   },
   "homepage": "https://gitlab.com/lettercms/microservices/users#readme",
   "dependencies": {
-    "@lettercms/sdk": "./SDK",
-    "@lettercms/utils": "./utils",
-    "ger": "^0.0.99",
+    "@lettercms/sdk": "*",
+    "@lettercms/utils": "*",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.11.10"
   },
