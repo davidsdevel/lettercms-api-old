@@ -1,0 +1,75 @@
+lettercms-api
+lettercms-client
+lettercms-admin
+
+lettercms-assets-staging
+
+Codes
+  not-found
+  exists
+  created
+
+
+Response
+{
+  status,
+  data,
+  message,
+  next,
+  page
+}
+
+Queries
+	fields - Data on response
+	limit - Objects per page
+	page - Page number
+	search - Search term
+
+Blog
+Blog Data
+
+GET, POST 				    /blog
+GET, PATCH, DELETE    /blog/:subdomain
+POST, DELETE      		/blog/:subdomain/category
+GET                   /blog/exists
+
+Posts
+Posts Data
+
+fields
+
+GET               		/post
+GET, POST 						/post/:subdomain
+POST									/post/:subdomain/import
+GET										/post/:subdomain/search
+GET, PATCH, DELETE 		/post/:subdomain/:url
+GET				 						/post/:subdomain/:category/:url
+GET				 						/post/:subdomain/:year/:month/:url
+GET				 						/post/:subdomain/:year/:month/:day/:url
+
+Pages
+GET		 								/page
+GET, POST 						/page/:subdomain
+GET, PATCH, DELETE 		/page/:subdomain/:url
+
+Accounts
+GET, POST							/account
+GET, PATCH, DELETE		/account/:emailHex
+POST                  /account/login
+GET                   /account/exists
+GET 									/account/verify
+
+Images
+GET                   /image
+GET                   /image/:subdomain
+GET, DELETE           /image/:subdomain/:name
+
+Social
+GET, POST             /social/:social
+GET, POST 						/social/:social/post
+
+Stats
+/stat/:subdomain
+/stat/:subdomain/views?format=day|date|hour
+
+Users

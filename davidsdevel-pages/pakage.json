@@ -1,0 +1,11 @@
+{
+  "name": "davidsdevel-pages",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://gitlab.com/lettercms/microservices/pages.git",
+  "author": "David's Devel <davidsdevel@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "mongoose": "^5.11.10"
+  }
+}

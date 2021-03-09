@@ -1,0 +1,10 @@
+{
+  "name": "davidsdevel-blogs",
+  "version": "1.0.0",
+  "repository": "https://gitlab.com/lettercms/microservices/blogs.git",
+  "author": "David's Devel <davidsdevel@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "mongoose": "^5.11.10"
+  }
+}

@@ -1,0 +1,50 @@
+const {isValidObjectId} = require('mongoose');
+
+module.exports = async function() {
+  const {req, res, Model} = this;
+
+  const {url} = req.query;
+  const {subdomain} = req;
+  const {action} = req.body;
+
+  const isId = isValidObjectId(url);
+  const updateCondition = {};
+
+  if (isId)
+    updateCondition._id = url;
+  else {
+    updateCondition.url = url;
+    updateCondition.subdomain = subdomain;
+  }
+
+  let data;
+  let id;
+
+  req.body.action = undefined;
+
+  switch(action) {
+    case 'publish':
+      data = await Model.publishPost(updateCondition, req.body);
+      break;
+    case 'draft':
+      data = await Model.draftPost(updateCondition, req.body);
+      break;
+    case 'update':
+      data = await Model.updatePost(updateCondition, req.body);
+      break;
+    default:
+      return res.status(400).send({
+        message: `Unknow Action "${action}"`
+      });
+  }
+
+  if (data.exists)
+    return res.json({
+      message: 'Url Exists'
+    });
+
+  res.json({
+    message: 'OK',
+    data
+  });
+}

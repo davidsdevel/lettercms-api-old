@@ -1,0 +1,11 @@
+Invitations {
+	email: String,
+	type: String,//single|collaborator,
+	subdomain: String
+}
+
+/invite/<emailHex>-<blogID>
+
+
+
+SendInvitation

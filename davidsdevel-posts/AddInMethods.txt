@@ -1,0 +1,92 @@
+const convert = require('xml-js');
+
+ /**
+   * Import Posts From JSON
+   *
+   * @public
+   *
+   * @param {Object} data
+   *
+   * @return {Promise}
+   */
+  importPostsFromJson(data) {
+    return new Promise((resolve, reject) => {
+      data.forEach(async (e) => {
+        try {
+          const rows = await this.db('posts').select('*').where('url', e.url || '').orWhere('title', e.title)
+            .orWhere('published', e.published);
+
+          if (rows.length === 0) { await this.db('posts').insert(e); }
+        } catch (err) {
+          reject(err);
+        }
+      });
+      resolve();
+    });
+  }
+
+  /**
+   * Import Posts From WordPress
+   *
+   * @public
+   *
+   * @param {String} xml
+   *
+   * @return {Promise}
+   */
+  importPostsFromWordPress(xml) {
+    try {
+      const JSONdata = convert.xml2js(xml, { compact: true });
+
+      const promises = JSONdata.rss.channel.item.map(async (e) => {
+        // eslint-disable-next-line
+        if (e['wp:post_type']._cdata !== 'post') { return null; }
+
+        // eslint-disable-next-line
+        const title = e.title._text;
+        // eslint-disable-next-line
+        const description = e.description._text ? e.description._text : '';
+        // eslint-disable-next-line
+        const content = e['content:encoded']._cdata ? e['content:encoded']._cdata : '';
+        // eslint-disable-next-line
+        const url = e['wp:post_name']._cdata || '';
+        // eslint-disable-next-line
+        const published = new Date(e.pubDate._text);
+        let image = '';
+
+        const match = content.match(/<img.*height="\d*"\s\/>/);
+
+        if (match) {
+          const matchImage = convert.xml2js(`${match[0].split('/>')[0]}/>`);
+
+          image = matchImage.elements[0].attributes.src.replace(/-\d*x\d*(?=\.\w*$)/, '');
+        }
+
+        const data = {
+          title,
+          image,
+          description,
+          comments: 0,
+          views: 0,
+          published,
+          created: published,
+          updated: published,
+          content,
+          // eslint-disable-next-line
+          tags: Array.isArray(e.category) ? e.category.map((cat) => cat._cdata).join(',') : '',
+          url,
+          postStatus: 'imported',
+        };
+        const rows = await this.db.where({ created: published }).orWhere({ title }).orWhere({ url }).select('title')
+          .from('posts');
+
+        if (rows.length === 0) { return this.db('posts').insert(data); }
+        return null;
+      });
+
+      return Promise.all(promises);
+    } catch (err) {
+      console.error(err);
+      return Promise.reject(err);
+    }
+  }

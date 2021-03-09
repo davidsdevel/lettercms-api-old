@@ -1,0 +1,12 @@
+{
+  "name": "davidsdevel-posts",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://gitlab.com/lettercms/microservices/posts.git",
+  "author": "David's Devel <davidsdevel@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "jsdom": "^16.4.0",
+    "xml-js": "^1.6.11"
+  }
+}

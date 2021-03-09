@@ -1,0 +1,38 @@
+{
+  "name": "@lettercms/api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node dev",
+    "test": "jest --runInBand --detectOpenHandles"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/lettercms/api.git"
+  },
+  "author": "David's Devel <davidsdevel@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^26.6.3"
+  },
+  "bugs": {
+    "url": "https://gitlab.com/davidsdevel/davidsdevel-microservices/issues"
+  },
+  "homepage": "https://gitlab.com/davidsdevel/davidsdevel-microservices#readme",
+  "dependencies": {
+    "@lettercms/sdk": "./SDK",
+    "@lettercms/utils": "./utils",
+    "bcrypt": "^5.0.1",
+    "express": "^4.17.1",
+    "formidable": "^1.2.2",
+    "geoip-lite": "^1.4.2",
+    "ger": "^0.0.99",
+    "i18n-iso-countries": "^6.0.0",
+    "jsdom": "^16.4.0",
+    "mongoose": "^5.11.10",
+    "node-fetch": "^1.7.3",
+    "ua-parser-js": "^0.7.21",
+    "xml-js": "^1.6.11"
+  },
+  "description": ""
+}

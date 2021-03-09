@@ -1,0 +1,67 @@
+image: node:lts
+
+stages:
+  - prepare
+  - test
+  - deploy
+
+.prepare:
+  stage: prepare
+  cache:
+    key: lettercms-api
+    paths:
+      - node_modules
+    script: yarn
+
+prepare-production:
+  extends: prepare
+  before_script:
+    - 
+
+
+test:
+  services:
+    - mongo
+  variables:
+    MONGO_URL: 'mongodb://mongo/testing'
+
+
+staging:
+  stage: deploy
+  needs:
+    - job: build-staging
+      artifacts: true
+  variables:
+    TYPE: staging
+    HEROKU_APP: lettercms-api-staging
+    ACCEPT: "Accept: application/vnd.heroku+json; version=3"
+    AUTH: "Authorization: Bearer ${HEROKU_API_KEY}"
+    CONTENT_TYPE: "Content-Type: application/json"
+    BUILD_JSON: '{ "source_blob": {"url": "https://s3.us-south.cloud-object-storage.appdomain.cloud/davidsdevel-storage-cos-standard-y2b/davidsdevel-${TYPE}.tgz","version": "$VERSION"}}'
+  before_script:
+    - tar zcv --exclude='.next/cache' -f master.tgz .next index.dist.js yarn.lock package.json Procfile
+  script:
+    - curl -n -X POST https://api.heroku.com/apps/${HEROKU_APP}/builds -d "${BUILD_JSON}" -H "${CONTENT_TYPE}" -H "${ACCEPT}" -H "${AUTH}"
+  environment:
+    name: staging
+    url: https://${HEROKU_APP}.herokuapp.com
+  only:
+    - master
+
+# TODO: Deploy to Vercel
+#
+# production:
+#   extends: staging
+#   needs:
+#     - job: build-production
+#       artifacts: true
+#   variables:
+#     HEROKU_APP: lettercms-api
+#     TYPE: latest
+#     SENTRY_VERSION: '{"version": "${VERSION/v/}"}'
+#   environment:
+#     name: production
+#   after_script:
+#     - 'curl https://sentry.io/api/hooks/release/builtin/5410236/e0ed8ecb580d6fd8ebee31f724156e2fe3fe5d4fb2ba69014b64c2832e9b948b/ -X POST -H "${CONTENT_TYPE}" -d "${SENTRY_VERSION}"'
+#   only:
+#     - production
