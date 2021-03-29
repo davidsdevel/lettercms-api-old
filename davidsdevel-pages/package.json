@@ -1,19 +1,16 @@
 {
-  "name": "@microservices/posts",
+  "name": "@microservices/pages",
   "version": "1.0.0",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://gitlab.com/lettercms/microservices/posts.git"
+    "url": "git+https://gitlab.com/lettercms/microservices/pages.git"
   },
   "author": "David's Devel <davidsdevel@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "@lettercms/sdk": "../SDK",
     "@lettercms/utils": "../utils",
-    "formidable": "^1.2.2",
-    "jsdom": "^16.4.0",
-    "mongoose": "^5.11.10",
-    "xml-js": "^1.6.11"
+    "mongoose": "^5.11.10"
   }
 }

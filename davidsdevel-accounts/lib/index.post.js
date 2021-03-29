@@ -2,8 +2,15 @@ const bcrypt = require('bcrypt');
 
 module.exports = async function() {
   const {
-    subdomain
+    isAdmin
   } = this.req;
+
+  if (!isAdmin)
+    return this.res.sendStatus(401);
+
+  const {
+    subdomain
+  } = this.req.body;
 
   const password = await bcrypt.hash(this.req.body.password, 10);
 

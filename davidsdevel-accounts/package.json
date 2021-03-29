@@ -1,13 +1,18 @@
 {
-  "name": "davidsdevel-accounts",
+  "name": "@microservices/accounts",
   "version": "1.0.0",
   "main": "index.js",
-  "repository": "https://gitlab.com/lettercms/microservices/accounts.git",
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/lettercms/microservices/accounts.git"
+  },
   "author": "David's Devel <davidsdevel@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "@lettercms/sdk": "../SDK",
+    "@lettercms/utils": "../utils",
     "bcrypt": "^5.0.0",
-    "mongoose": "^5.11.10",
-    "node-fetch": "^1.7.3"
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.11.10"
   }
 }

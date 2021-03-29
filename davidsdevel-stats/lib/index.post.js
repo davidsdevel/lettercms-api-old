@@ -6,8 +6,15 @@ module.exports = async function() {
   }  = this;
 
   const {
-    subdomain
+    isAdmin
   } = req;
+
+  if (!isAdmin)
+    return res.sendStatus(401);
+
+  const {
+    subdomain
+  } = req.body;
 
   const exists = await Model.Stats.exists({
     subdomain
@@ -15,7 +22,7 @@ module.exports = async function() {
 
   if (exists)
     return res.status(400).json({
-      message: `Stats already created`
+      message: 'Stats already created'
     });
 
   await Model.Stats.create({

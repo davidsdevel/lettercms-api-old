@@ -28,6 +28,17 @@ module.exports = new Schema({
 		required: true,
 		default: 'free'
 	},
+	isVisible: {
+		type: Boolean,
+		default: false,
+		required: true
+	},
+	hasCustomRobots: {
+		type: Boolean,
+		default: false,
+		required: true
+	},
+	robots: String,
 	lastPayment: Date,
 	ownerEmail: String, //Account Email
 	url: {

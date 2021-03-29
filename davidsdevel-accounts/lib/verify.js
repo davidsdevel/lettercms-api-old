@@ -1,5 +1,12 @@
 module.exports = async function() {
   const {
+    isAdmin
+  } = req;
+
+  if (!isAdmin)
+    return res.sendStatus(401);
+
+  const {
     Model,
     req,
     res

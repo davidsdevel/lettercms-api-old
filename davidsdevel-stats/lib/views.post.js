@@ -1,5 +1,4 @@
 const parser = require("ua-parser-js");
-const updateOrCreate = require('./updateOrCreate');
 const geoip = require('geoip-lite');
 const countries = require("i18n-iso-countries");
 

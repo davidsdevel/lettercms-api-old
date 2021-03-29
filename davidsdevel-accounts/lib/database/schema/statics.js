@@ -15,30 +15,23 @@ const jwt = require('jsonwebtoken');
  */
 Accounts.statics.login = async function(email, password) {
   try {
-    const account = await this.findOne({ email }, 'email subdomain password role name lastname persmissions', {lean: true});
+    const account = await this.findOne({ email }, 'subdomain password', {lean: true});
 
     if (!account)
       return Promise.resolve({ pass: false, message: 'Email no existe' });
 
-    const token = jwt.sign({subdomain: account.subdomain}, 'davidsdevel');
-
-    const sdk = new Letter(token);
-
-    const {plan} = await sdk.blogs.single(['plan'])
-
     const pass = await bcrypt.compare(password, account.password);
 
     if (pass) {
+      const accessToken = jwt.sign({subdomain: account.subdomain}, 'davidsdevel');
+      
       return Promise.resolve({
-        ...account,
-        plan,
-        password: undefined,
-        pass: true,
+        id: account._id,
+        accessToken
       });
     }
 
     return Promise.resolve({
-      pass: false,
       message: 'Contraseña incorrecta',
     });
   } catch (err) {

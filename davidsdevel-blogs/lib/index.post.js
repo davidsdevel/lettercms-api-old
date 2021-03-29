@@ -4,6 +4,7 @@ var ger = new g.GER(esm);
 const jwt = require('jsonwebtoken');
 
 const {Letter} = require('C:/Users/pc/Documents/Proyectos/letterCMS/davidsdevel-microservices/SDK');
+const admin = require('C:/Users/pc/Documents/Proyectos/letterCMS/sdk-admin');
 
 module.exports = async function() {
   const {
@@ -11,29 +12,33 @@ module.exports = async function() {
     req,
     res
   } = this;
-  
-  const {subdomain} = req;
-  const {ownerEmail} = req.body;
+
+  const {
+    isAdmin
+  } = req;
+
+  if (!isAdmin)
+    return res.sendStatus(401);
+
+  const {ownerEmail, subdomain} = req.body;
   const token = jwt.sign({subdomain}, 'davidsdevel');
 
   const sdk = new Letter(token);
 
   //Create Blog
-  await Model.create(req.body);
+  const blog = await Model.create(req.body);
 
   //Initialize Blog Stats
-  await sdk.stats.create();
+  await admin.createStat(subdomain);
 
   //Link subdomain to account 
-  const {data: account} = await sdk.accounts.update(ownerEmail, {
-    subdomain
-  });
+  await admin.updateAccountSubdomain(ownerEmail, subdomain);
 
   await ger.initialize_namespace(subdomain);
 
   //Create Example Page and Post
   //const pageID = await pages.create();
-  const {data} = await sdk.posts.create({
+  const {id} = await sdk.posts.create({
     title: 'Example Post',
     description: 'This is a description example',
     url: 'first-example',
@@ -43,9 +48,10 @@ module.exports = async function() {
   });
 
   //Make Public
-  await sdk.posts.publish(data._id);
+  await sdk.posts.publish(id);
 
   return res.json({
+    id: blog._id,
     message: 'OK'
   });
 }

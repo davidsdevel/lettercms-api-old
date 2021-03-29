@@ -4,7 +4,6 @@ module.exports = async function() {
   const {subdomain} = req;
   const {_id} = req.query;
 
-
   //TODO: Only Used by Letter CMS
   const components = req.body['gjs-components'];
   const html = req.body['gjs-html'];

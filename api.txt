@@ -1,3 +1,9 @@
+Admin APIs
+
+{
+  access: admin | user
+}
+
 lettercms-api
 lettercms-client
 lettercms-admin
@@ -29,8 +35,6 @@ Blog
 Blog Data
 
 GET, POST 				    /blog
-GET, PATCH, DELETE    /blog/:subdomain
-POST, DELETE      		/blog/:subdomain/category
 GET                   /blog/exists
 
 Posts
@@ -53,7 +57,10 @@ GET, POST 						/page/:subdomain
 GET, PATCH, DELETE 		/page/:subdomain/:url
 
 Accounts
-GET, POST							/account
+GET, POST             /account
+GET, POST             /account/collaborator
+GET, POST             /account/invitation
+GET, POST							/account/invitation/:id
 GET, PATCH, DELETE		/account/:emailHex
 POST                  /account/login
 GET                   /account/exists

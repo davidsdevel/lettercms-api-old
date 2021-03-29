@@ -1,0 +1,25 @@
+{
+  "name": "@microservices/stats",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/lettercms/microservices/stats.git"
+  },
+  "author": "David's Devel <davidsdevel@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://gitlab.com/davidsdevel/davidsdevel-microservices/issues"
+  },
+  "homepage": "https://gitlab.com/davidsdevel/davidsdevel-microservices#readme",
+  "dependencies": {
+    "@lettercms/sdk": "./SDK",
+    "@lettercms/utils": "./utils",
+    "geoip-lite": "^1.4.2",
+    "i18n-iso-countries": "^6.0.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.11.10",
+    "ua-parser-js": "^0.7.21"
+  },
+  "description": ""
+}

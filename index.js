@@ -1,3 +1,7 @@
+process.env.LETTER_ACCESS_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc0FkbWluIjp0cnVlLCJpYXQiOjE2MTY4MjU1MDN9.BlS_E05w8AUhQvsVH0A_T28QC3l3nwqM3e2hP4Qa1RA'
+
+//require('dotenv').config();
+
 const express = require('express');
 const app = express();
 const {lstatSync, readdirSync} = require('fs');

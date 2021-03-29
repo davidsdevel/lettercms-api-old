@@ -1,4 +1,5 @@
 const sdk = require('C:/Users/pc/Documents/Proyectos/letterCMS/davidsdevel-microservices/SDK');
+const jwt = require('jsonwebtoken');
 
 const days = [
   'Sunday',
@@ -29,8 +30,6 @@ module.exports = async function() {
   const conditions = {
     subdomain
   };
-
-  const {posts} = sdk.useSubdomain(subdomain);
 
   const existsStats = await Model.Stats.exists({subdomain});
 

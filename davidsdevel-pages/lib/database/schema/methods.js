@@ -10,7 +10,7 @@ Schema.statics.createPage = async function(subdomain, data) {
       created: Date.now()
     });
 
-    return Promise.resolve(post);
+    return Promise.resolve(post._id);
   } catch(err) {
     return Promise.reject(err);
   }

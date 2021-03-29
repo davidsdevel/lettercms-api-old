@@ -1,6 +1,3 @@
-const {managePost} = require('@lettercms/utils');
+const {manageMethods} = require('@lettercms/utils');
 
-module.exports = managePost({
-  POST,
-  GET
-});
+module.exports = manageMethods();

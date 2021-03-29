@@ -7,6 +7,15 @@ module.exports = async function() {
   } = this;
 
   const {
+    isAdmin
+  } = req;
+
+  if (req.body.subdomain && !isAdmin)
+    return res.status(403).json({
+      message: 'Cannot change subdomain'
+    });
+
+  const {
     emailHex
   } = req.query;
 

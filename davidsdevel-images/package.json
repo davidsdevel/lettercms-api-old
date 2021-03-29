@@ -1,0 +1,20 @@
+{
+  "name": "@microservices/images",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/lettercms/microservices/images.git"
+  },
+  "author": "David's Devel <davidsdevel@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@lettercms/utils": "./utils",
+    "formidable": "^1.2.2",
+    "mongoose": "^5.11.10"
+  },
+  "description": ""
+}

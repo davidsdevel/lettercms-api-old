@@ -4,10 +4,10 @@ module.exports = async function() {
   const {subdomain} = req;
   const {status} = req.query;
 
-  const data = await Model.createPost(subdomain, req.body);
+  const id = await Model.createPost(subdomain, req.body);
 
   res.json({
     message: 'OK',
-    data
+    id
   });
 }

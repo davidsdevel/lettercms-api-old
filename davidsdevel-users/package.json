@@ -1,0 +1,23 @@
+{
+  "name": "@microservices/accounts",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/lettercms/microservices/users.git"
+  },
+  "author": "David's Devel <davidsdevel@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://gitlab.com/lettercms/microservices/users/issues"
+  },
+  "homepage": "https://gitlab.com/lettercms/microservices/users#readme",
+  "dependencies": {
+    "@lettercms/sdk": "./SDK",
+    "@lettercms/utils": "./utils",
+    "ger": "^0.0.99",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.11.10"
+  },
+  "description": ""
+}
