@@ -16,7 +16,9 @@ stages:
 prepare-production:
   extends: prepare
   before_script:
-    - 
+    - yarn
+  only:
+    - master
 
 
 test:
@@ -24,6 +26,8 @@ test:
     - mongo
   variables:
     MONGO_URL: 'mongodb://mongo/testing'
+  only:
+    - master
 
 
 staging:
