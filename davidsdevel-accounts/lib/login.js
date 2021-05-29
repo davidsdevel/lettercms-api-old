@@ -12,7 +12,7 @@ module.exports = async function() {
     password
   } = this.req.body;
 
-  const data = await this.Model.login(email, password);
+  const data = await this.Model.Accounts.login(email, password);
 
   this.res.json(data);
 }

@@ -1,56 +1,38 @@
-const routes = require('../../davidsdevel-accounts/api/index');
+const sdk = require('../../SDK');
 const Model = require('../../davidsdevel-accounts/lib/database');
-const {fakeServer} = require('../utils');
-const {connection} = require('@lettercms/utils');
-const mongoose = require('mongoose');
+const admin = require('C:/Users/pc/Documents/Proyectos/letterCMS/sdk-admin');
+const {connection} = require('@lettercms/utils')
 
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWJkb21haW4iOiJ0ZXN0aW5nIiwiaWF0IjoxNjE0Mjc5MzM5fQ.khqm6uX0O4DtE3XR9yrqTRT3ZukdyxbyfXe1MVXvjVI';
+sdk.setAccessToken(ACCESS_TOKEN);
 
-beforeAll(async () => {
-  if (!connection.isConnected)
-    await connection.connect();
-});
 afterAll(async () => {
-  await Model.Accounts.deleteMany({subdomain: 'testing'});
+  await connection.connect();
 
-  if (connection.isConnected)
-    await connection.disconnect();
+  await Model.Accounts.deleteMany({});
 
+  await connection.disconnect();
 });
 
 describe('Accounts API Testing', () => {
   test('POST - Create Account', async () => {
-    const res = await fakeServer(routes, {
-      url:  '/api/account',
-      headers: {
-        authorization: token
-      },
-      method: 'POST',
-      body: {
-        name: 'Test User',
-        lastname: 'Test LastName',
-        verified: true,
-        role: 'admin',
-        email:'email@test.com',
-        password: '1234',
-      }
+    const res = await admin.createAccount({
+      name: 'Test User',
+      lastname: 'Test LastName',
+      verified: true,
+      role: 'admin',
+      email:'email@test.com',
+      password: '1234',
     });
 
-    expect(res.response).toEqual({
+    expect(res).toEqual({
       message: 'OK'
     });
   });
 
   test('GET - All', async () => {
-    const serverRes = await fakeServer(routes, {
-      url:  '/api/account',
-      headers: {
-        authorization: token
-      },
-      method: 'GET'
-    });
+    const res = await sdk.accounts.all();
     
-    expect(serverRes.response).toMatchObject({
+    expect(res).toMatchObject({
       data: [
         {
           __v: 0,
@@ -69,18 +51,9 @@ describe('Accounts API Testing', () => {
   })
 
   test('GET - Only Email', async () => {
-    const serverRes = await fakeServer(routes, {
-      url:  '/api/account',
-      headers: {
-        authorization: token
-      },
-      method: 'GET',
-      query: {
-        fields: 'email'
-      }
-    });
+    const res = await sdk.account.all(['email']);
 
-    expect(serverRes.response).toMatchObject({
+    expect(res).toMatchObject({
       data: [
         {
           _id: /[a-z0-9]{24}/i,

@@ -90,3 +90,54 @@ const convert = require('xml-js');
       return Promise.reject(err);
     }
   }
+
+
+const sdk = require('./SDK')
+const {connection} = require('@lettercms/utils')
+const Model = require('./davidsdevel-posts/lib/database');
+
+//sdk.setAccessToken('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWJkb21haW4iOiJkYXZpZHNkZXZlbCIsImlhdCI6MTYxNjgzMDgwMH0.BVPLzKXWl6l16-SBbQ3H5h2brOQuqVAFN2-NJPxrEf0')
+
+async function similars() {
+  await connection.connect()
+  const input = {
+    tags: ['design', 'tag']
+  }
+
+  const res = await Model.find({
+    subdomain: 'davidsdevel'
+  }, 'tags', {
+    $where: input.tags.map(e => (`this.tags.indexOf('${e}') > -1`)).join(' || ')
+  })
+
+  const sorted = res.sort((a,b) => {
+    let matchA = 0;
+    let matchB = 0;
+
+    input.tags.forEach(e => {
+      if (a.tags.indexOf(e) > -1) {
+        matchA++
+      }
+      if (b.tags.indexOf(e) > -1) {
+        matchB++
+      }
+    });
+
+    if (matchA > matchB)
+      return -1;
+    else
+      return +1;
+  });
+
+  console.log(sorted)
+
+  connection.disconnect()
+
+
+  /*const input = {
+    tags: ['marketing']
+  }*/
+
+}
+
+similars()

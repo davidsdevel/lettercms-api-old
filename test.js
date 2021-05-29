@@ -1,10 +1,12 @@
-const {JSDOM} = require('jsdom');
+process.env.LETTER_ACCESS_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc0FkbWluIjp0cnVlLCJpYXQiOjE2MTY4MjU1MDN9.BlS_E05w8AUhQvsVH0A_T28QC3l3nwqM3e2hP4Qa1RA'
+process.env.JWT_AUTH = 'davidsdevel';
 
-const html = `
-<div><p>Hello <span>World</span></p></div>
-`;
+const fetch = require('./testing/fetchMiddleware')
+const token =  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWJkb21haW4iOiJ0ZXN0aW5nIiwiaWF0IjoxNjE0Mjc5MzM5fQ.khqm6uX0O4DtE3XR9yrqTRT3ZukdyxbyfXe1MVXvjVI'
 
-const dom = new JSDOM(html);
 
-console.log(dom.window.document.querySelector('div').textContent)
-
+fetch('/api/account', {
+  headers: {
+    Authorization: token
+  }
+}).then(r => r.json()).then(console.log)

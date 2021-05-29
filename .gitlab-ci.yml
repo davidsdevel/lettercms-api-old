@@ -11,15 +11,14 @@ stages:
     key: lettercms-api
     paths:
       - node_modules
-    script: yarn
+    script:
+      - yarn
+      - yarn global add vercel
 
 prepare-production:
   extends: prepare
-  before_script:
-    - yarn
   only:
     - master
-
 
 test:
   services:
@@ -27,14 +26,10 @@ test:
   variables:
     MONGO_URL: 'mongodb://mongo/testing'
   only:
-    - master
-
+    - production
 
 staging:
   stage: deploy
-  needs:
-    - job: build-staging
-      artifacts: true
   variables:
     TYPE: staging
     HEROKU_APP: lettercms-api-staging
@@ -51,6 +46,50 @@ staging:
     url: https://${HEROKU_APP}.herokuapp.com
   only:
     - master
+
+.deploy-vercel:
+  stage: deploy
+  variables:
+    PREVIEW_URL: https://$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG.$VERCEL_SCOPE.vercel.app
+    VERCEL_SCOPE: lettercms
+  environment:
+    name: vercel/${VERCEL_PATH/davidsdevel-/}
+    url: $PREVIEW_URL
+  before_script:
+    - cd $VERCEL_PATH
+    - vercel secrets add my-mongodb-uri $MONGO_URL
+    - vercel secrets add sentry-dsn $SENTRY_DSN
+    - vercel secrets add jwt-token $JWT_AUTH
+  script:
+    - DEPLOYMENT_URL=$(vercel --name $CI_PROJECT_NAME --confirm -t $VERCEL_TOKEN)
+    - vercel alias set $DEPLOYMENT_URL $PREVIEW_URL -t $VERCEL_TOKEN
+  only:
+    - production
+
+deploy-account:
+  extends: .deploy-vercel
+  variables:
+    VERCEL_PATH: davidsdevel-accounts
+deploy-blog:
+  extends: .deploy-vercel
+  variables:
+    VERCEL_PATH: davidsdevel-blog
+deploy-page:
+  extends: .deploy-vercel
+  variables:
+    VERCEL_PATH: davidsdevel-pages
+deploy-post:
+  extends: .deploy-vercel
+  variables:
+    VERCEL_PATH: davidsdevel-posts
+deploy-stat:
+  extends: .deploy-vercel
+  variables:
+    VERCEL_PATH: davidsdevel-stats
+deploy-user:
+  extends: .deploy-vercel
+  variables:
+    VERCEL_PATH: davidsdevel-users
 
 # TODO: Deploy to Vercel
 #

@@ -21,7 +21,7 @@ module.exports = async function() {
     return res.sendStatus(401);
 
   const {ownerEmail, subdomain} = req.body;
-  const token = jwt.sign({subdomain}, 'davidsdevel');
+  const token = jwt.sign({subdomain}, process.env.JWT_AUTH);
 
   const sdk = new Letter(token);
 

@@ -1,3 +1,5 @@
+const mongoose = require('mongoose')
+
 class FakeServer {
   constructor(resolve) {
     this.headers = {};
@@ -47,7 +49,7 @@ class FakeServer {
     this.__resolve();
   }
   header(name, value) {
-    this.headers[name] = value;
+    this.headers[name.toLowerCase()] = value;
   }
 
   __init() {
@@ -56,7 +58,31 @@ class FakeServer {
     this.response = null;
   }
   __request(req) {
-    this._route(req, this);
+    const headers = {}
+    
+    Object.entries(req.headers).forEach(e => {
+      headers[e[0].toLowerCase()] = e[1];
+    });
+
+    this._route({
+      ...req,
+      headers,
+      get: header => {
+        const names = Object.keys(this.headers);
+
+        let match = '';
+        for(name of names) {
+          const h = new RegExp(header, 'i');
+
+          if (h.test(name)) {
+            match = name;
+            break;
+          }
+        }
+
+        return this.headers[match];
+      }
+    }, this);
   }
   __setRoute(route) {
     this._route = route;
@@ -68,22 +94,27 @@ class FakeServer {
       response
     } = this;
 
+    mongoose.disconnect()
+
     this.promiseResolve({
       headers,
       status: _status,
       response
     });
   }
-
 }
 
 exports.fakeServer = (route, req) => {
+  if (!req.method)
+    req.method = 'GET';
+
   if (req.method === 'GET' && !req.query)
     req.query = {};
+
   if (!req.headers)
     req.headers = {};
 
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     const fake = new FakeServer(resolve);
 
     fake.__init();

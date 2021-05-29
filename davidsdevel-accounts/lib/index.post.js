@@ -1,27 +1,48 @@
 const bcrypt = require('bcrypt');
 
+const generateCode = _ => {
+  let code = '';
+
+  for(let i = 0; i < 4; i++) {
+    code += Math.round(Math.random() * 9);
+  }
+
+  return code;
+}
+
 module.exports = async function() {
+  const {req,res,Model} = this;
   const {
     isAdmin
-  } = this.req;
+  } = req;
 
   if (!isAdmin)
-    return this.res.sendStatus(401);
+    return res.sendStatus(401);
 
   const {
     subdomain
-  } = this.req.body;
+  } = req.body;
 
-  const password = await bcrypt.hash(this.req.body.password, 10);
+  const password = await bcrypt.hash(req.body.password, 10);
 
-  const db = await this.Model.Accounts.create({
-    ...this.req.body,
+  const db = await Model.Accounts.create({
+    ...req.body,
     subdomain,
     password
   });
 
+  const code = generateCode();
+
+  await Model.VerificationCodes.create({
+    code,
+    email: req.body.email,
+    expiresIn: Date.now() + (1000 * 60 * 60 * 24)
+  });
+
+  console.log(code)
+
   //TODO: send email with verify token
-  this.res.json({
+  res.json({
     message: 'OK'
   });
 }

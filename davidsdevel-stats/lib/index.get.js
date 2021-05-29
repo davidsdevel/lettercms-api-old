@@ -24,7 +24,9 @@ module.exports = async function() {
     url,
     os,
     browser,
-    country
+    country,
+    start,
+    end
   } = req.query;
 
   const conditions = {
@@ -109,7 +111,9 @@ module.exports = async function() {
   data.general = await Model.Stats.findOne({subdomain});
   data.total = await Model.Views.estimatedDocumentCount(conditions);
 
-  const views = await Model.Views.find(conditions);
+  const views = await Model.Views.find(conditions, null, {
+    sort: 'views'
+  });
   
   const weekDate = new Date(dateNow - (1000 * 60 * 60 * 24 * 7));
 

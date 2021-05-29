@@ -1,5 +1,5 @@
 {
-  "name": "@microservices/accounts",
+  "name": "@microservices/users",
   "version": "1.0.0",
   "main": "index.js",
   "repository": {

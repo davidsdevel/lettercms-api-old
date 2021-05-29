@@ -1,6 +1,9 @@
 const parser = require("ua-parser-js");
 const geoip = require('geoip-lite');
 const countries = require("i18n-iso-countries");
+const jwt = require('jsonwebtoken');
+const {Letter} = require('C:/Users/pc/Documents/Proyectos/letterCMS/davidsdevel-microservices/SDK');
+
 
 module.exports = async function() {
   const {
@@ -10,6 +13,8 @@ module.exports = async function() {
   }  = this;
 
   const {subdomain} = req;
+  const token = jwt.sign({subdomain}, 'davidsdevel')
+  const sdk = new Letter(token);
 
   const {
     url
@@ -21,8 +26,19 @@ module.exports = async function() {
 
   const countryName = look ? countries.getName(look.country, 'en') : 'Unknown';
 
+  const {status} = await sdk.createRequest(`/post/${url}`, 'PATCH', {
+    action: 'set-view'
+  });
+
+  if (status === 'not-found')
+    return res.status(404).json({
+      status: 'not-found',
+      message: `Post "${url}" does not exists`
+    });
+
   await Model.Stats.updateOne({subdomain}, {$inc: {totalViews: 1}});
   
+
   await Model.Views.create({
     subdomain,
     country: countryName,

@@ -1,9 +1,14 @@
 module.exports = async function() {
   const {
-    role
-  } = this.req.query;
+    req: {query, subdomain},
+    res,
+    Model: {Accounts},
+    find
+  } = this;
 
-  const {subdomain} = this.req;
+  const {
+    role
+  } = query;
 
   const conditions = {};
 
@@ -12,7 +17,7 @@ module.exports = async function() {
   if (subdomain)
     conditions.subdomain = subdomain;
 
-  const data = await this.find(Object.assign({accounts: true}, this.req.query), this.Model.Accounts, conditions);
+  const data = await find(Object.assign({accounts: true}, query), Accounts, conditions);
 
-  this.res.json(data);
+  res.json(data);
 }

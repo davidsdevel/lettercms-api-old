@@ -17,6 +17,21 @@ module.exports = async function() {
     updateCondition.subdomain = subdomain;
   }
 
+  if (action === 'set-view') {
+    const exists = await Model.exists(updateCondition);
+
+    if (!exists)
+      return res.json({
+        status: 'not-found'
+      });
+      
+    await Model.updateOne(updateCondition, {$inc: {totalViews: 1}});
+
+    return res.json({
+      status: 'OK'
+    });
+  }
+
   let data;
   let id;
 

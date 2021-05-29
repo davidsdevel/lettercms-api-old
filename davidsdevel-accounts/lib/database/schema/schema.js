@@ -9,6 +9,12 @@ const Accounts = new Schema({
 		required: true,
 		default: false
 	},
+  firstTime: {
+    type: Boolean,
+    required: true,
+    default: true
+  },
+  lastLogin: Date,
 	description: String,
 	ocupation: String,
 	role: String, //Admin|Colaborator|single
@@ -58,7 +64,21 @@ const Invitations = new Schema({
   permissions: Array
 });
 
+const VerificationCodes = new Schema({
+  code: {
+    type: String,
+    required: true
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  expiresIn: Date
+});
+
 module.exports = {
 	Invitations,
-	Accounts
+	Accounts,
+  VerificationCodes
 }

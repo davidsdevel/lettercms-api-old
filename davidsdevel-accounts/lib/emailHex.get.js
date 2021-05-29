@@ -5,7 +5,7 @@ module.exports = async function() {
     req,
     res,
     findSingle,
-    Model
+    Model: {Accounts}
   } = this;
 
   const {
@@ -21,10 +21,13 @@ module.exports = async function() {
   else
     condition.email = Buffer.from(emailHex, "hex").toString('utf-8');
 
-  let data = await findSingle(req.query, Model, condition);
+  let data = await findSingle({
+    ...req.query,
+    accounts: true
+  }, Accounts, condition);
 
   if (data === null && isId)
-    data = await findSingle(req.query, Model, {
+    data = await findSingle(req.query, Accounts, {
       email: Buffer.from(emailHex, "hex").toString('utf-8')
     });
 

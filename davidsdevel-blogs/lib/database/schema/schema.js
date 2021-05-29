@@ -19,13 +19,12 @@ module.exports = new Schema({
 		required: true
 	},
 	customDomain: {
-		type: String,
-		unique: true
+		type: String
 	},
 	plan: {
-		// Free|Pro|Premium
 		type: String,
 		required: true,
+		enum: ['free', 'pro', 'premium'],
 		default: 'free'
 	},
 	isVisible: {

@@ -5,5 +5,4 @@
   - POST /api/blog
   - POST /api/stat
 
-- Solo Cambiar subdominio mediante la pagina, Evitar el cambio con el SDK
-- Evitar obtener informacion de otras cuentas mediante SDK, solo de colaboradores. 
+- Crear opcion "Transferencia de Blog".

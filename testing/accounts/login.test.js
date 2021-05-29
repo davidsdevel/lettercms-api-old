@@ -1,78 +1,52 @@
-const index = require('../../davidsdevel-accounts/api/index');
-const login = require('../../davidsdevel-accounts/api/login');
+const sdk = require('../../SDK');
 const Model = require('../../davidsdevel-accounts/lib/database');
-const {fakeServer} = require('../utils');
-const {connection} = require('@lettercms/utils');
-const mongoose = require('mongoose');
+const admin = require('C:/Users/pc/Documents/Proyectos/letterCMS/sdk-admin');
+const {connection} = require('@lettercms/utils')
 
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWJkb21haW4iOiJ0ZXN0aW5nIiwiaWF0IjoxNjE0Mjc5MzM5fQ.khqm6uX0O4DtE3XR9yrqTRT3ZukdyxbyfXe1MVXvjVI';
+sdk.setAccessToken(ACCESS_TOKEN);
 
-beforeAll(async () => {
-  if (!connection.isConnected)
-    await connection.connect();
-});
 afterAll(async () => {
-  await Model.Accounts.deleteMany({subdomain: 'testing'});
+  await connection.connect();
 
-  if (connection.isConnected)
-    await connection.disconnect();
+  await Model.Accounts.deleteMany({});
 
+  await connection.disconnect();
 });
 
 describe('Accounts API Testing', () => {
   test('POST - Login', async () => {
-    await fakeServer(index, {
-      url:  '/api/account',
-      headers: {
-        authorization: token
-      },
-      method: 'POST',
-      body: {
-        name: 'Test User',
-        lastname: 'Test LastName',
-        verified: true,
-        role: 'admin',
-        email:'email@test.com',
-        password: '1234',
-      }
+    await admin.createAccount({
+      name: 'Test User',
+      lastname: 'Test LastName',
+      verified: true,
+      role: 'admin',
+      email:'email@test.com',
+      password: '1234',
     });
 
-    const serverRes = await fakeServer(routes, {
-      url:  '/api/account/login',
-      headers: {
-        authorization: token
-      },
-      method: 'POST',
-      body: {
-        email: 'email@test.com',
-        password: '1234'
-      }
-    });
+    const res = await admin.login('email@test.com', '1234');
 
-    
+    expect(res).toMatchObject({
+      id: /[a-z0-9]{24}/i,
+      accessToken: /\w*\.\w*\.\w*/i
+    })
   });
 
   test('POST - Does not Exists', async () => {
-    const serverRes = await fakeServer(routes, {
-      url:  '/api/account/login',
-      headers: {
-        authorization: token
-      },
-      method: 'POST',
-      body: {
-        email: 'email@test.com',
-        password: '1234'
-      }
+    const res = await admin.login('noemail@test.com', '1234');
+
+    expect(serverRes.response).toEqual({
+      code: 'no-account',
+      message: 'Email does not exists'
     });
-    expect(serverRes.response).toMatchObject({
-      data: [
-        {
-          _id: /[a-z0-9]{24}/i,
-          email:'email@test.com'
-        }
-      ],
-      next: false,
-      pages: 1
+  });
+
+  test('POST - Does not Exists', async () => {
+    const res = await admin.login('email@test.com', 'bad-pass');
+
+    expect(serverRes.response).toEqual({
+      code: 'invalid-password',
+      message: 'Invalid Password'
     });
   });
 });

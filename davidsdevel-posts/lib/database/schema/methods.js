@@ -173,14 +173,14 @@ Schema.statics.publishPost = async function(condition, data) {
       postStatus: 'published'
     } 
 
-    const found = await this.findOne({url, subdomain}, 'published');
+    const found = await this.findOne(condition, 'published');
 
     if (found !== null) {
       if (!('published' in found))
         newData.published = date;
     }
 
-    await this.updateOne({url, subdomain}, newData);
+    await this.updateOne(condition, newData);
 
     return Promise.resolve({
       exists: false

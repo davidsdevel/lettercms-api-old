@@ -9,3 +9,14 @@ Invitations {
 
 
 SendInvitation
+
+
+Users {
+  views
+}
+
+const userViews = {
+  marketing: 10,
+  design: 5,
+  devevelopment: 0
+}

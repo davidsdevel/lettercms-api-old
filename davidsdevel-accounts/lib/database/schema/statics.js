@@ -1,4 +1,4 @@
-const {Accounts, Invitations} = require('./schema');
+const {Accounts, Invitations, VerificationCodes} = require('./schema');
 const bcrypt = require('bcrypt');
 const {Letter} = require('C:/Users/pc/Documents/Proyectos/letterCMS/davidsdevel-microservices/SDK');
 const jwt = require('jsonwebtoken');
@@ -15,15 +15,18 @@ const jwt = require('jsonwebtoken');
  */
 Accounts.statics.login = async function(email, password) {
   try {
-    const account = await this.findOne({ email }, 'subdomain password', {lean: true});
+    const account = await this.findOne({ email }, 'password subdomain', {lean: true});
 
     if (!account)
-      return Promise.resolve({ pass: false, message: 'Email no existe' });
+      return Promise.resolve({
+        code: 'no-account',
+        message: 'Email does not exists'
+      });
 
     const pass = await bcrypt.compare(password, account.password);
 
     if (pass) {
-      const accessToken = jwt.sign({subdomain: account.subdomain}, 'davidsdevel');
+      const accessToken = jwt.sign({subdomain: account.subdomain}, process.env.JWT_AUTH);
       
       return Promise.resolve({
         id: account._id,
@@ -32,7 +35,8 @@ Accounts.statics.login = async function(email, password) {
     }
 
     return Promise.resolve({
-      message: 'Contraseña incorrecta',
+      code: 'invalid-password',
+      message: 'Invalid Password'
     });
   } catch (err) {
     return Promise.reject(err);
@@ -41,5 +45,6 @@ Accounts.statics.login = async function(email, password) {
 
 module.exports = {
   Accounts,
-  Invitations
+  Invitations,
+  VerificationCodes
 };

@@ -1,14 +1,12 @@
 module.exports = async function() {
   const {
-    req,
+    req: {subdomain, body},
     res,
-    Model
+    Model: {Invitations}
   } = this;
 
-  const {subdomain} = req;
-
-  const {_id} = await Model.Invitations.create({
-    ...req.body,
+  const {_id} = await Invitations.create({
+    ...body,
     subdomain
   });
 

@@ -1,13 +1,17 @@
 const bcrypt = require('bcrypt');
 
 module.exports = async function() {
-  const {req, res} = this;
+  const {
+    req,
+    res,
+    Model: {Accounts}
+  } = this;
 
   const {subdomain} = req;
 
   const password = await bcrypt.hash(req.body.password, 10);
 
-  await this.Model.create({
+  await Accounts.create({
     ...req.body,
     subdomain,
     verified: true,

@@ -3,23 +3,44 @@ const {join} = require('path')
 
 const base = process.cwd();
 
-async function fetch(url, options) {
+async function fetch(url, options = {}) {
   const splitted = url.split('/api/');
-  const routerPath = join(base, `davidsdevel-${splitted[0].replace(/\/.*$/, '')}`);
+
+  const routerPath = join(base, `davidsdevel-${splitted[1].replace('/', 's/api/').replace(/\?.*$/, '')}s/${url.replace('/' + splitted[1], '')}`);
+
+  const query = {};
+
+  const querySplitted = url.split('?');
+  
+  if (querySplitted[1]) {
+
+    querySplitted[1].split('&').forEach(e => {
+      const splitted = e.split('=');
+      const name = splitted[0];
+      const value = splitted[1];
+    
+      query[name] = value
+    });
+  }
 
   const router = require(routerPath);
 
   const res = await fakeServer(router, {
-    url,
     ...options,
-    body: options.body ? JSON.parse(options.body) : undefined
+    url,
+    query,
+    body: options.body ? JSON.parse(options.body) : {}
   });
+
+  const r = res.response;
+  delete res.response;
 
   return {
     ...res,
-    response: undefined,
     ok: res.status >= 200 && res.status < 400,
-    json: () => Promise.resolve(res.response),
-    text: () => Promise.resolve(res.response)
+    json: () => Promise.resolve(r),
+    text: () => Promise.resolve(r)
   }
 }
+
+module.exports = fetch;

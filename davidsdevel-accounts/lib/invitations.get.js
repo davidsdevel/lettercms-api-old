@@ -1,15 +1,12 @@
 module.exports = async function() {
   const {
-    req,
+    req: {subdomain, query},
     res,
-    Model
+    Model: {Invitations},
+    find
   } = this;
 
-  const {
-    subdomain
-  } = req;
-
-  const data = await this.find(this.req.query, this.Model.Invitations, {subdomain});
+  const data = await find(query, Invitations, {subdomain});
 
   res.json(data)
 }

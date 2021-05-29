@@ -1,3 +1,9 @@
+<link
+  rel="stylesheet"
+  href="https://uicdn.toast.com/tui-image-editor/latest/tui-image-editor.css"
+/>
+<script src="https://uicdn.toast.com/tui-image-editor/latest/tui-image-editor.js"></script>
+
 Admin APIs
 
 {
@@ -70,6 +76,11 @@ Images
 GET                   /image
 GET                   /image/:subdomain
 GET, DELETE           /image/:subdomain/:name
+
+Dentro de la API social, necesitamos:
+1) Publicacion General 
+2) Obtencion de Datos por Red Social
+3) 
 
 Social
 GET, POST             /social/:social

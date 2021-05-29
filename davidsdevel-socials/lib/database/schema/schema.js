@@ -10,4 +10,10 @@ const Facebook = new Schema({
     unique: true
   },
   name: String,
-})
+  pageId: {
+    type: String,
+    unique: true
+  },
+  picture: String,
+  cover: String
+});

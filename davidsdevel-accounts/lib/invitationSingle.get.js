@@ -1,9 +1,14 @@
 module.exports = async function() {
-  const {req, res, findSingle, Model} = this;
+  const {
+    req:{query},
+    res,
+    findSingle,
+    Model: {Invitations}
+  } = this;
 
-  const {id} = req.query;
+  const {id} = query;
 
-  const data = await findSingle(this.req.query, this.Model, {_id: id});
+  const data = await findSingle(query, Invitations, {_id: id});
 
   if (data === null)
     return res.status(404).json({message: 'Invitation not found'});
