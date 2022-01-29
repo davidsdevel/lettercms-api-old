@@ -2,7 +2,7 @@ image: node:lts
 
 stages:
   - prepare
-  - test
+#  - test
   - deploy
 
 .prepare:
@@ -20,13 +20,13 @@ prepare-production:
   only:
     - master
 
-test:
-  services:
-    - mongo
-  variables:
-    MONGO_URL: 'mongodb://mongo/testing'
-  only:
-    - production
+#test:
+#  services:
+#    - mongo
+#  variables:
+#    MONGO_URL: 'mongodb://mongo/testing'
+#  only:
+#    - production
 
 staging:
   stage: deploy
@@ -36,9 +36,9 @@ staging:
     ACCEPT: "Accept: application/vnd.heroku+json; version=3"
     AUTH: "Authorization: Bearer ${HEROKU_API_KEY}"
     CONTENT_TYPE: "Content-Type: application/json"
-    BUILD_JSON: '{ "source_blob": {"url": "https://s3.us-south.cloud-object-storage.appdomain.cloud/davidsdevel-storage-cos-standard-y2b/davidsdevel-${TYPE}.tgz","version": "$VERSION"}}'
+    BUILD_JSON: '{ "source_blob": {"url": "https://s3.us-south.cloud-object-storage.appdomain.cloud/davidsdevel-storage-cos-standard-y2b/lettercms/api.tgz","version": "$CI_COMMIT_SHORT_SHA"}}'
   before_script:
-    - tar zcv --exclude='.next/cache' -f master.tgz .next index.dist.js yarn.lock package.json Procfile
+    - tar zcv --exclude='.next/cache' --wildcards -f master.tgz davidsdevel-* index.js dev.js yarn.lock package.json Procfile
   script:
     - curl -n -X POST https://api.heroku.com/apps/${HEROKU_APP}/builds -d "${BUILD_JSON}" -H "${CONTENT_TYPE}" -H "${ACCEPT}" -H "${AUTH}"
   environment:
