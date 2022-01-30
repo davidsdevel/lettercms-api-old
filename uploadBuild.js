@@ -29,22 +29,12 @@ const getS3 = async (endpoint, serviceCredential) => {
 };
 
 const putObjects = async (s3, bucketName) => {
-  const isProd = process.env.ENV === 'production';
-  const {version} = require('./package.json');
 
   await s3.putObject({
-    Bucket: bucketName,
-    Key: isProd ? 'davidsdevel-latest.tgz' : 'davidsdevel-staging.tgz',
-    Body: createReadStream(join(__dirname, 'master.tgz')),
-  }).promise();
-
-  if (isProd) {
-    await s3.putObject({
       Bucket: bucketName,
       Key: 'lettercms-api.tgz',
       Body: createReadStream(join(__dirname, 'master.tgz')),
     }).promise();
-  }
 
   console.info(' Uploaded');
   return Promise.resolve();
