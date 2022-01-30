@@ -11,12 +11,13 @@ stages:
     key: lettercms-api
     paths:
       - node_modules
-    script:
-      - yarn
-      - yarn global add vercel
+  script:
+    - yarn
+    - yarn global add vercel
 
 prepare-production:
-  extends: prepare
+  extends: .prepare
+  script: echo hello
   only:
     - master
 
