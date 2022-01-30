@@ -39,6 +39,7 @@ staging:
     CONTENT_TYPE: "Content-Type: application/json"
     BUILD_JSON: '{ "source_blob": {"url": "https://s3.us-south.cloud-object-storage.appdomain.cloud/davidsdevel-storage-cos-standard-y2b/lettercms-api.tgz","version": "$CI_COMMIT_SHORT_SHA"}}'
   before_script:
+    - yarn
     - 'echo web: node dev > Procfile'
     - tar zcv --exclude='.next/cache' --wildcards -f master.tgz davidsdevel-* index.js dev.js yarn.lock package.json Procfile
     - node uploadBuild
