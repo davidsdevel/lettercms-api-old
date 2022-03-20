@@ -1,6 +1,6 @@
 const {Accounts, Invitations, VerificationCodes} = require('./schema');
 const bcrypt = require('bcrypt');
-const {Letter} = require('C:/Users/pc/Documents/Proyectos/letterCMS/davidsdevel-microservices/SDK');
+const {Letter} = require('@lettercms/sdk');
 const jwt = require('jsonwebtoken');
 
 /**
@@ -15,7 +15,10 @@ const jwt = require('jsonwebtoken');
  */
 Accounts.statics.login = async function(email, password) {
   try {
+    console.log(email,password)
+
     const account = await this.findOne({ email }, 'password subdomain', {lean: true});
+    console.log(account)
 
     if (!account)
       return Promise.resolve({
@@ -24,6 +27,8 @@ Accounts.statics.login = async function(email, password) {
       });
 
     const pass = await bcrypt.compare(password, account.password);
+    console.log(pass)
+
 
     if (pass) {
       const accessToken = jwt.sign({
@@ -42,6 +47,7 @@ Accounts.statics.login = async function(email, password) {
       message: 'Invalid Password'
     });
   } catch (err) {
+    console.log(err)
     return Promise.reject(err);
   }
 }

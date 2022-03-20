@@ -2,7 +2,7 @@
 var esm = new g.MemESM()
 var ger = new g.GER(esm);
 */
-const sdk = require('C:/Users/pc/Documents/Proyectos/letterCMS/davidsdevel-microservices/SDK');
+const sdk = require('@lettercms/sdk');
 
 module.exports = async function() {
   /*const {

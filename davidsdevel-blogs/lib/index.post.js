@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 
-const {Letter} = require('C:/Users/pc/Documents/Proyectos/letterCMS/davidsdevel-microservices/SDK');
-const admin = require('C:/Users/pc/Documents/Proyectos/letterCMS/sdk-admin');
+const {Letter} = require('@lettercms/sdk');
+const admin = require('@lettercms/admin');
 
 module.exports = async function() {
   const {

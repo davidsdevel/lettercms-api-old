@@ -1,4 +1,4 @@
-const {Letter} = require('C:/Users/pc/Documents/Proyectos/letterCMS/davidsdevel-microservices/SDK');
+const {Letter} = require('@lettercms/sdk');
 const jwt = require('jsonwebtoken');
 
 const days = [
@@ -176,7 +176,7 @@ module.exports = async function() {
   const weekDate = new Date(dateEnd - (1000 * 60 * 60 * 24 * 7));
 
   const week = new Date(`${weekDate.getFullYear()}-${weekDate.getMonth() + 1}-${weekDate.getDate()}`)
-  console.log(data)
+
   views.forEach(async e => {
     if (hasGrowth) {
       if (e.time > week && !end) {
@@ -237,15 +237,13 @@ module.exports = async function() {
     }
   });
 
-  console.log(data);
-  console.log(views);
-  console.log(data.views);
 
-  if (hasMostViewed && data.views) {
+  const viewsArr = Object.entries(data.views);
+
+  if (hasMostViewed && viewsArr.length > 0) {
     //Get Most Viewed
-    const viewsArr = Object.entries(data.views);
 
-    console.log(viewsArr)
+    console.log(data)
 
     const sorted = viewsArr.sort(([ka, a], [kb, b]) => {
       if (a>b)
@@ -253,6 +251,8 @@ module.exports = async function() {
       else
         return +1
     });
+
+    console.log(sorted)
 
     const mostViewedURL = sorted[0][0];
 

@@ -1,4 +1,4 @@
-const {Letter} = require('C:/Users/pc/Documents/Proyectos/letterCMS/davidsdevel-microservices/SDK');
+const {Letter} = require('@lettercms/sdk');
 const jwt = require('jsonwebtoken');
 
 const ORIGIN = 'http://localhost:3000';
@@ -49,7 +49,6 @@ module.exports = async function() {
   const posts = await find({...req.query, posts:true}, Model, condition);
 
   posts.data = posts.data.map(e => {
-    console.log(e)
     let fullUrl;
 
     if (e.postStatus === 'published')

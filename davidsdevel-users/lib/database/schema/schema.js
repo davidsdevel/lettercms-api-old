@@ -20,7 +20,23 @@ module.exports = new Schema({
 		type: Boolean,
 		default: false,
 		required: true
-	}/*,
+	},
+	active: {
+		type: Boolean,
+		required: true,
+		default: false
+	},
+	newUser: {
+		type: Boolean,
+		required: true,
+		default: true
+	},
+	device: {
+    type: String,
+    required: true,
+    enum: ['mobile', 'desktop']
+  },
+	/*,
 	isBlocked: {
 		type: Boolean,
 		default: false,

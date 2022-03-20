@@ -1,5 +1,5 @@
 const {isValidObjectId} = require('mongoose');
-const {Letter} = require('C:/Users/pc/Documents/Proyectos/letterCMS/davidsdevel-microservices/SDK');
+const {Letter} = require('@lettercms/sdk');
 const jwt = require('jsonwebtoken');
 
 const getFullUrl = (url, urlID, data) => {

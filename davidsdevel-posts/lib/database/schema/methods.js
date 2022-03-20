@@ -1,5 +1,5 @@
 const Schema = require('./schema');
-const sdk = require('C:/Users/pc/Documents/Proyectos/letterCMS/davidsdevel-microservices/SDK');
+const sdk = require('@lettercms/sdk');
 const jwt = require('jsonwebtoken');
 const convert = require('xml-js');
 
