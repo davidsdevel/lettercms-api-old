@@ -4,6 +4,7 @@ process.env.LETTER_ACCESS_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc0Fk
 process.env.JWT_AUTH = 'davidsdevel';
 
 //require('dotenv').config();
+const {version} = require('./package.json');
 
 const express = require('express');
 const app = express();
@@ -69,7 +70,8 @@ dirs.forEach(e => {
 
 app
   .use(express.urlencoded({ extended: true }))
-	.use(express.json());
+	.use(express.json())
+	.get('/', (req, res) => res.send(version))
 
 const apis = Object.keys(routes);
 
