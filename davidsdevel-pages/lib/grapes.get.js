@@ -8,9 +8,9 @@ module.exports = async function() {
   }, Model, {_id});
 
   res.json({
-    'gjs-components': data.components,
-    'gjs-html': data.html,
-    'gjs-css': data.css,
-    'gjs-styles': data.styles,
+    'gjs-components': data.components || '',
+    'gjs-html': data.html || '',
+    'gjs-css': data.css || '',
+    'gjs-styles': data.styles || ''
   });
 }

@@ -465,14 +465,25 @@
     "@types/yargs" "^15.0.0"
     chalk "^4.0.0"
 
-"@lettercms/sdk@./SDK":
-  version "1.0.0"
+"@lettercms/admin@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@lettercms/admin/-/admin-0.0.1.tgz#e3470a2af6f011722463f82ca4c7fa79b0b8eebb"
+  integrity sha512-XffzZe7rmjMNDs6W5ZwL/qR8EF61VVNslV7EsB6JNCZlS2Y+cNATkE+OHic+IlC9o4ycZo2VKuIfsyfZfbSVcA==
+  dependencies:
+    isomorphic-unfetch "^3.1.0"
+
+"@lettercms/sdk@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@lettercms/sdk/-/sdk-0.0.3.tgz#b340b4df0999050dc21eb74c225f9a038cf5c2cf"
+  integrity sha512-UBqb9SlsYka1f5hAw3HZYlHGJ3/OcD2qU3oWYa6AvBTJK1SloZ54HKRE8Fk5hz8RptelkEc/1MjYoezWJwGyMg==
   dependencies:
     form-data "^3.0.0"
     isomorphic-unfetch "^3.1.0"
 
-"@lettercms/utils@./utils":
+"@lettercms/utils@^1.0.0":
   version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@lettercms/utils/-/utils-1.0.0.tgz#a43fb51dc346c16ba75acf4b02d8c58b44f55921"
+  integrity sha512-7kQiam0vCJaA5sRIAJYq9YaRRiC8qImhwjL5aWhVkz3SFisbk0gWAciIGOC/bPa7NrC2joKYg6rBmapIQvF+Bw==
   dependencies:
     "@sentry/node" "^5.22.3"
     jsonwebtoken "^8.5.1"

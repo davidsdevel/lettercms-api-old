@@ -1,6 +1,6 @@
 const Schema = require('./schema');
-const sdk = require('C:/Users/pc/Documents/Proyectos/letterCMS/davidsdevel-microservices/SDK');
-
+const sdk = require('@lettercms/sdk');
+const jwt = require('jsonwebtoken');
 const convert = require('xml-js');
 
 /*
@@ -127,8 +127,8 @@ Schema.statics.createPost = async function(subdomain, data) {
  * @description Publish a Posts into DB
  * @public
  *
- * @param {String} subdomain
- * @param {Object} data
+ * @param {string} condition
+ * @param {object} data
  *
  * @return {Promise<Number>}
  *
@@ -146,7 +146,8 @@ Schema.statics.publishPost = async function(condition, data) {
     if (data.url) {
       const existsPost = await this.exists({
         url: data.url,
-        subdomain
+        subdomain,
+        postStatus: 'published'
       });
 
       if (existsPost)
@@ -165,7 +166,7 @@ Schema.statics.publishPost = async function(condition, data) {
         });
     }
 
-    const date = Date.now();
+    const date = new Date();
 
     const newData = {
       ...data,
@@ -176,11 +177,13 @@ Schema.statics.publishPost = async function(condition, data) {
     const found = await this.findOne(condition, 'published');
 
     if (found !== null) {
-      if (!('published' in found))
+      if (!found.published)
         newData.published = date;
     }
+    console.log(newData)
 
-    await this.updateOne(condition, newData);
+
+    const res = await this.updateOne(condition, newData);
 
     return Promise.resolve({
       exists: false

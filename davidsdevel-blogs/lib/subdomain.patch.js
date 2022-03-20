@@ -17,5 +17,13 @@ module.exports = async function() {
 
   const db = await Model.updateOne(condition, req.body);
 
-  res.json(db);
+  if (db.ok)
+    return res.json({
+      status: 'OK'
+    });
+
+
+  res.json({
+    status:'not-modified'
+  });
 }

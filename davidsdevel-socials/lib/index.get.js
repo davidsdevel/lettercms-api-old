@@ -10,7 +10,7 @@ module.exports = async function() {
   if (feeds.indexOf('facebook') > -1) {
     const {token, id} = await Model.Facebook.findOne({
       subdomain
-    }, null, 'pageId token');
+    }, 'pageId token');
 
     const fb = new FBApi(token);
 

@@ -20,6 +20,6 @@ module.exports = async function() {
 
   //TODO: send email with verify token
   res.json({
-    message: 'OK'
+    status: 'OK'
   });
 }

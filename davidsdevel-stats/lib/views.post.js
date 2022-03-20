@@ -2,8 +2,7 @@ const parser = require("ua-parser-js");
 const geoip = require('geoip-lite');
 const countries = require("i18n-iso-countries");
 const jwt = require('jsonwebtoken');
-const {Letter} = require('C:/Users/pc/Documents/Proyectos/letterCMS/davidsdevel-microservices/SDK');
-
+const {Letter} = require('@lettercms/sdk');
 
 module.exports = async function() {
   const {
@@ -13,7 +12,7 @@ module.exports = async function() {
   }  = this;
 
   const {subdomain} = req;
-  const token = jwt.sign({subdomain}, 'davidsdevel')
+  const token = jwt.sign({subdomain}, process.env.JWT_AUTH)
   const sdk = new Letter(token);
 
   const {
@@ -37,7 +36,6 @@ module.exports = async function() {
     });
 
   await Model.Stats.updateOne({subdomain}, {$inc: {totalViews: 1}});
-  
 
   await Model.Views.create({
     subdomain,
@@ -49,6 +47,6 @@ module.exports = async function() {
   });
 
   res.json({
-    message: 'OK'
+    status: 'OK'
   });
 }

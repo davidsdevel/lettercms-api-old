@@ -15,6 +15,7 @@ module.exports = async function() {
   let condition = {};
 
   const isId = isValidObjectId(emailHex);
+  console.log(isId)
 
   if (isId)
     condition._id = emailHex;

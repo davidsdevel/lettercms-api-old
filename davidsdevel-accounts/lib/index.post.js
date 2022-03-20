@@ -20,8 +20,19 @@ module.exports = async function() {
     return res.sendStatus(401);
 
   const {
-    subdomain
+    subdomain,
+    email
   } = req.body;
+
+  const existsAccount = await Model.Accounts.exists({
+    email
+  })
+
+  if (existsAccount)
+    return res.json({
+      code: 'email-exists',
+      message: 'Email already exists'
+    })
 
   const password = await bcrypt.hash(req.body.password, 10);
 
@@ -43,6 +54,8 @@ module.exports = async function() {
 
   //TODO: send email with verify token
   res.json({
-    message: 'OK'
+    id: db._id,
+    status: 'OK',
+    code
   });
 }

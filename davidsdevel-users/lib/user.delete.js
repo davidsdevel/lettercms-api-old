@@ -7,6 +7,6 @@ module.exports = async function() {
   await Model.deleteOne({url, subdomain});
 
   res.json({
-    message: 'OK'
+    status: 'OK'
   });
 }

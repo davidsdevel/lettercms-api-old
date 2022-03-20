@@ -12,11 +12,26 @@ module.exports = async function() {
   if (!isAdmin)
     return res.sendStatus(401);
 
-
   const {
     code,
     email
   } = req.body;
+
+  const account = await Model.Accounts.findOne({
+    email
+  }, 'email verified');
+
+  if (!account)
+    return res.status(400).json({
+      status: 'no-email',
+      message: 'Email was not found'
+    });
+
+  if (account.verified)
+    return res.status(400).json({
+      status: 'already-verified',
+      message: 'Account is already verified'
+    });
 
   const exists = await Model.VerificationCodes.findOne({
     email
@@ -44,6 +59,6 @@ module.exports = async function() {
   });
   
   res.json({
-    message: 'OK'
+    status: 'OK'
   });
 }

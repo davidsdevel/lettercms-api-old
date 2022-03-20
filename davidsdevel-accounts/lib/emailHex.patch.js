@@ -23,18 +23,18 @@ module.exports = async function() {
   let condition = {};
 
   const isId = isValidObjectId(emailHex);
+  console.log(isId)
 
   if (isId)
     condition._id = emailHex;
   else
     condition.email = Buffer.from(emailHex, "hex").toString('utf-8');
 
+  console.log(await Accounts.findOne(condition))
 
   await Accounts.updateOne(condition, req.body);
-  
-  console.log(condition)
 
   res.json({
-    message: 'OK'
+    status: 'OK'
   });
 }

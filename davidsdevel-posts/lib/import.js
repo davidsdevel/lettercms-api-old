@@ -8,7 +8,7 @@ module.exports = async function() {
       await this.Model.importBlogger(this.req.subdomain, JSON.parse(fields.data));
 
     this.res.json({
-      message: 'OK'
+      status: 'OK'
     });
   });
 }

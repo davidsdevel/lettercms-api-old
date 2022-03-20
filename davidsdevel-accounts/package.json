@@ -9,8 +9,8 @@
   "author": "David's Devel <davidsdevel@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@lettercms/sdk": "../SDK",
-    "@lettercms/utils": "../utils",
+    "@lettercms/sdk": "*",
+    "@lettercms/utils": "*",
     "bcrypt": "^5.0.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.11.10"

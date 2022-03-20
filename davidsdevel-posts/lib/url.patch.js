@@ -8,6 +8,7 @@ module.exports = async function() {
   const {action} = req.body;
 
   const isId = isValidObjectId(url);
+
   const updateCondition = {};
 
   if (isId)
@@ -25,7 +26,7 @@ module.exports = async function() {
         status: 'not-found'
       });
       
-    await Model.updateOne(updateCondition, {$inc: {totalViews: 1}});
+    await Model.updateOne(updateCondition, {$inc: {views: 1}});
 
     return res.json({
       status: 'OK'
@@ -35,11 +36,13 @@ module.exports = async function() {
   let data;
   let id;
 
-  req.body.action = undefined;
+  delete req.body.action;
+
+  console.log({...req.body, subdomain})
 
   switch(action) {
     case 'publish':
-      data = await Model.publishPost(updateCondition, req.body);
+      data = await Model.publishPost({subdomain, ...updateCondition}, req.body);
       break;
     case 'draft':
       data = await Model.draftPost(updateCondition, req.body);
@@ -59,7 +62,7 @@ module.exports = async function() {
     });
 
   res.json({
-    message: 'OK',
+    status: 'OK',
     data
   });
 }

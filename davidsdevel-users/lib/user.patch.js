@@ -7,7 +7,7 @@ module.exports = async function() {
   await Model.updateOne({url, subdomain}, req.body);
 
   res.json({
-    message: 'OK',
+    status: 'OK',
     data
   });
 }

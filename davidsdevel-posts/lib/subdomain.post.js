@@ -7,7 +7,7 @@ module.exports = async function() {
   const id = await Model.createPost(subdomain, req.body);
 
   res.json({
-    message: 'OK',
+    status: 'OK',
     id
   });
 }

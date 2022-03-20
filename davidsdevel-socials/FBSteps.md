@@ -75,57 +75,30 @@ id
 
 artists_we_like
 string
-  
-
-Artists the band likes. Applicable to Bands. Can be read with Page Public Content Access or Page Public Metadata Access.
 
 attire
 string
-  
-
-Dress code of the business. Applicable to Restaurants or Nightlife. Can be one of Casual, Dressy or Unspecified. Can be read with Page Public Content Access or Page Public Metadata Access.
 
 awards
 string
-  
-
-The awards information of the film. Applicable to Films. Can be read with Page Public Content Access or Page Public Metadata Access.
 
 band_interests
 string
-  
-
-Band interests. Applicable to Bands. Can be read with Page Public Content Access or Page Public Metadata Access.
 
 band_members
 string
-  
-
-Members of the band. Applicable to Bands. Can be read with Page Public Content Access or Page Public Metadata Access.
 
 best_page
 Page
-  
-
-The best available Page on Facebook for the concept represented by this Page. The best available Page takes into account authenticity and the number of likes
 
 bio
 string
-  
-
-Biography of the band. Applicable to Bands. Can be read with Page Public Content Access or Page Public Metadata Access.
 
 birthday
 string
-  
-
-Birthday of this person. Applicable to Pages representing people. Can be read with Page Public Content Access or Page Public Metadata Access.
 
 booking_agent
 string
-  
-
-Booking agent of the band. Applicable to Bands. Can be read with Page Public Content Access or Page Public Metadata Access.
 
 built
 string
@@ -880,39 +853,22 @@ The alias of the Page. For example, for www.facebook.com/platform the username i
 Básico
 verification_status
 string
-  
-
-Showing whether this Page is verified. Value can be blue_verified or gray_verified, which represents that Facebook has confirmed that a Page is the authentic presence of the public figure, celebrity, or global brand it represents, or not_verified. This field can be read with the Page Public Metadata Access feature.
 
 voip_info
 VoipInfo
-  
-
-Voip info
 
 website
 string
-  
-
-The URL of the Page's website. Can be read with Page Public Content Access or Page Public Metadata Access.
 
 were_here_count
 unsigned int32
-  
-
-The number of visits to this Page's location. If the Page setting Show map, check-ins and star ratings on the Page (under Page Settings > Page Info > Address) is disabled, then this value will also be disabled. Can be read with Page Public Content Access or Page Public Metadata Access.
 
 whatsapp_number
 string
-  
-
-The Page's WhatsApp number. Can be read with Page Public Content Access or Page Public Metadata Access.
 
 written_by
 string
-  
 
-The writer of the TV show. Applicable to TV Shows. Can be read with Page Public Content Access or Page Public Metadata Access.
 
 
 /{page-id}/picture

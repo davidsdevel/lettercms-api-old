@@ -61,6 +61,17 @@ const Invitations = new Schema({
 		unique: true,
 		required: true
 	},
+  status: {
+    type: String,
+    required: true,
+    default: 'pending',
+    enum: ['pending', 'expired', 'accepted']
+  },
+  expireIn: {
+    type: Date,
+    default:() => (Date.now() + (60 * 60 * 24)),
+    required: true
+  },
   permissions: Array
 });
 

@@ -20,6 +20,6 @@ module.exports = async function() {
   await Model.deletePost(deleteCondition);
 
   res.json({
-    message: 'OK'
+    status: 'OK'
   });
 }
