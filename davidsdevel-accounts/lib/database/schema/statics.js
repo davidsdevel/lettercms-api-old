@@ -1,6 +1,5 @@
 const {Accounts, Invitations, VerificationCodes} = require('./schema');
 const bcrypt = require('bcrypt');
-const {Letter} = require('@lettercms/sdk');
 const jwt = require('jsonwebtoken');
 
 /**
@@ -15,10 +14,7 @@ const jwt = require('jsonwebtoken');
  */
 Accounts.statics.login = async function(email, password) {
   try {
-    console.log(email,password)
-
     const account = await this.findOne({ email }, 'password subdomain', {lean: true});
-    console.log(account)
 
     if (!account)
       return Promise.resolve({
@@ -27,8 +23,6 @@ Accounts.statics.login = async function(email, password) {
       });
 
     const pass = await bcrypt.compare(password, account.password);
-    console.log(pass)
-
 
     if (pass) {
       const accessToken = jwt.sign({
