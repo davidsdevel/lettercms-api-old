@@ -69,12 +69,12 @@ apis.forEach(apiName => {
 	const api = routes[apiName];
 
 	api.routes.forEach((e, i) => {
-		const newRoute = e.replace(/.*davidsdevel-/, '/api/');
+		const newRoute = e.replace(/.*davidsdevel-/, '/api/').replace(/\/app\//, '');
 		console.log(newRoute)
 		const router = require(join(api.files[i]));
 
 		console.log(join(api.files[i]))
-		
+
 		app.all(newRoute, (req, res, next) => {
 			res.old_json = res.json;
 
