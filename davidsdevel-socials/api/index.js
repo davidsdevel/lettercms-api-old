@@ -1,3 +1,3 @@
-const {manageMethods, exists} = require('C:/Users/pc/Documents/Proyectos/letterCMS/davidsdevel-microservices/utils');
+const {manageMethods, exists} = require('@lettercms/utils');
 
 module.exports = manageMethods();

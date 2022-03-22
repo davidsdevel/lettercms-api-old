@@ -1,4 +1,4 @@
-const {manageMethods} = require('C:/Users/pc/Documents/Proyectos/letterCMS/davidsdevel-microservices/utils');
+const {manageMethods} = require('@lettercms/utils');
 const POST = require('../lib/merge');
 const Model = require('../lib/database');
 

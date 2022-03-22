@@ -1,7 +1,9 @@
 const {Letter} = require('@lettercms/sdk');
 const jwt = require('jsonwebtoken');
 
-const ORIGIN = 'http://localhost:3000';
+const isDev = process.env.NODE_ENV !== 'production';
+
+const ORIGIN = isDev ? 'http://localhost:3000' : 'https://lettercms-api-staging.herokuapp.com';
 
 const getFullUrl = (url, urlID, data) => {
   if (urlID === '1')

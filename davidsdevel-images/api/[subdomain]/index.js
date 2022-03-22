@@ -1,7 +1,9 @@
-const {manageMethods} = require('C:/Users/pc/Documents/Proyectos/letterCMS/davidsdevel-microservices/utils');
+const {manageMethods} = require('@lettercms/utils');
 const formidable = require('formidable');
 const Model = require('../../lib/database');
 const fs = require('fs');
+
+const isDev = process.env.NODE_ENV !== 'production'
 
 const POST = async function() {
   const {req, res} = this;
@@ -11,7 +13,7 @@ const POST = async function() {
   form.parse(req, async (err, fields, {file}) => {
     const name = fields.name || file.name;
 
-    const url = `http://localhost:3009/api/image/davidsdevel/${name}`;
+    const url = `${isDev ? 'http://localhost:3009' : 'https://lettercms-api-staging.herokuapp.com'}/api/image/davidsdevel/${name}`;
 
     const blob = fs.readFileSync(file.path);
 
