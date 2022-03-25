@@ -3,7 +3,6 @@ const {Letter} = require('@lettercms/sdk');
 const jwt = require('jsonwebtoken');
 
 const getFullUrl = (url, urlID, data) => {
-  console.log("ID >", urlID)
   if (urlID == '1')
     return `/${url}`;
   if (urlID == '2')

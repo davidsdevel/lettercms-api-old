@@ -38,8 +38,6 @@ module.exports = async function() {
 
   delete req.body.action;
 
-  console.log({...req.body, subdomain})
-
   switch(action) {
     case 'publish':
       data = await Model.publishPost({subdomain, ...updateCondition}, req.body);

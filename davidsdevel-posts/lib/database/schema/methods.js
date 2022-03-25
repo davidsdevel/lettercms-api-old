@@ -180,7 +180,6 @@ Schema.statics.publishPost = async function(condition, data) {
       if (!found.published)
         newData.published = date;
     }
-    console.log(newData)
 
 
     const res = await this.updateOne(condition, newData);

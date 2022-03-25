@@ -243,16 +243,12 @@ module.exports = async function() {
   if (hasMostViewed && viewsArr.length > 0) {
     //Get Most Viewed
 
-    console.log(data)
-
     const sorted = viewsArr.sort(([ka, a], [kb, b]) => {
       if (a>b)
         return +1
       else
         return +1
     });
-
-    console.log(sorted)
 
     const mostViewedURL = sorted[0][0];
 

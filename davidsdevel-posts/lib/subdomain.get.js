@@ -40,7 +40,6 @@ module.exports = async function() {
   const token = jwt.sign({subdomain: subdomain}, process.env.JWT_AUTH);
   const sdk = new Letter(token);
   const {url: urlID} = await sdk.blogs.single(['url']);
-  console.log(urlID)
 
   if (status)
     condition.postStatus = status;

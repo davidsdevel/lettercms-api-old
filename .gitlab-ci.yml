@@ -67,9 +67,9 @@ staging:
     url: $PREVIEW_URL
   before_script:
     - cd $VERCEL_PATH
-    - vercel secrets add my-mongodb-uri $MONGO_URL
-    - vercel secrets add sentry-dsn $SENTRY_DSN
-    - vercel secrets add jwt-token $JWT_AUTH
+    - vercel secrets add my-mongodb-uri $MONGO_URL -t $VERCEL_TOKEN
+    - vercel secrets add sentry-dsn $SENTRY_DSN -t $VERCEL_TOKEN
+    - vercel secrets add jwt-token $JWT_AUTH -t $VERCEL_TOKEN
   script:
     - DEPLOYMENT_URL=$(vercel --name $CI_PROJECT_NAME --confirm -t $VERCEL_TOKEN)
     - vercel alias set $DEPLOYMENT_URL $PREVIEW_URL -t $VERCEL_TOKEN
