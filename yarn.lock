@@ -472,10 +472,10 @@
   dependencies:
     isomorphic-unfetch "^3.1.0"
 
-"@lettercms/sdk@0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@lettercms/sdk/-/sdk-0.0.4.tgz#c1a09e7af7bcbf2954e0a7d9989110d29dcfb9a6"
-  integrity sha512-9PUVW8Hu480WviM14LM51pOwnLo2i+MeRSpw6fW6OgGL0c8a4Y59j9XEBS6D1rWIhFHV4XxEXdbsRKWzaJx8HQ==
+"@lettercms/sdk@0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@lettercms/sdk/-/sdk-0.0.5.tgz#addd0b81ab313531961e8cfe8c870dc15fe26bde"
+  integrity sha512-OOtQKSC5leSGAhGDqx0XE6LkQUVumb620rSOOzOmaNWtYeRNWXRUFx9+KLaDDpm9WhSDdqzJwnu/HRczLJiKqA==
   dependencies:
     form-data "^3.0.0"
     isomorphic-unfetch "^3.1.0"

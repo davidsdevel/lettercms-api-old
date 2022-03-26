@@ -1,6 +1,6 @@
 {
   "name": "@lettercms/api",
-  "version": "1.0.2",
+  "version": "1.0.0",
   "main": "index.js",
   "scripts": {
     "dev": "node dev",
@@ -23,7 +23,7 @@
   "homepage": "https://gitlab.com/lettercms/api#readme",
   "dependencies": {
     "@lettercms/admin": "0.0.2",
-    "@lettercms/sdk": "0.0.4",
+    "@lettercms/sdk": "0.0.5",
     "@lettercms/utils": "1.0.1",
     "bcrypt": "^5.0.1",
     "express": "^4.17.1",
