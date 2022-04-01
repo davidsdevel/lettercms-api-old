@@ -1,3 +1,5 @@
+const {accounts} = require(process.cwd() + '/mongo');
+
 module.exports = async function() {
   const {
     req: {
@@ -6,10 +8,7 @@ module.exports = async function() {
         id
       }
     },
-    res,
-    Model: {
-      Invitations
-    }
+    res
   } = this;
 
   let options = {};
@@ -24,12 +23,12 @@ module.exports = async function() {
       message: 'Request must have "id" or "email"'
     })
 
-  const existsInvitation = await Invitations.exists(options);
+  const existsInvitation = await accounts.Invitations.exists(options);
 
   if (!existsInvitation)
     return res.status(404).json({message: 'Invitation not found'});
 
-  await Invitations.deleteOne(options);
+  await accounts.Invitations.deleteOne(options);
 
   res.json({
     status: 'OK',

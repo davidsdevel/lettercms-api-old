@@ -1,6 +1,5 @@
-const {exists, manageMethods} = require('@lettercms/utils');
-const Model = require('../lib/database');
+const {exists, manageMethods} = require(process.cwd() + '/utils');
 
-module.exports = manageMethods(Model.Accounts, {
+module.exports = manageMethods({
   GET: exists
 });

@@ -1,5 +1,15 @@
-const app = require('./index')
+const fs = require('fs');
+const https = require('https');
+
+const app = require('./index');
 
 const PORT = process.env.PORT || 3009
 
-app.listen(PORT, () => console.log('Listen'));
+/*if (process.env.NODE_ENV !== 'production') {
+  https.createServer({
+    cert: fs.readFileSync('./cert.pem'),
+    key: fs.readFileSync('./key.pem')
+  }, app).listen(PORT, () => console.log(`Listen on HTTPS`))
+}
+else*/
+  app.listen(PORT, () => console.log('Listen'));

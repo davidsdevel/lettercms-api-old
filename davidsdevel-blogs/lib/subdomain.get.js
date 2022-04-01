@@ -1,18 +1,18 @@
+const {blogs} = require(process.cwd() + '/mongo');
 const {isValidObjectId} = require('mongoose');
 
 module.exports = async function() {
   const {
     req,
     res,
-    findSingle,
-    Model
+    findSingle
   } = this;
 
   const {
     subdomain
   } = req;
 
-  let data = await findSingle(req.query, Model, {
+  let data = await findSingle(req.query, blogs, {
     subdomain
   });
 

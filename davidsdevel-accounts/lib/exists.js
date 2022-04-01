@@ -1,5 +1,7 @@
+const {accounts} = require(process.cwd() + '/mongo');
+
 module.exports = async function() {
-  const exists = await this.Model.Accounts.exists(this.req.query);
+  const exists = await accounts.Accounts.exists(this.req.query);
 
   if (exists)
     this.res.sendStatus(200);

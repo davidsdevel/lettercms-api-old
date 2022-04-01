@@ -1,8 +1,9 @@
+const {accounts} = require(process.cwd() + '/mongo');
+
 module.exports = async function() {
   const {
     req: {query, subdomain, isAdmin},
     res,
-    Model: {Accounts},
     find
   } = this;
 
@@ -10,7 +11,7 @@ module.exports = async function() {
     return res.json(await find({
     ...query,
     accounts: true
-  }, Accounts, {}));
+  }, accounts.Accounts, {}));
 
   const {
     role
@@ -26,7 +27,7 @@ module.exports = async function() {
   const data = await find({
     ...query,
     accounts: true
-  }, Accounts, conditions);
+  }, accounts.Accounts, conditions);
 
   res.json(data);
 }

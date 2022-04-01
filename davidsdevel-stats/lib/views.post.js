@@ -1,8 +1,7 @@
+const {stats} = require(process.cwd() + '/mongo');
 const parser = require("ua-parser-js");
 const geoip = require('geoip-lite');
 const countries = require("i18n-iso-countries");
-const jwt = require('jsonwebtoken');
-const {Letter} = require('@lettercms/sdk');
 
 module.exports = async function() {
   const {
@@ -12,8 +11,6 @@ module.exports = async function() {
   }  = this;
 
   const {subdomain} = req;
-  const token = jwt.sign({subdomain}, process.env.JWT_AUTH)
-  const sdk = new Letter(token);
 
   const {
     url
@@ -25,19 +22,18 @@ module.exports = async function() {
 
   const countryName = look ? countries.getName(look.country, 'en') : 'Unknown';
 
-  const {status} = await sdk.createRequest(`/post/${url}`, 'PATCH', {
-    action: 'set-view'
-  });
+  const existsPost = await posts.exists({url, subdomain});
 
-  if (status === 'not-found')
-    return res.status(404).json({
-      status: 'not-found',
-      message: `Post "${url}" does not exists`
-    });
+    if (!existsPost)
+      return res.status(404).json({
+        status: 'not-found'
+      });
+      
+  await posts.updateOne({url, subdomain}, {$inc: {views: 1}});
 
-  await Model.Stats.updateOne({subdomain}, {$inc: {totalViews: 1}});
+  await posts.Stats.updateOne({subdomain}, {$inc: {totalViews: 1}});
 
-  await Model.Views.create({
+  await posts.Views.create({
     subdomain,
     country: countryName,
     os: os.name ||'Unknown',

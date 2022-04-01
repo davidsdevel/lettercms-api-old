@@ -1,3 +1,4 @@
+const {posts} = require(process.cwd() + '/mongo');
 const formidable = require('formidable');
 
 module.exports = async function() {
@@ -5,7 +6,7 @@ module.exports = async function() {
 
   form.parse(this.req, async (err, fields, files) => {
     if (fields.cms === 'blogger')
-      await this.Model.importBlogger(this.req.subdomain, JSON.parse(fields.data));
+      await posts.importBlogger(this.req.subdomain, JSON.parse(fields.data));
 
     this.res.json({
       status: 'OK'

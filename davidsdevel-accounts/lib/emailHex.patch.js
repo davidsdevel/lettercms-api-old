@@ -1,10 +1,10 @@
+const {accounts} = require(process.cwd() + '/mongo');
 const {isValidObjectId} = require('mongoose');
 
 module.exports = async function() {
   const {
     req,
-    res,
-    Model: {Accounts}
+    res
   } = this;
 
   const {
@@ -29,7 +29,7 @@ module.exports = async function() {
   else
     condition.email = Buffer.from(emailHex, "hex").toString('utf-8');
 
-  await Accounts.updateOne(condition, req.body);
+  await accounts.Accounts.updateOne(condition, req.body);
 
   res.json({
     status: 'OK'

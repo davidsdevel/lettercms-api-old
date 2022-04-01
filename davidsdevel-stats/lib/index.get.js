@@ -1,5 +1,4 @@
-const {Letter} = require('@lettercms/sdk');
-const jwt = require('jsonwebtoken');
+const {stats, posts} = require(process.cwd() + '/mongo');
 
 const days = [
   'Sunday',
@@ -14,8 +13,7 @@ const days = [
 module.exports = async function() {
   const {
     req,
-    res,
-    Model
+    res
   }  = this;
 
   const {subdomain} = req;
@@ -34,11 +32,7 @@ module.exports = async function() {
     subdomain
   };
 
-  const token = jwt.sign({subdomain}, process.env.JWT_AUTH);
-
-  const sdk = new Letter(token);
-
-  const existsStats = await Model.Stats.exists({subdomain});
+  const existsStats = await stats.Stats.exists({subdomain});
 
   if (!existsStats)
     return res.status(404).json({
@@ -123,16 +117,12 @@ module.exports = async function() {
     });
 
   if (hasMostCommented) {
-    const commentsRes = await sdk.posts.all({
-      sort: 'comments',
+    const commentsRes = await posts.find({subdomain}, 'thumbnail title views comments url', {
+      sort: {
+        comments: -1
+      },
       limit: 1,
-      fields: [
-        'thumbnail',
-        'title',
-        'views',
-        'comments',
-        'url'
-      ]
+      lean: true
     });
 
     data.mostCommented = commentsRes.data[0];
@@ -166,12 +156,12 @@ module.exports = async function() {
     conditions.url = url;
 
   if (hasGeneral)
-    data.general = await Model.Stats.findOne({subdomain});
+    data.general = await stats.Stats.findOne({subdomain});
   
   if (hasTotal)
-    data.total = await Model.Views.estimatedDocumentCount(conditions);
+    data.total = await stats.Views.estimatedDocumentCount(conditions);
 
-  const views = await Model.Views.find(conditions);
+  const views = await stats.Views.find(conditions);
   
   const weekDate = new Date(dateEnd - (1000 * 60 * 60 * 24 * 7));
 
@@ -252,13 +242,9 @@ module.exports = async function() {
 
     const mostViewedURL = sorted[0][0];
 
-    const viewsRes = await sdk.posts.single(mostViewedURL, [
-      'thumbnail',
-      'title',
-      'views',
-      'comments',
-      'url'
-    ]);
+    const viewsRes = await posts.findOne({subdomain, url: mostViewedURL}, 'thumbnail title views comments url', {
+      lean: true
+    });
 
     data.mostViewed = viewsRes;
 

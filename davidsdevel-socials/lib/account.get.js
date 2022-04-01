@@ -1,3 +1,5 @@
+const {socials: socialModel} = require(process.cwd() + '/mongo');
+
 /**
  *
  * Queries
@@ -10,7 +12,7 @@
  */
 
 module.exports = async function() {
-  const {req, res, Model} = this;
+  const {req, res} = this;
 
   const {include, exclude, fields} = req.query;
   const {subdomain} = req;
@@ -25,7 +27,7 @@ module.exports = async function() {
 
   if (sendAll || socialIncludes.indexOf('facebook') > -1) {
 
-    const fbData = await Model.Facebook.findOne({
+    const fbData = await socialModel.Facebook.findOne({
       subdomain
     }, parsedFields);
 
@@ -33,7 +35,7 @@ module.exports = async function() {
   }
 
   if (sendAll || socialIncludes.indexOf('instagram') > -1) {
-    const igData = await Model.Instagram.findOne({
+    const igData = await socialModel.Instagram.findOne({
       subdomain
     }, parsedFields);
 

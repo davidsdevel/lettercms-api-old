@@ -1,7 +1,8 @@
+const {socials} = require(process.cwd() + '/mongo');
 const {Facebook, Instagram} = require('./social');
 
 module.exports = async function() {
-  const {req, res, Model} = this;
+  const {req, res} = this;
 
   const {subdomain} = req;
 
@@ -16,7 +17,7 @@ module.exports = async function() {
 
 
   if (feed === 'facebook') {
-    /*const {token, pageId} = await Model.Facebook.findOne({
+    /*const {token, pageId} = await socials.Facebook.findOne({
       subdomain
     }, null, 'pageId token');*/
 
@@ -29,7 +30,7 @@ module.exports = async function() {
   }
 
   if (hasIg) {
-    /*const {token, userId} = await Model.Instagram.findOne({
+    /*const {token, userId} = await socials.Instagram.findOne({
       subdomain
     }, null, 'userId token');*/
 

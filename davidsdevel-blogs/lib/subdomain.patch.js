@@ -1,10 +1,10 @@
+const {blogs} = require(process.cwd() + '/mongo');
 const {isValidObjectId} = require('mongoose');
 
 module.exports = async function() {
   const {
     req,
-    res,
-    Model
+    res
   } = this;
 
   const {
@@ -15,7 +15,7 @@ module.exports = async function() {
     subdomain
   };
 
-  const db = await Model.updateOne(condition, req.body);
+  const db = await blogs.updateOne(condition, req.body);
 
   if (db.ok)
     return res.json({

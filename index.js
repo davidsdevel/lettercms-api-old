@@ -1,4 +1,5 @@
 const {version} = require('./package.json');
+global.mongo = require('mongoose');
 
 if (process.env.NODE_ENV !== 'production')
   require('dotenv').config();

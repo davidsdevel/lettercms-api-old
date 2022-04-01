@@ -1,5 +1,7 @@
+const {users} = require(process.cwd() + '/mongo');
+
 module.exports = async function() {
-  const {req, res, Model, find} = this;
+  const {req, res, find} = this;
 
   const {
     status
@@ -10,7 +12,7 @@ module.exports = async function() {
     subdomain
   };
 
-  const users = await find(req.query, Model, condition);
+  const users = await find(req.query, users, condition);
 
   res.json(users);
 }

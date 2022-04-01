@@ -1,5 +1,6 @@
-module.exports = async function() {
+const {accounts} = require(process.cwd() + '/mongo');
 
+module.exports = async function() {
   const {
     isAdmin
   } = this.req;
@@ -12,7 +13,7 @@ module.exports = async function() {
     password
   } = this.req.body;
 
-  const data = await this.Model.Accounts.login(email, password);
+  const data = await accounts.Accounts.login(email, password);
 
   this.res.json(data);
 }

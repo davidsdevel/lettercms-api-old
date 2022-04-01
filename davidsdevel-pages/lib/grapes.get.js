@@ -1,11 +1,13 @@
+const {pages} = require(process.cwd() + '/mongo');
+
 module.exports = async function() {
-  const {req, res, Model, findSingle} = this;
+  const {req, res, findSingle} = this;
 
   const {_id} = req.query;
 
   const data = await findSingle({
     fields: 'components,html,css,styles'
-  }, Model, {_id});
+  }, pages, {_id});
 
   res.json({
     'gjs-components': data.components || '',

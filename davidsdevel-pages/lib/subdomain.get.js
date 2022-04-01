@@ -1,5 +1,7 @@
+const {pages} = require(process.cwd() + '/mongo');
+
 module.exports = async function() {
-  const {req, res, Model, find} = this;
+  const {req, res, find} = this;
 
   const {subdomain} = req;
   const {status} = req.query;
@@ -11,7 +13,7 @@ module.exports = async function() {
   if (status)
     condition.pageStatus = status;
 
-  const pages = await find(req.query, Model, condition);
+  const pages = await find(req.query, pages, condition);
 
   res.json(pages);
 }

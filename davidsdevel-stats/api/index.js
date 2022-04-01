@@ -1,9 +1,8 @@
-const {manageMethods} = require('@lettercms/utils');
-const Models = require('../lib/database');
+const {manageMethods} = require(process.cwd() + '/utils');
 const POST = require('../lib/index.post');
 const GET = require('../lib/index.get');
 
-module.exports = manageMethods(Models, {
+module.exports = manageMethods({
   GET,
   POST
 });

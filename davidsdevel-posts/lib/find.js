@@ -1,6 +1,5 @@
+const {posts, blogs} = require(process.cwd() + '/mongo');
 const {isValidObjectId} = require('mongoose');
-const {Letter} = require('@lettercms/sdk');
-const jwt = require('jsonwebtoken');
 
 const getFullUrl = (url, urlID, data) => {
   if (urlID == '1')
@@ -20,7 +19,7 @@ const getFullUrl = (url, urlID, data) => {
 }
 
 module.exports = async function() {
-  const {req, res, findSingle, Model} = this;
+  const {req, res, findSingle} = this;
 
   const {subdomain} = req;
   const {
@@ -36,9 +35,7 @@ module.exports = async function() {
     url
   };
 
-  const token = jwt.sign({subdomain}, process.env.JWT_AUTH);
-  const sdk = new Letter(token);
-  const {url: urlID} = await sdk.blogs.single(['url']);
+  const {url: urlID} = await blogs.findOne({subdomain}, 'url');
 
   if (category)
     conditions.category = category;
@@ -60,7 +57,7 @@ module.exports = async function() {
     const isId = /[a-z,0-9]{12}/i.test(url) || /[a-z,0-9]{24}/i.test(url);
 
     if (isId) {
-      data = await findSingle(req.query, Model, {
+      data = await findSingle(req.query, posts, {
         _id: url
       });
 
@@ -89,7 +86,7 @@ module.exports = async function() {
     req.query.fields = fields.join(',');
   }
 
-  data = await findSingle(req.query, Model, conditions);
+  data = await findSingle(req.query, posts, conditions);
 
   if (data === null)
     res.status(404).json({

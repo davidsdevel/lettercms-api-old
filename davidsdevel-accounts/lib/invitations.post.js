@@ -1,11 +1,12 @@
+const {accounts} = require(process.cwd() + '/mongo');
+
 module.exports = async function() {
   const {
     req: {subdomain, body},
-    res,
-    Model: {Invitations, Accounts}
+    res
   } = this;
 
-  const existsAccount = await Accounts.exists({
+  const existsAccount = await accounts.Accounts.exists({
     email: body.email
   });
 
@@ -15,7 +16,7 @@ module.exports = async function() {
       message: 'Accounts already exists'
     });
 
-  const existsInvitation = await Accounts.exists({
+  const existsInvitation = await accounts.Accounts.exists({
     email: body.email
   });
 
@@ -25,7 +26,7 @@ module.exports = async function() {
       message: `Invitation to "${body.email}" already sent`
     });
 
-  const {_id} = await Invitations.create({
+  const {_id} = await accounts.Invitations.create({
     ...body,
     subdomain
   });

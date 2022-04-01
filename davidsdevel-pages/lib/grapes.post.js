@@ -1,5 +1,7 @@
+const {pages} = require(process.cwd() + '/mongo');
+
 module.exports = async function() {
-  const {req, res, Model} = this;
+  const {req, res} = this;
 
   const {subdomain} = req;
   const {_id} = req.query;
@@ -10,7 +12,7 @@ module.exports = async function() {
   const css = req.body['gjs-css'];
   const styles = req.body['gjs-styles'];
 
-  await Model.updatePage({_id}, {
+  await pages.updatePage({_id}, {
     components,
     html,
     css,
