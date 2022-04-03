@@ -1,10 +1,17 @@
+const {accounts} = require('@lettercms/models');
+
 module.exports = async function() {
   const {
-    req: {query, subdomain},
+    req: {query, subdomain, isAdmin},
     res,
-    Model: {Accounts},
     find
   } = this;
+
+  if (isAdmin)
+    return res.json(await find({
+    ...query,
+    accounts: true
+  }, accounts.Accounts, {}));
 
   const {
     role
@@ -17,7 +24,10 @@ module.exports = async function() {
   if (subdomain)
     conditions.subdomain = subdomain;
 
-  const data = await find(Object.assign({accounts: true}, query), Accounts, conditions);
+  const data = await find({
+    ...query,
+    accounts: true
+  }, accounts.Accounts, conditions);
 
   res.json(data);
 }

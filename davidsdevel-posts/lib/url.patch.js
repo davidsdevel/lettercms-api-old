@@ -1,13 +1,15 @@
+const {posts} = require('@lettercms/models');
 const {isValidObjectId} = require('mongoose');
 
 module.exports = async function() {
-  const {req, res, Model} = this;
+  const {req, res} = this;
 
   const {url} = req.query;
   const {subdomain} = req;
   const {action} = req.body;
 
   const isId = isValidObjectId(url);
+
   const updateCondition = {};
 
   if (isId)
@@ -18,14 +20,14 @@ module.exports = async function() {
   }
 
   if (action === 'set-view') {
-    const exists = await Model.exists(updateCondition);
+    const exists = await posts.exists(updateCondition);
 
     if (!exists)
       return res.json({
         status: 'not-found'
       });
       
-    await Model.updateOne(updateCondition, {$inc: {totalViews: 1}});
+    await posts.updateOne(updateCondition, {$inc: {views: 1}});
 
     return res.json({
       status: 'OK'
@@ -35,17 +37,17 @@ module.exports = async function() {
   let data;
   let id;
 
-  req.body.action = undefined;
+  delete req.body.action;
 
   switch(action) {
     case 'publish':
-      data = await Model.publishPost(updateCondition, req.body);
+      data = await posts.publishPost({subdomain, ...updateCondition}, req.body);
       break;
     case 'draft':
-      data = await Model.draftPost(updateCondition, req.body);
+      data = await posts.draftPost(updateCondition, req.body);
       break;
     case 'update':
-      data = await Model.updatePost(updateCondition, req.body);
+      data = await posts.updatePost(updateCondition, req.body);
       break;
     default:
       return res.status(400).send({
@@ -59,7 +61,7 @@ module.exports = async function() {
     });
 
   res.json({
-    message: 'OK',
+    status: 'OK',
     data
   });
 }

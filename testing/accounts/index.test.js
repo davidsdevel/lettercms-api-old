@@ -1,17 +1,8 @@
 const sdk = require('../../SDK');
+const admin = require('../../../sdk-admin');
 const Model = require('../../davidsdevel-accounts/lib/database');
-const admin = require('C:/Users/pc/Documents/Proyectos/letterCMS/sdk-admin');
-const {connection} = require('@lettercms/utils')
 
 sdk.setAccessToken(ACCESS_TOKEN);
-
-afterAll(async () => {
-  await connection.connect();
-
-  await Model.Accounts.deleteMany({});
-
-  await connection.disconnect();
-});
 
 describe('Accounts API Testing', () => {
   test('POST - Create Account', async () => {
@@ -20,14 +11,61 @@ describe('Accounts API Testing', () => {
       lastname: 'Test LastName',
       verified: true,
       role: 'admin',
-      email:'email@test.com',
+      email:'create@test.com',
       password: '1234',
     });
 
-    expect(res).toEqual({
-      message: 'OK'
+
+    expect(res).toMatchObject({
+      id: /[a-z0-9]{24}/i,
+      message: 'OK',
+      code: /\n\n\n\n/
     });
+
+    const blogRes = await admin.createBlog({
+      subdomain: 'testing',
+      title: 'My Blog',
+      description: 'Example',
+      ownerEmail: 'create@test.com'
+    })
+
+    expect(blogRes).toMatchObject({
+      id: /[a-z0-9]{24}/i,
+      message: 'OK'
+    });    
   });
+
+  test('POST - Create Existing Account', async () => {
+    const res = await admin.createAccount({
+      name: 'Test User',
+      lastname: 'Test LastName',
+      verified: true,
+      role: 'admin',
+      email:'existing@test.com',
+      password: '1234',
+    });
+
+
+    expect(res).toMatchObject({
+      id: /[a-z0-9]{24}/i,
+      message: 'OK',
+      code: /\n\n\n\n/
+    });
+
+    const existingRes = await admin.createAccount({
+      name: 'Test User',
+      lastname: 'Test LastName',
+      verified: true,
+      role: 'admin',
+      email:'existing@test.com',
+      password: '1234',
+    });
+
+    expect(existingRes).toEqual({
+      code: 'email-exists',
+      message: 'Email already exists'
+    });
+  })
 
   test('GET - All', async () => {
     const res = await sdk.accounts.all();
@@ -42,7 +80,7 @@ describe('Accounts API Testing', () => {
           lastname: 'Test LastName',
           verified: true,
           role: 'admin',
-          email:'email@test.com'
+          email:'create@test.com'
         }
       ],
       next: false,
@@ -51,13 +89,13 @@ describe('Accounts API Testing', () => {
   })
 
   test('GET - Only Email', async () => {
-    const res = await sdk.account.all(['email']);
+    const res = await sdk.accounts.all(['email']);
 
     expect(res).toMatchObject({
       data: [
         {
           _id: /[a-z0-9]{24}/i,
-          email:'email@test.com'
+          email:'create@test.com'
         }
       ],
       next: false,

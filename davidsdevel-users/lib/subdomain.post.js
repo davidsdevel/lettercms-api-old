@@ -1,12 +1,14 @@
+const {users} = require('@lettercms/models');
+
 module.exports = async function() {
-  const {req, res, Model} = this;
+  const {req, res} = this;
 
   const {subdomain} = req;
 
-  const data = await Model.create({...req.body, subdomain});
+  const data = await users.create({...req.body, subdomain});
 
   res.json({
-    message: 'OK',
+    status: 'OK',
     data
   });
 }

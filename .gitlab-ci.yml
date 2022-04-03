@@ -21,30 +21,35 @@ prepare-production:
   only:
     - master
 
-#test:
-#  services:
-#    - mongo
-#  variables:
-#    MONGO_URL: 'mongodb://mongo/testing'
-#  only:
-#    - production
+# test:
+#   image: docker:latest
+#   stage: test
+#   services:
+#     - docker:dind
+#     - mongo
+#   variables:
+#     MONGO_URL: 'mongodb://mongo/testing'
+#   before_script:
+#     - docker build -t microservices
+#     - docker run -d -p 3009:3009 microservices
+#   only:
+#     - production
 
 staging:
   stage: deploy
   variables:
-    TYPE: staging
-    HEROKU_APP: lettercms-api-staging
-    ACCEPT: "Accept: application/vnd.heroku+json; version=3"
-    AUTH: "Authorization: Bearer ${HEROKU_API_KEY}"
-    CONTENT_TYPE: "Content-Type: application/json"
-    BUILD_JSON: '{ "source_blob": {"url": "https://s3.us-south.cloud-object-storage.appdomain.cloud/davidsdevel-storage-cos-standard-y2b/lettercms/api.tgz","version": "$CI_COMMIT_SHORT_SHA"}}'
+    ENV: staging
+    VERSION: $CI_COMMIT_SHORT_SHA
   before_script:
-    - tar zcv --exclude='.next/cache' --wildcards -f master.tgz davidsdevel-* index.js dev.js yarn.lock package.json Procfile
+    - yarn
+    - 'echo web: node dev > Procfile'
+    - tar zcv --wildcards --exclude='*/node_modules/*' --exclude='.git' -f master.tgz lib middlewares davidsdevel-accounts davidsdevel-blogs davidsdevel-pages davidsdevel-posts davidsdevel-socials davidsdevel-stats davidsdevel-users index.js dev.js yarn.lock package.json Procfile
+    - yarn lettercms --upload
   script:
-    - curl -n -X POST https://api.heroku.com/apps/${HEROKU_APP}/builds -d "${BUILD_JSON}" -H "${CONTENT_TYPE}" -H "${ACCEPT}" -H "${AUTH}"
+    - yarn lettercms --deploy
   environment:
     name: staging
-    url: https://${HEROKU_APP}.herokuapp.com
+    url: https://lettercms-api-staging.herokuapp.com
   only:
     - master
 
@@ -58,9 +63,9 @@ staging:
     url: $PREVIEW_URL
   before_script:
     - cd $VERCEL_PATH
-    - vercel secrets add my-mongodb-uri $MONGO_URL
-    - vercel secrets add sentry-dsn $SENTRY_DSN
-    - vercel secrets add jwt-token $JWT_AUTH
+    - vercel secrets add my-mongodb-uri $MONGO_URL -t $VERCEL_TOKEN
+    - vercel secrets add sentry-dsn $SENTRY_DSN -t $VERCEL_TOKEN
+    - vercel secrets add jwt-token $JWT_AUTH -t $VERCEL_TOKEN
   script:
     - DEPLOYMENT_URL=$(vercel --name $CI_PROJECT_NAME --confirm -t $VERCEL_TOKEN)
     - vercel alias set $DEPLOYMENT_URL $PREVIEW_URL -t $VERCEL_TOKEN

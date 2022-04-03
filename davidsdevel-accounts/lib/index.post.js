@@ -1,17 +1,9 @@
-const bcrypt = require('bcrypt');
-
-const generateCode = _ => {
-  let code = '';
-
-  for(let i = 0; i < 4; i++) {
-    code += Math.round(Math.random() * 9);
-  }
-
-  return code;
-}
+const {accounts} = require('@lettercms/models');
+const jwt = require('jsonwebtoken');
+const {sendMail} = require('@lettercms/utils');
 
 module.exports = async function() {
-  const {req,res,Model} = this;
+  const {req,res} = this;
   const {
     isAdmin
   } = req;
@@ -20,29 +12,25 @@ module.exports = async function() {
     return res.sendStatus(401);
 
   const {
-    subdomain
+    subdomain,
+    email
   } = req.body;
 
-  const password = await bcrypt.hash(req.body.password, 10);
+  const existsAccount = await accounts.Accounts.exists({
+    email
+  })
 
-  const db = await Model.Accounts.create({
-    ...req.body,
-    subdomain,
-    password
-  });
+  if (existsAccount)
+    return res.json({
+      code: 'email-exists',
+      message: 'Email already exists'
+    });
 
-  const code = generateCode();
-
-  await Model.VerificationCodes.create({
-    code,
-    email: req.body.email,
-    expiresIn: Date.now() + (1000 * 60 * 60 * 24)
-  });
+  const code = jwt.sign(req.body, process.env.JWT_AUTH, { expiresIn: 60 * 5 });
 
   console.log(code)
 
-  //TODO: send email with verify token
-  res.json({
-    message: 'OK'
-  });
+  await sendMail(req.body.email, `${req.body.name} verifica tu cuenta - LetterCMS`, req.body);
+  
+  res.json({ status: 'OK' });
 }

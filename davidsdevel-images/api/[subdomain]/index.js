@@ -1,7 +1,9 @@
 const {manageMethods} = require('@lettercms/utils');
+const {images} = require('@lettercms/models');
 const formidable = require('formidable');
-const Model = require('../../lib/database');
 const fs = require('fs');
+
+const isDev = process.env.NODE_ENV !== 'production'
 
 const POST = async function() {
   const {req, res} = this;
@@ -9,20 +11,23 @@ const POST = async function() {
   const form = formidable({ multiples: true });
 
   form.parse(req, async (err, fields, {file}) => {
-    const url = `http://localhost:3009/api/image/davidsdevel/${file.name}`;
+    const name = fields.name || file.name;
+
+    const url = `${isDev ? 'http://localhost:3009' : 'https://lettercms-api-staging.herokuapp.com'}/api/image/davidsdevel/${name}`;
 
     const blob = fs.readFileSync(file.path);
 
-    const {_id} = await this.Model.create({
+    const {_id} = await images.create({
       url,
       subdomain: 'davidsdevel',
       type: file.type,
       blob,
       thumbnail: url,
-      name: file.name
+      name
     });
 
     res.json({
+      status: 'OK',
       url,
       thumbnail: url,
       _id
@@ -35,12 +40,12 @@ const GET = async function() {
 
   const {subdomain} = req.query; 
 
-  const data = await Model.find({subdomain}, 'url thumbnail')
+  const data = await imagesfind({subdomain}, 'url thumbnail');
 
   res.json(data);
 }
 
-module.exports= manageMethods(Model, {
+module.exports= manageMethods({
   POST,
   GET
 })

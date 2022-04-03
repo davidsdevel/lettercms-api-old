@@ -1,12 +1,14 @@
+const {pages} = require('@lettercms/models');
+
 module.exports = async function() {
-  const {req, res, Model} = this;
+  const {req, res} = this;
 
   const {subdomain} = req;
 
-  const id = await Model.createPage(subdomain, req.body);
+  const id = await pages.createPage(subdomain, req.body);
 
   res.json({
-    message: 'OK',
+    status: 'OK',
     id
   });
 }

@@ -1,12 +1,14 @@
+const {users} = require('@lettercms/models');
+
 module.exports = async function() {
-  const {req, res, Model} = this;
+  const {req, res} = this;
 
   const {url} = req.query;
   const {subdomain} = req;
 
-  await Model.deleteOne({url, subdomain});
+  await users.deleteOne({url, subdomain});
 
   res.json({
-    message: 'OK'
+    status: 'OK'
   });
 }

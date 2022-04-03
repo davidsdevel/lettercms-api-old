@@ -1,10 +1,10 @@
+const {blogs} = require('@lettercms/models');
 const {isValidObjectId} = require('mongoose');
 
 module.exports = async function() {
   const {
     req,
-    res,
-    Model
+    res
   } = this;
 
   const {
@@ -15,7 +15,15 @@ module.exports = async function() {
     subdomain
   };
 
-  const db = await Model.updateOne(condition, req.body);
+  const db = await blogs.updateOne(condition, req.body);
 
-  res.json(db);
+  if (db.ok)
+    return res.json({
+      status: 'OK'
+    });
+
+
+  res.json({
+    status:'not-modified'
+  });
 }

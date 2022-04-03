@@ -1,6 +1,7 @@
-const createRequest = require('./createRequest');
+const Base = require('./base');
 
-class IG {
+
+class IG extends Base {
   async publishPost(caption, image) {
     const {id} = await this._baseRequest(`/${this.ID}/media`, 'POST', {
       caption,

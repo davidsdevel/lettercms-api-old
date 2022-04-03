@@ -1,6 +1,6 @@
 const createRequest = require('./createRequest');
 
-class FacebookSDK {
+class BaseSDK {
   constructor(ID, token) {
     this.token = token;
     this.ID = ID;
@@ -12,11 +12,10 @@ class FacebookSDK {
     }
 
     return createRequest(path, method, data);
-
   }
   static async exchangeToken(token) {
     try {
-      const {access_token} = await createRequest(`/oauth/access_token`, {
+      const {access_token} = await createRequest(`/oauth/access_token`, 'POST', {
         grant_type: 'fb_exchange_token',
         client_id: process.env.FB_APP_ID,
         client_secret: process.env.FB_APP_SECRET,
@@ -51,7 +50,7 @@ class FacebookSDK {
   }
 }
 
-module.exports = FacebookSDK;
+module.exports = BaseSDK;
 
 /*pages_show_list
 pages_manage_ads,

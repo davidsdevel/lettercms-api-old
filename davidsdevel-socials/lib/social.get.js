@@ -1,24 +1,25 @@
+const {socials} = require('@lettercms/models');
 const {Facebook, Instagram} = require('./social');
 
 module.exports = async function() {
-  const {req, res, Model} = this;
+  const {
+    req,
+    res,
+  } = this;
 
   const {social} = req.query;
   const {subdomain} = req;
 
   if (social === 'instagram') {
-    /*const {userId, token} = await Model.Instagram.findOne({
+    /*const {userId, token} = await socials.Instagram.findOne({
       subdomain
-    }, null, 'userId token');
-
-    const userId = '17841405843756074';
-    const token = 'EAAEytdOWWx0BALqsuAeIqjn8boSQXVnU1tWbYKR49nd9ZBtN8JjpayqmKykiZCcJBXZBbOiVp5HULbjOQYrA6dfFiUvOygJllqB1JsJxBjNXnsdieYgbZB4j8megS8qKqMI8AG1kNegBd1NBgPPBunpZB9TjFxE7MRbG549c9xgZDZD';
+    }, 'userId token');
 
     const ig = new Instagram(userId, token);
 
-    const data = await ig.getPosts();*/
+    const data = await ig.getPosts();
 
-    /*return res.json(data);*/
+    return res.json(data);*/
     return res.json({
       data: [{
           caption: 'Hello World',
@@ -34,21 +35,9 @@ module.exports = async function() {
   }
 
   if (social === 'facebook') {
-    /*const {token, pageId} = this.Model.Facebook.findOne({
+    /*const {token, pageId} = await socials.Facebook.findOne({
       subdomain
-    }, null, 'token pageId');*/
-
-    /*const fb = {
-      subdomain: 'davidsdevel',
-      token: 'EAAEytdOWWx0BAJzdRFJsVr8DiMe5aPwEFP0BShHcoxVsLCJVj6xbcjbaSmelESGIZBmzO7fwtus8rfHoLZCQwp5uet7kAsGeXJyZBnN0JkkcLm0ZArShoPZBUWHdZBREEGqpWg1wQtdYY9gJi0ixYLzDLgaLAsI5whexZAbT0RUcQZDZD',
-      name: 'David\'s Devel',
-      pageId: '552760701890501',
-      picture: 'https://graph.facebook.com/552760701890501/picture',
-      cover: 'String'
-    }
-
-    const pageId = '552760701890501';
-    const token = 'EAAEytdOWWx0BAJzdRFJsVr8DiMe5aPwEFP0BShHcoxVsLCJVj6xbcjbaSmelESGIZBmzO7fwtus8rfHoLZCQwp5uet7kAsGeXJyZBnN0JkkcLm0ZArShoPZBUWHdZBREEGqpWg1wQtdYY9gJi0ixYLzDLgaLAsI5whexZAbT0RUcQZDZD';
+    }, 'token pageId');
 
     const fb = new Facebook(pageId, token);
 
@@ -88,7 +77,7 @@ module.exports = async function() {
     })
   }
    if (social === 'twitter') {
-    /*const {token, pageId} = this.Model.Facebook.findOne({
+    /*const {token, pageId} = Facebook.findOne({
       subdomain
     }, null, 'token pageId');*/
 

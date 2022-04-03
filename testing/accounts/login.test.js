@@ -1,30 +1,27 @@
 const sdk = require('../../SDK');
+const admin = require('../../../sdk-admin');
 const Model = require('../../davidsdevel-accounts/lib/database');
-const admin = require('C:/Users/pc/Documents/Proyectos/letterCMS/sdk-admin');
-const {connection} = require('@lettercms/utils')
 
 sdk.setAccessToken(ACCESS_TOKEN);
 
-afterAll(async () => {
-  await connection.connect();
-
-  await Model.Accounts.deleteMany({});
-
-  await connection.disconnect();
-});
-
 describe('Accounts API Testing', () => {
   test('POST - Login', async () => {
-    await admin.createAccount({
+    const accres = await admin.createAccount({
       name: 'Test User',
       lastname: 'Test LastName',
       verified: true,
       role: 'admin',
-      email:'email@test.com',
+      email:'login@test.com',
       password: '1234',
     });
 
-    const res = await admin.login('email@test.com', '1234');
+    expect(accres).toMatchObject({
+      id: /[a-z0-9]{24}/i,
+      message: 'OK',
+      code: /\n\n\n\n/
+    });
+
+    const res = await admin.login('login@test.com', '1234');
 
     expect(res).toMatchObject({
       id: /[a-z0-9]{24}/i,
@@ -35,16 +32,16 @@ describe('Accounts API Testing', () => {
   test('POST - Does not Exists', async () => {
     const res = await admin.login('noemail@test.com', '1234');
 
-    expect(serverRes.response).toEqual({
+    expect(res).toEqual({
       code: 'no-account',
       message: 'Email does not exists'
     });
   });
 
   test('POST - Does not Exists', async () => {
-    const res = await admin.login('email@test.com', 'bad-pass');
+    const res = await admin.login('login@test.com', 'bad-pass');
 
-    expect(serverRes.response).toEqual({
+    expect(res).toEqual({
       code: 'invalid-password',
       message: 'Invalid Password'
     });

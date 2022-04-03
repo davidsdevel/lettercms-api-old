@@ -1,10 +1,10 @@
+const {accounts} = require('@lettercms/models');
 const {isValidObjectId} = require('mongoose');
 
 module.exports = async function() {
   const {
     req,
-    res,
-    Model: {Accounts}
+    res
   } = this;
 
   const {
@@ -29,12 +29,9 @@ module.exports = async function() {
   else
     condition.email = Buffer.from(emailHex, "hex").toString('utf-8');
 
-
-  await Accounts.updateOne(condition, req.body);
-  
-  console.log(condition)
+  await accounts.Accounts.updateOne(condition, req.body);
 
   res.json({
-    message: 'OK'
+    status: 'OK'
   });
 }

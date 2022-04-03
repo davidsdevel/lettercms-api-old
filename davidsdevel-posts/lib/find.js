@@ -1,7 +1,25 @@
+const {posts, blogs} = require('@lettercms/models');
 const {isValidObjectId} = require('mongoose');
 
+const getFullUrl = (url, urlID, data) => {
+  if (urlID == '1')
+    return `/${url}`;
+  if (urlID == '2')
+    return `/${data.category}/${url}`;
+
+  const year = data.published.getFullYear();
+  const month = data.published.getMonth() + 1;
+
+  if (urlID == '3')
+    return `/${year}/${month}/${url}`;
+
+  const date = data.published.getDate();
+
+  return `/${year}/${month}/${date}/${url}`;
+}
+
 module.exports = async function() {
-  const {req, res, findSingle, Model} = this;
+  const {req, res, findSingle} = this;
 
   const {subdomain} = req;
   const {
@@ -16,6 +34,8 @@ module.exports = async function() {
     subdomain,
     url
   };
+
+  const {url: urlID} = await blogs.findOne({subdomain}, 'url');
 
   if (category)
     conditions.category = category;
@@ -34,24 +54,52 @@ module.exports = async function() {
   let data;
 
   if (!category && !day && !month && !year) {
-    const isId = isValidObjectId(url);
+    const isId = /[a-z,0-9]{12}/i.test(url) || /[a-z,0-9]{24}/i.test(url);
 
     if (isId) {
-      data = await findSingle(req.query, Model, {
+      data = await findSingle(req.query, posts, {
         _id: url
       });
 
-      if (data !== null)
+      let fullUrl;
+      if (data.postStatus === 'published')
+        fullUrl = getFullUrl(url, urlID, data);
+
+      if (data !== null) {
+        if (fullUrl)
+          return res.json({
+            ...data,
+            fullUrl
+          });
+        
         return res.json(data);
+      }
     }
   }
 
-  data = await findSingle(req.query, Model, conditions);
+  if (req.query.fields) {
+    const fields = req.query.fields.split(',');
+
+    if (fields.indexOf('fullUrl') >= 0 && fields.indexOf('published') < 0)
+      fields.push('published');
+    
+    req.query.fields = fields.join(',');
+  }
+
+  data = await findSingle(req.query, posts, conditions);
 
   if (data === null)
     res.status(404).json({
       message: `"${url}" does not exists`
     });
-  else
-    res.json(data);
+  else {
+    let fullUrl;
+    if (data.postStatus === 'published')
+      fullUrl = getFullUrl(url, urlID, data);
+    
+    res.json({
+      ...data,
+      fullUrl
+    });
+  }
 }

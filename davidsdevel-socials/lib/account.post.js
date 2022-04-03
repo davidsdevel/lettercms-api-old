@@ -1,3 +1,4 @@
+const {socials} = require('@lettercms/models');
 const {exchangeToken, api} = require('./social/base');
 
 /**
@@ -12,7 +13,7 @@ const {exchangeToken, api} = require('./social/base');
  */
 
 module.exports = async function() {
-  const {req, res, Model} = this;
+  const {req, res} = this;
 
   const {type, accessToken, id} = req.body;
   const {subdomain} = req;
@@ -21,28 +22,36 @@ module.exports = async function() {
     const longLive = await exchangeToken(accessToken);
 
     if (type === 'facebook') {
+
       const {name, username, cover} = await api(`/${id}`, {
         access_token: longLive,
         fields: 'name,username,cover'
       });
 
-      await Model.Facebook.create({
+      await socials.Facebook.create({
         subdomain,
-        id,
+        pageId: id,
         token: longLive,
         name,
         username,
-        cover,
+        cover: cover.source,
         picture: `https://graph.facebook.com/${id}/picture`
       });
     }
 
     if (type === 'instagram') {
-      const {name, profile_picture_url, username} = await api(`/${id}`, {
+      const {instagram_business_account} = await api(`/${id}`, {
+        access_token: longLive,
+        fields: 'instagram_business_account'
+      });
+
+      const {name, profile_picture_url, username} = await api(`/${instagram_business_account.id}`, {
+        access_token: longLive,
         fields: 'name,profile_picture_url,username'
       });
 
-      await Model.Instagram.create({
+      await socials.Instagram.create({
+        userId: id,
         subdomain,
         token: longLive,
         name,
@@ -52,7 +61,7 @@ module.exports = async function() {
     }
 
     res.json({
-      message: 'OK'
+      status: 'OK'
     });
   }
 }

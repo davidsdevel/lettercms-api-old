@@ -21,24 +21,20 @@ const Views = new Schema({
 });
 
 const Stats = new Schema({
-  totalViews: {
-    type: Number,
-    default: 0
-  },
-  creationDate: {
-    type: Date,
-    default: Date.now
-  },
   subdomain: {
     type: String,
     required: true,
     unique: true
   },
-  bounces:{
-    default: 0,
-    type: Number,
+  creationDate: {
+    type: Date,
+    default: Date.now
   },
-  bounceRate: {
+  totalViews: {
+    type: Number,
+    default: 0
+  },
+  bounces:{
     default: 0,
     type: Number,
   },
@@ -61,6 +57,26 @@ const Sessions = new Schema({
   sessionTime: {
     type: Number,
     required: true
+  },
+  socialReferral: {
+    type: String
+  },
+  device: {
+    type: String,
+    required: true,
+    enum: ['mobile', 'desktop']
+  },
+  entryChannel: {
+    type: String,
+    required: true,
+    enum: [
+      'organic',
+      'direct',
+      'referral',
+      'emai',
+      'social',
+      'other'
+    ]
   }
 })
 

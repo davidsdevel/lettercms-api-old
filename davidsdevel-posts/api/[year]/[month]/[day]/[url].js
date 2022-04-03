@@ -1,7 +1,6 @@
 const {manageMethods} = require('@lettercms/utils');
-const Model = require("../../../../lib/database");
 const GET = require('../../../../lib/find');
 
-module.exports = manageMethods(Model, {
+module.exports = manageMethods({
 	GET
 });

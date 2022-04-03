@@ -1,49 +1,50 @@
+const {accounts} = require('@lettercms/models');
+const firebase = require('@firebase/admin');
+const jwt = require('jsonwebtoken');
+
+firebase.database().ref("verification");
+
 module.exports = async function() {
   const {
-    Model,
     req,
     res
   } = this;
-  
-  const {
-    isAdmin
-  } = req;
 
-  if (!isAdmin)
-    return res.sendStatus(401);
+  try {
+    const decoded = jwt.verify(req.query.token, process.env.JWT_AUTH);
 
+    delete decoded.exp;
+    delete decoded.iat;
 
-  const {
-    code,
-    email
-  } = req.body;
-
-  const exists = await Model.VerificationCodes.findOne({
-    email
-  });
-
-  if (!exists)
-    return res.status(400).json({
-      message: 'Expired Token'
+    db.push({
+      email: decoded.email,
+      name: decoded.name,
+      status: 'verified'
     });
 
-  if (exists.expiresIn < Date.now())
-    return res.status(400).json({
-      message: 'Expired Token'
-    });
-
-  if (exists.code !== code)
-    return res.json({
-      status: 'verification-code-mismatch',
-      message: 'Wrong verification code'
-    });
-
-  await Model.VerificationCodes.deleteOne({email});
-  await Model.Accounts.updateOne({email}, {
-    verified: true
-  });
-  
-  res.json({
-    message: 'OK'
-  });
+    const db = await accounts.Accounts.createAccount(subdomain, decoded);
+  } catch(err) {
+    switch(err.message) {
+      case 'jwt expired':
+        db.push({
+          email: decoded.email,
+          status: 'expired'
+        });
+        break;
+      case 'invalid token':
+        db.push({
+          email: decoded.email,
+          status: 'bad-token'
+        });
+        break;
+    }
+  } finally {
+    res.send(`
+      <html>
+        <body>
+          <script>window.close()</script>
+        </body>
+      </html>
+    `);
+  }
 }

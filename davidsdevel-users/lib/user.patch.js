@@ -1,13 +1,15 @@
+const {users} = require('@lettercms/models');
+
 module.exports = async function() {
-  const {req, res, Model} = this;
+  const {req, res} = this;
 
   const {url} = req.query;
   const {subdomain} = req;
 
-  await Model.updateOne({url, subdomain}, req.body);
+  await users.updateOne({url, subdomain}, req.body);
 
   res.json({
-    message: 'OK',
+    status: 'OK',
     data
   });
 }

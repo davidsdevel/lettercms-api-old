@@ -1,6 +1,6 @@
-var g = require('ger')
+/*var g = require('ger')
 var esm = new g.MemESM()
-var ger = new g.GER(esm);
+var ger = new g.GER(esm);*/
 
 module.exports = async function() {
   const {
@@ -24,7 +24,7 @@ module.exports = async function() {
 
   const expires_at = `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`
   
-  await ger.events([
+  /*await ger.events([
     {
       namespace: subdomain,
       person: id,
@@ -32,9 +32,9 @@ module.exports = async function() {
       thing: url,
       expires_at
     }
-  ]);
+  ]);*/
 
   res.json({
-    message: 'OK'
+    status: 'OK'
   });
 }

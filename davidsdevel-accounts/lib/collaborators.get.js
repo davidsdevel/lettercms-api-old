@@ -1,19 +1,20 @@
+const {accounts} = require('@lettercms/models');
+
 module.exports = async function() {
   const {
     res,
     req,
-    find,
-    Model: {Accounts}
+    find
   } = this;
 
-  const {subdomain} = req;
+  const {subdomain, account} = req;
 
-  const data = await find(Object.assign({}, req.query, {accounts: true}), Accounts, {
+  const data = await find({
+    ...req.query,
+    accounts: true
+  }, accounts.Accounts, {
     subdomain,
-    $or: [
-      {role: 'collaborator'},
-      {role: 'single'}
-    ]
+    $where: `this._id !== "${account}"`
   });
 
   res.json(data);

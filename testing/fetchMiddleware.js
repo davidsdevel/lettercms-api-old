@@ -6,8 +6,7 @@ const base = process.cwd();
 async function fetch(url, options = {}) {
   const splitted = url.split('/api/');
 
-  const routerPath = join(base, `davidsdevel-${splitted[1].replace('/', 's/api/').replace(/\?.*$/, '')}s/${url.replace('/' + splitted[1], '')}`);
-
+  const routerPath = join(base, `davidsdevel-${splitted[1].replace('/', 's/api/').replace(/\?.*$/, '')}`);
   const query = {};
 
   const querySplitted = url.split('?');
@@ -32,15 +31,17 @@ async function fetch(url, options = {}) {
     body: options.body ? JSON.parse(options.body) : {}
   });
 
+  console.log(res)
+
   const r = res.response;
   delete res.response;
 
-  return {
+  return Promise.resolve({
     ...res,
     ok: res.status >= 200 && res.status < 400,
     json: () => Promise.resolve(r),
     text: () => Promise.resolve(r)
-  }
+  });
 }
 
 module.exports = fetch;

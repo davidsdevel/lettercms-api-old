@@ -1,7 +1,7 @@
 const {Schema} = require('mongoose');
 
 const Facebook = new Schema({
-  id: {
+  pageId: {
     type: String,
     unique: true
   },
@@ -21,7 +21,7 @@ const Facebook = new Schema({
 });
 
 const Instagram = new Schema({
-  id: {
+  userId: {
     type: String,
     unique: true
   },

@@ -1,7 +1,8 @@
+const {posts} = require('@lettercms/models');
 const {isValidObjectId} = require('mongoose');
 
 module.exports = async function() {
-  const {req, res, Model} = this;
+  const {req, res} = this;
 
   const {url} = req.query;
   const {subdomain} = req;
@@ -17,9 +18,9 @@ module.exports = async function() {
     deleteCondition.subdomain = subdomain;
   }
 
-  await Model.deletePost(deleteCondition);
+  await posts.deletePost(deleteCondition);
 
   res.json({
-    message: 'OK'
+    status: 'OK'
   });
 }
