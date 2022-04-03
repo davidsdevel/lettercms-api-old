@@ -1,6 +1,6 @@
 const {manageMethods} = require('@lettercms/utils');
+const {images} = require('@lettercms/models');
 const formidable = require('formidable');
-const Model = require('../../lib/database');
 const fs = require('fs');
 
 const isDev = process.env.NODE_ENV !== 'production'
@@ -17,7 +17,7 @@ const POST = async function() {
 
     const blob = fs.readFileSync(file.path);
 
-    const {_id} = await this.Model.create({
+    const {_id} = await images.create({
       url,
       subdomain: 'davidsdevel',
       type: file.type,
@@ -40,12 +40,12 @@ const GET = async function() {
 
   const {subdomain} = req.query; 
 
-  const data = await Model.find({subdomain}, 'url thumbnail');
+  const data = await images.find({subdomain}, 'url thumbnail');
 
   res.json(data);
 }
 
-module.exports= manageMethods(Model, {
+module.exports= manageMethods({
   POST,
   GET
 })

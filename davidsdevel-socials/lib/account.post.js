@@ -1,3 +1,4 @@
+const {socials} = require('@lettercms/models');
 const {exchangeToken, api} = require('./social/base');
 
 /**
@@ -12,7 +13,7 @@ const {exchangeToken, api} = require('./social/base');
  */
 
 module.exports = async function() {
-  const {req, res, Model} = this;
+  const {req, res} = this;
 
   const {type, accessToken, id} = req.body;
   const {subdomain} = req;
@@ -27,7 +28,7 @@ module.exports = async function() {
         fields: 'name,username,cover'
       });
 
-      await Model.Facebook.create({
+      await socials.Facebook.create({
         subdomain,
         pageId: id,
         token: longLive,
@@ -49,7 +50,7 @@ module.exports = async function() {
         fields: 'name,profile_picture_url,username'
       });
 
-      await Model.Instagram.create({
+      await socials.Instagram.create({
         userId: id,
         subdomain,
         token: longLive,

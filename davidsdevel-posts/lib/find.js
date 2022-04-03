@@ -1,3 +1,4 @@
+const {posts, blogs} = require('@lettercms/models');
 const {isValidObjectId} = require('mongoose');
 const {Letter} = require('@lettercms/sdk');
 const jwt = require('jsonwebtoken');
@@ -19,8 +20,25 @@ const getFullUrl = (url, urlID, data) => {
   return `/${year}/${month}/${date}/${url}`;
 }
 
+const getFullUrl = (url, urlID, data) => {
+  if (urlID == '1')
+    return `/${url}`;
+  if (urlID == '2')
+    return `/${data.category}/${url}`;
+
+  const year = data.published.getFullYear();
+  const month = data.published.getMonth() + 1;
+
+  if (urlID == '3')
+    return `/${year}/${month}/${url}`;
+
+  const date = data.published.getDate();
+
+  return `/${year}/${month}/${date}/${url}`;
+}
+
 module.exports = async function() {
-  const {req, res, findSingle, Model} = this;
+  const {req, res, findSingle} = this;
 
   const {subdomain} = req;
   const {
@@ -36,9 +54,7 @@ module.exports = async function() {
     url
   };
 
-  const token = jwt.sign({subdomain}, process.env.JWT_AUTH);
-  const sdk = new Letter(token);
-  const {url: urlID} = await sdk.blogs.single(['url']);
+  const {url: urlID} = await blogs.findOne({subdomain}, 'url');
 
   if (category)
     conditions.category = category;
@@ -60,7 +76,7 @@ module.exports = async function() {
     const isId = /[a-z,0-9]{12}/i.test(url) || /[a-z,0-9]{24}/i.test(url);
 
     if (isId) {
-      data = await findSingle(req.query, Model, {
+      data = await findSingle(req.query, posts, {
         _id: url
       });
 
@@ -89,7 +105,7 @@ module.exports = async function() {
     req.query.fields = fields.join(',');
   }
 
-  data = await findSingle(req.query, Model, conditions);
+  data = await findSingle(req.query, posts, conditions);
 
   if (data === null)
     res.status(404).json({

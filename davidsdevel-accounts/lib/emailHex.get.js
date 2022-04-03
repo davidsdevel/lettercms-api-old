@@ -1,11 +1,11 @@
+const {accounts} = require('@lettercms/models');
 const {isValidObjectId} = require('mongoose');
 
 module.exports = async function() {
   const {
     req,
     res,
-    findSingle,
-    Model: {Accounts}
+    findSingle
   } = this;
 
   const {
@@ -24,10 +24,10 @@ module.exports = async function() {
   let data = await findSingle({
     ...req.query,
     accounts: true
-  }, Accounts, condition);
+  }, accounts.Accounts, condition);
 
   if (data === null && isId)
-    data = await findSingle(req.query, Accounts, {
+    data = await findSingle(req.query, accounts.Accounts, {
       email: Buffer.from(emailHex, "hex").toString('utf-8')
     });
 

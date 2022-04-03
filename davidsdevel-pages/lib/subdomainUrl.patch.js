@@ -1,7 +1,8 @@
+const {pages} = require('@lettercms/models');
 const {isValidObjectId} = require('mongoose');
 
 module.exports = async function() {
-  const {req, res, Model} = this;
+  const {req, res} = this;
 
   const {url} = req.query;
   const {action} = req.body;
@@ -24,13 +25,13 @@ module.exports = async function() {
 
   switch(action) {
     case 'publish':
-      data = await Model.publishPage(updateCondition, req.body);
+      data = await pages.publishPage(updateCondition, req.body);
       break;
     case 'draft':
-      data = await Model.draftPage(updateCondition, req.body);
+      data = await pages.draftPage(updateCondition, req.body);
       break;
     case 'update':
-      data = await Model.updatePage(updateCondition, req.body);
+      data = await pages.updatePage(updateCondition, req.body);
       break;
     default:
       return res.status(400).json({

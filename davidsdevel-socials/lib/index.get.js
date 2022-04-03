@@ -1,5 +1,7 @@
+const {socials} = require('@lettercms/models');
+
 module.exports = async function() {
-  const {req, res, Model} = this;
+  const {req, res} = this;
 
   const {subdomain} = req;
 
@@ -8,7 +10,7 @@ module.exports = async function() {
   const feeds
 
   if (feeds.indexOf('facebook') > -1) {
-    const {token, id} = await Model.Facebook.findOne({
+    const {token, id} = await socials.Facebook.findOne({
       subdomain
     }, 'pageId token');
 

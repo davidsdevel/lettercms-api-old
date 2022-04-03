@@ -1,10 +1,12 @@
+const {posts} = require('@lettercms/models');
+
 module.exports = async function() {
-  const {req, res, Model} = this;
+  const {req, res} = this;
 
   const {subdomain} = req;
   const {status} = req.query;
 
-  const id = await Model.createPost(subdomain, req.body);
+  const id = await posts.createPost(subdomain, req.body);
 
   res.json({
     status: 'OK',

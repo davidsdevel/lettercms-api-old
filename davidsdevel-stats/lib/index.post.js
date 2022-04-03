@@ -1,8 +1,9 @@
+const {stats} = require('@lettercms/models');
+
 module.exports = async function() {
   const {
     req,
-    res,
-    Model
+    res
   }  = this;
 
   const {
@@ -16,7 +17,7 @@ module.exports = async function() {
     subdomain
   } = req.body;
 
-  const exists = await Model.Stats.exists({
+  const exists = await stats.Stats.exists({
     subdomain
   });
 
@@ -25,7 +26,7 @@ module.exports = async function() {
       message: 'Stats already created'
     });
 
-  await Model.Stats.create({
+  await stats.Stats.create({
     subdomain
   });
 

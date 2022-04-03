@@ -1,19 +1,20 @@
 const {manageMethods} = require('@lettercms/utils');
-const Model = require('../../lib/database');
+const {images} = require('@lettercms/models');
+
 
 const GET = async function() {
   const {req, res} = this;
 
   const {name, subdomain} = req.query;
 
-  const file = await Model.findOne({name, subdomain}, 'type blob');
+  const file = await images.findOne({name, subdomain}, 'type blob');
 
   res.header("Content-Type", file.type);
 
   res.send(file.blob);
 }
 
-module.exports= manageMethods(Model, {
+module.exports= manageMethods({
   GET
 })
 

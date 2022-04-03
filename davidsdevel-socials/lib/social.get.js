@@ -1,20 +1,17 @@
+const {socials} = require('@lettercms/models');
 const {Facebook, Instagram} = require('./social');
 
 module.exports = async function() {
   const {
     req,
     res,
-    Model:{
-      Facebook,
-      Instagram
-    }
   } = this;
 
   const {social} = req.query;
   const {subdomain} = req;
 
   if (social === 'instagram') {
-    /*const {userId, token} = await Instagram.findOne({
+    /*const {userId, token} = await socials.Instagram.findOne({
       subdomain
     }, 'userId token');
 
@@ -38,7 +35,7 @@ module.exports = async function() {
   }
 
   if (social === 'facebook') {
-    /*const {token, pageId} = await Facebook.findOne({
+    /*const {token, pageId} = await socials.Facebook.findOne({
       subdomain
     }, 'token pageId');
 

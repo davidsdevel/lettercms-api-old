@@ -1,6 +1,6 @@
 const sdk = require('../../SDK');
+const admin = require('../../../sdk-admin');
 const Model = require('../../davidsdevel-accounts/lib/database');
-const admin = require('C:/Users/pc/Documents/Proyectos/letterCMS/sdk-admin');
 
 sdk.setAccessToken(ACCESS_TOKEN);
 

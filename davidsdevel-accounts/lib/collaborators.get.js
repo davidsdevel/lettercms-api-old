@@ -1,9 +1,10 @@
+const {accounts} = require('@lettercms/models');
+
 module.exports = async function() {
   const {
     res,
     req,
-    find,
-    Model: {Accounts}
+    find
   } = this;
 
   const {subdomain, account} = req;
@@ -11,7 +12,7 @@ module.exports = async function() {
   const data = await find({
     ...req.query,
     accounts: true
-  }, Accounts, {
+  }, accounts.Accounts, {
     subdomain,
     $where: `this._id !== "${account}"`
   });

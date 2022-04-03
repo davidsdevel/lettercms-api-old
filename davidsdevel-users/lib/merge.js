@@ -1,3 +1,5 @@
+const {users} = require('@lettercms/models');
+
 module.exports = async function() {
   const {
     req: {
@@ -7,11 +9,10 @@ module.exports = async function() {
         to
       }
     },
-    res,
-    Model,
+    res
   } = this;
 
-  const user1 = await Model.findOne({
+  const user1 = await users.findOne({
     _id: from
   });
 
@@ -21,7 +22,7 @@ module.exports = async function() {
       message: 'Merging user not found'
     });
 
-  const user2 = await Model.findOne({
+  const user2 = await users.findOne({
     _id: to
   });
 
@@ -31,11 +32,11 @@ module.exports = async function() {
       message: 'Merged user not found'
     });
 
-  await Model.updateOne({
+  await users.updateOne({
     _id: to
   }, user2);
 
-  await Model.deleteOne({
+  await users.deleteOne({
     _id: from
   });
 

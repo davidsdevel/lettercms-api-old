@@ -1,5 +1,5 @@
 const sdk = require('../../SDK');
-const admin = require('C:/Users/pc/Documents/Proyectos/letterCMS/sdk-admin');
+const admin = require('../../../sdk-admin');
 
 sdk.setAccessToken(ACCESS_TOKEN);
 

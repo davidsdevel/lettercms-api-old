@@ -1,5 +1,4 @@
-const {Letter} = require('@lettercms/sdk');
-const jwt = require('jsonwebtoken');
+const {posts: postModel, blogs} = require('@lettercms/models');
 
 const isDev = process.env.NODE_ENV !== 'production';
 
@@ -26,8 +25,7 @@ module.exports = async function() {
   const {
     req,
     res,
-    find,
-    Model
+    find
   } = this;
 
   const {subdomain} = req;
@@ -37,9 +35,7 @@ module.exports = async function() {
     subdomain
   };
 
-  const token = jwt.sign({subdomain: subdomain}, process.env.JWT_AUTH);
-  const sdk = new Letter(token);
-  const {url: urlID} = await sdk.blogs.single(['url']);
+  const {url: urlID} = await blogs.findOne({subdomain}, 'url');
 
   if (status)
     condition.postStatus = status;
@@ -47,7 +43,7 @@ module.exports = async function() {
   if (req.query.fields)
     req.query.fields += ',published';
 
-  const posts = await find({...req.query, posts:true}, Model, condition);
+  const posts = await find({...req.query, posts:true}, postModel, condition);
 
   posts.data = posts.data.map(e => {
     let fullUrl;
@@ -62,7 +58,7 @@ module.exports = async function() {
   });
   
   if (req.get('origin') === ORIGIN)
-    posts.recommended = await Model.findOne(condition, null, {views: 'asc'});
+    posts.recommended = await postModel.findOne(condition, null, {views: 'asc'});
 
   res.json(posts);
 }

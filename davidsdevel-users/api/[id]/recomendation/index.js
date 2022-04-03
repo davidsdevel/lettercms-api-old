@@ -1,9 +1,11 @@
 const {manageMethods} = require('@lettercms/utils');
 const GET = require('../../../lib/recomendation.get');
 const POST = require('../../../lib/recomendation.post');
-const Model = require('../../../lib/database');
 
-module.exports = manageMethods(Model, {
+console.log(global.LetterModels)
+
+
+module.exports = manageMethods({
   /*GET,
   POST*/
 });

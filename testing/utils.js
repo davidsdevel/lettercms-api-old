@@ -9,6 +9,7 @@ class FakeServer {
 
     this.promiseResolve = resolve;
   }
+
   sendStatus(status) {
     this._status = status;
 
@@ -53,9 +54,26 @@ class FakeServer {
   }
 
   __init() {
-    this.headers = {};
+    this.headers = {
+      get: name => this.__get(name, this.headers)
+    };
     this._status = null;
     this.response = null;
+  }
+  __get(e, obj) {
+      const names = Object.keys(obj);
+
+        let match = '';
+        for(let name of names) {
+          const h = new RegExp(e, 'i');
+
+          if (h.test(name)) {
+            match = name;
+            break;
+          }
+        }
+
+      return obj[match];
   }
   __request(req) {
     const headers = {}
@@ -67,34 +85,20 @@ class FakeServer {
     this._route({
       ...req,
       headers,
-      get: header => {
-        const names = Object.keys(this.headers);
-
-        let match = '';
-        for(name of names) {
-          const h = new RegExp(header, 'i');
-
-          if (h.test(name)) {
-            match = name;
-            break;
-          }
-        }
-
-        return this.headers[match];
-      }
+      get: name => this.__get(name, this.headers)
     }, this);
   }
   __setRoute(route) {
     this._route = route;
   }
-  __resolve() {
+  async __resolve() {
     const {
       headers,
       _status,
       response
     } = this;
 
-    mongoose.disconnect()
+    await mongoose.disconnect()
 
     this.promiseResolve({
       headers,
@@ -105,6 +109,7 @@ class FakeServer {
 }
 
 exports.fakeServer = (route, req) => {
+
   if (!req.method)
     req.method = 'GET';
 
@@ -114,13 +119,18 @@ exports.fakeServer = (route, req) => {
   if (!req.headers)
     req.headers = {};
 
-  return new Promise((resolve) => {
-    const fake = new FakeServer(resolve);
+  return new Promise((resolve, reject) => {
+    try {
 
-    fake.__init();
+      const fake = new FakeServer(resolve);
 
-    fake.__setRoute(route);
+      fake.__init();
 
-    fake.__request(req); 
+      fake.__setRoute(route);
+
+      fake.__request(req); 
+    } catch(err) {
+      reject(err)
+    }
   });
 }
