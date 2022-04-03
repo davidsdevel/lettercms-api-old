@@ -9,6 +9,7 @@ const app = express();
 const cors = require('cors');
 const debug = require('debug');
 const importHandlers = require('./lib/importHandlers');
+const generateRoutes = require('./lib/generateRoutes');
 const accountsMiddleware = require('./middlewares/accounts');
 
 const routerDebug = debug('router');
