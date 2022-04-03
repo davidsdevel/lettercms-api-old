@@ -504,10 +504,10 @@
     form-data "^3.0.0"
     isomorphic-unfetch "^3.1.0"
 
-"@lettercms/utils@1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@lettercms/utils/-/utils-1.0.1.tgz#6ba13835d8db876737ecc44290be4a5125d8eb90"
-  integrity sha512-UKaOn8f7M8lEqetLz+VaPVbRFx0qOg3fOFXMHIPgOlRVDBnjNkTqNSzYt8M0ySEOaTwl1tAHuREpCdRFp+nUhg==
+"@lettercms/utils@1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@lettercms/utils/-/utils-1.0.5.tgz#ed7d44103e99f7ef7403a14ee34fea713a29659c"
+  integrity sha512-Qdy7+KmMJMQduptT1UOHi/GPOBBlyb6c5EEa0fJHhmPQUgxh5BWzTHyYNYRuXb0sWFIGyYmpE6OhLCSSbfeArw==
   dependencies:
     "@sentry/node" "^5.22.3"
     jsonwebtoken "^8.5.1"

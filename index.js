@@ -23,6 +23,14 @@ const debugServer = debug('server');
 const routesPath = generateRoutes();
 const routesHandlers = importHandlers(routesPath);
 
+const corsOpts = {
+  origin: true,
+  methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
+  credentials: true,
+  exposedHeaders: 'Authorization'
+}
+
 app
   .use(express.urlencoded({ extended: true }))
 	.use(express.json())
@@ -41,7 +49,7 @@ app
 
     next()
 	})
-  .options('*', cors())
+  .use(cors(corsOpts))
 	.get('/', (req, res) => res.send(version))
 	.all('*', accountsMiddleware(routesHandlers), 
 	(req, res) => {
