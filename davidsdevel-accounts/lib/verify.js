@@ -13,7 +13,7 @@ initializeApp({
 });
 
 const db = getDatabase();
-const verifications = ref(database, 'verifications');
+const verifications = ref(db, 'verifications');
 
 module.exports = async function() {
   const {
