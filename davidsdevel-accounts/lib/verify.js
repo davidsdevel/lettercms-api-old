@@ -4,7 +4,7 @@ process.env.GOOGLE_APPLICATION_CREDENTIALS = join(process.cwd(), 'davidsdevel-ac
 
 const {accounts} = require('@lettercms/models');
 const { initializeApp, applicationDefault} = require('firebase-admin/app');
-const { ref, set, getDatabase} = require('firebase-admin/database');
+const { set, getDatabase} = require('firebase-admin/database');
 const jwt = require('jsonwebtoken');
 
 initializeApp({
@@ -13,7 +13,7 @@ initializeApp({
 });
 
 const db = getDatabase();
-const verifications = ref(db, 'verifications');
+const ref = db.ref('verifications');
 
 module.exports = async function() {
   const {
@@ -27,7 +27,7 @@ module.exports = async function() {
     delete decoded.exp;
     delete decoded.iat;
 
-    set(verifications, {
+    ref.set({
       email: decoded.email,
       name: decoded.name,
       status: 'verified'
@@ -37,13 +37,13 @@ module.exports = async function() {
   } catch(err) {
     switch(err.message) {
       case 'jwt expired':
-        set(verifications, {
+        ref.set({
           email: decoded.email,
           status: 'expired'
         });
         break;
       case 'invalid token':
-        set(verifications, {
+        ref.set({
           email: decoded.email,
           status: 'bad-token'
         });
