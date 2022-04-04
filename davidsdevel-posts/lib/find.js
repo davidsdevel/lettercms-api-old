@@ -1,24 +1,6 @@
 const {posts, blogs} = require('@lettercms/models');
 const {isValidObjectId} = require('mongoose');
-const {Letter} = require('@lettercms/sdk');
 const jwt = require('jsonwebtoken');
-
-const getFullUrl = (url, urlID, data) => {
-  if (urlID == '1')
-    return `/${url}`;
-  if (urlID == '2')
-    return `/${data.category}/${url}`;
-
-  const year = data.published.getFullYear();
-  const month = data.published.getMonth() + 1;
-
-  if (urlID == '3')
-    return `/${year}/${month}/${url}`;
-
-  const date = data.published.getDate();
-
-  return `/${year}/${month}/${date}/${url}`;
-}
 
 const getFullUrl = (url, urlID, data) => {
   if (urlID == '1')

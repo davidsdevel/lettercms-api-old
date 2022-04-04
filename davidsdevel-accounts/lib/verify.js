@@ -4,7 +4,7 @@ process.env.GOOGLE_APPLICATION_CREDENTIALS = join(process.cwd(), 'davidsdevel-ac
 
 const {accounts} = require('@lettercms/models');
 const { initializeApp, applicationDefault} = require('firebase-admin/app');
-const { set, getDatabase} = require('firebase-admin/database');
+const { getDatabase} = require('firebase-admin/database');
 const jwt = require('jsonwebtoken');
 
 initializeApp({
