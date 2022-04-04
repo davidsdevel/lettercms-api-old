@@ -9,6 +9,7 @@ const jwt = require('jsonwebtoken');
 
 initializeApp({
   credential: applicationDefault(),
+  databaseURL: 'https://lettercms-1-default-rtdb.firebaseio.com'
 });
 
 const db = getDatabase();
