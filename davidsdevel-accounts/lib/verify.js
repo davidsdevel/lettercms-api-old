@@ -48,6 +48,12 @@ module.exports = async function() {
           status: 'bad-token'
         });
         break;
+      case 'invalid signature':
+        ref.set({
+          email: decoded.email,
+          status: 'invalid-signature'
+        });
+        break;
     }
   } finally {
     res.send(`

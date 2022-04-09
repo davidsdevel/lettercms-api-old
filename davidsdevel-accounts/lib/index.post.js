@@ -12,7 +12,6 @@ module.exports = async function() {
     return res.sendStatus(401);
 
   const {
-    subdomain,
     email
   } = req.body;
 
@@ -28,9 +27,15 @@ module.exports = async function() {
 
   const code = jwt.sign(req.body, process.env.JWT_AUTH, { expiresIn: 60 * 5 });
 
-  console.log(code)
+  try {
 
-  await sendMail(req.body.email, `${req.body.name} verifica tu cuenta - LetterCMS`, req.body);
+    await sendMail(req.body.email, `${req.body.name} verifica tu cuenta - LetterCMS`, {code, ...req.body});
+  } catch(err) {
+    return res.status(500).json({
+      status: 'error',
+      message: 'Error Sending Email'
+    })
+  }
   
   res.json({ status: 'OK' });
 }

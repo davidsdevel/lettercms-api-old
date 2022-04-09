@@ -5,3 +5,5 @@
 !index.js
 !package.json
 !yarn.lock
+!lib
+!middlewares
