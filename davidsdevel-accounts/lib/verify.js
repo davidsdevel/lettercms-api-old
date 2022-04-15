@@ -37,7 +37,7 @@ module.exports = async function() {
     const emailHash = crypto.createHash('md5').update(decoded.email).digest('hex');
 
     await accounts.Accounts.createAccount(req.subdomain, {
-      photo: `https://avatar.tobi.sh/${emailHash}.svg?text=${decoded.name[0]+decoded.lastname[0]}&size=250`
+      photo: `https://avatar.tobi.sh/${emailHash}.svg?text=${decoded.name[0]+decoded.lastname[0]}&size=250`,
       ...decoded
     });
   } catch(err) {
