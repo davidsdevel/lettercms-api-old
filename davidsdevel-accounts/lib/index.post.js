@@ -28,9 +28,13 @@ module.exports = async function() {
   const code = jwt.sign(req.body, process.env.JWT_AUTH, { expiresIn: 60 * 5 });
 
   try {
-
-    await sendMail(req.body.email, `${req.body.name} verifica tu cuenta - LetterCMS`, {code, ...req.body});
+    await sendMail(req.body.email, `${req.body.name} verifica tu cuenta - LetterCMS`, {
+      type: 'verify',
+      url: `https://lettercms-api-staging.herokuapp.com/api/account/verify?token=${code}`,
+      ...req.body
+    });
   } catch(err) {
+    console.error(err);
     return res.status(500).json({
       status: 'error',
       message: 'Error Sending Email'

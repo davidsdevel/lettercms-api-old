@@ -51,10 +51,10 @@ app
 	.get('/', (req, res) => res.send(version))
 	.all('*', accountsMiddleware(routesHandlers), 
 	(req, res) => {
-    if (Object.keys(routesHandlers).indexOf(req.url) === -1)
+    if (Object.keys(routesHandlers).indexOf(req.path) === -1)
 		  return res.sendStatus(404);//TODO: Create not found status
 
-    return routesHandlers[req.url](req, res);
+    return routesHandlers[req.path](req, res);
 
 	});
 
