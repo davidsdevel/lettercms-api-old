@@ -15,8 +15,8 @@ const {exchangeToken, api} = require('./social/base');
 module.exports = async function() {
   const {req, res} = this;
 
-  const {type, accessToken, pageID} = req.body;
-  const {subdomain} = req;
+  const {type, accessToken, pageID, subdomain} = req.body;
+
   let account;
 
   if (type === 'instagram' || type === 'facebook') {
