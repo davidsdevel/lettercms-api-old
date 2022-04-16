@@ -31,7 +31,7 @@ module.exports = async function() {
 
       account = {
         subdomain,
-        pageId: id,
+        pageId: pageID,
         token: longLive,
         name,
         username,

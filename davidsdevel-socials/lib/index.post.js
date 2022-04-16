@@ -17,11 +17,9 @@ module.exports = async function() {
 
 
   if (feeds.indexOf('facebook') > -1) {
-    /*const {token, pageId} = await socials.Facebook.findOne({
+    const {token, pageId} = await socials.Facebook.findOne({
       subdomain
-    }, 'pageId token');*/
-    const pageId = '552760701890501';
-    const token = 'EAAEytdOWWx0BAJzdRFJsVr8DiMe5aPwEFP0BShHcoxVsLCJVj6xbcjbaSmelESGIZBmzO7fwtus8rfHoLZCQwp5uet7kAsGeXJyZBnN0JkkcLm0ZArShoPZBUWHdZBREEGqpWg1wQtdYY9gJi0ixYLzDLgaLAsI5whexZAbT0RUcQZDZD';
+    }, 'pageId token');
 
     const fb = new Facebook(pageId, token);
 
@@ -29,12 +27,9 @@ module.exports = async function() {
   }
 
   if (hasIg) {
-    const userId = '17841405843756074';
-    const token = 'EAAEytdOWWx0BALqsuAeIqjn8boSQXVnU1tWbYKR49nd9ZBtN8JjpayqmKykiZCcJBXZBbOiVp5HULbjOQYrA6dfFiUvOygJllqB1JsJxBjNXnsdieYgbZB4j8megS8qKqMI8AG1kNegBd1NBgPPBunpZB9TjFxE7MRbG549c9xgZDZD';
-
-    /*const {token, userId} = await socials.Instagram.findOne({
+    const {token, userId} = await socials.Instagram.findOne({
       subdomain
-    }, 'userId token');*/
+    }, 'userId token');
 
     const ig = new Instagram(userId, token);
 
