@@ -51,6 +51,7 @@ app
 	.get('/', (req, res) => res.send(version))
 	.all('*', accountsMiddleware(routesHandlers), 
 	(req, res) => {
+    console.log(Object.keys(routesHandlers))
     if (Object.keys(routesHandlers).indexOf(req.path) === -1)
 		  return res.sendStatus(404);//TODO: Create not found status
 
