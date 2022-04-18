@@ -10,15 +10,18 @@ module.exports = async function() {
   const {social} = req.query;
   const {subdomain} = req;
 
+  console.log(social)
+
   if (social === 'instagram') {
     const {userId, token} = await socials.Instagram.findOne({
       subdomain
     }, 'userId token');
+    console.log(userId, token)
 
     const ig = new Instagram(userId, token);
-
+    console.log(ig)
     const data = await ig.getPosts();
-
+    console.log(data)
     return res.json(data);
   }
 
@@ -26,10 +29,15 @@ module.exports = async function() {
     const {token, pageId} = await socials.Facebook.findOne({
       subdomain
     }, 'token pageId');
+    console.log(pageId, token)
+
 
     const fb = new Facebook(pageId, token);
+    console.log(fb)
+
 
     const data = await fb.getPosts();
+    console.log(data)
 
     return res.json(data);
   }

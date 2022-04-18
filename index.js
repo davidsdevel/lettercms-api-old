@@ -10,7 +10,11 @@ const cors = require('cors');
 const debug = require('debug');
 const importHandlers = require('./lib/importHandlers');
 const generateRoutes = require('./lib/generateRoutes');
+
 const accountsMiddleware = require('./middlewares/accounts');
+const pagesMiddleware = require('./middlewares/pages');
+const postsMiddleware = require('./middlewares/posts');
+const socialMiddleware = require('./middlewares/social');
 
 const routerDebug = debug('router');
 const queryDebug = debug('query');
@@ -33,7 +37,6 @@ app
   .use(express.urlencoded({ extended: true }))
 	.use(express.json())
 	.use((req, res, next) => {
-    req.query = Object.assign({}, req.query, req.params);
 		res.old_json = res.json;
 
     res.json = resp => {
@@ -48,10 +51,21 @@ app
     next()
 	})
   .use(cors(corsOpts))
-	.get('/', (req, res) => res.send(version))
-	.all('*', accountsMiddleware(routesHandlers), 
+	.get('/', (req, res) => res.send(version));
+
+Object.entries(routesHandlers).forEach(([path, handler]) => app.all(path, (req, res, next) => {
+  req.query = Object.assign({}, req.query, req.params);
+  console.log(req.query, req.params)
+  next();
+}, handler))
+
+app
+	.all('*',
+    /*accountsMiddleware(routesHandlers),
+    pagesMiddleware(routesHandlers),
+    postsMiddleware(routesHandlers),
+    socialMiddleware(routesHandlers),*/
 	(req, res) => {
-    console.log(Object.keys(routesHandlers))
     if (Object.keys(routesHandlers).indexOf(req.path) === -1)
 		  return res.sendStatus(404);//TODO: Create not found status
 
