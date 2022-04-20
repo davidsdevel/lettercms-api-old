@@ -5,8 +5,11 @@ module.exports = async function() {
   const {req, res} = this;
 
   const {subdomain} = req;
+  const {social} = req.query;
 
   const {feed, message, images} = req.body;
+
+  console.log(req.body)
 
   const hasIg = feed === 'instagram';
 
@@ -16,17 +19,20 @@ module.exports = async function() {
     });
 
 
-  if (feed === 'facebook') {
-    /*const {token, pageId} = await socials.Facebook.findOne({
+  if (social === 'facebook') {
+    const {token, pageId} = await socials.Facebook.findOne({
       subdomain
-    }, null, 'pageId token');*/
-
-    const pageId = '552760701890501';
-    const token = 'EAAEytdOWWx0BAJzdRFJsVr8DiMe5aPwEFP0BShHcoxVsLCJVj6xbcjbaSmelESGIZBmzO7fwtus8rfHoLZCQwp5uet7kAsGeXJyZBnN0JkkcLm0ZArShoPZBUWHdZBREEGqpWg1wQtdYY9gJi0ixYLzDLgaLAsI5whexZAbT0RUcQZDZD';
+    }, 'pageId token');
 
     const fb = new Facebook(pageId, token);
+    try {
 
-    await fb.publishPost(message, req.body);
+    const data = await fb.publishPost(message, req.body);
+    console.log(data)
+    } catch(err) {
+      console.log(err);
+      return res.status(500).send(err);
+    }
   }
 
   if (hasIg) {
@@ -41,4 +47,6 @@ module.exports = async function() {
 
     await ig.publishPost(message, images[0]);
   }
+
+  res.json({status: 'OK'})
 }

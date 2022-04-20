@@ -1,11 +1,24 @@
-const accounts = handlers => (req, res, next) => {
-  if (/\/api\/social\/(facebook|instagram)\/publish/.test(req.path))
-    return handlers['/api/social/:social/post'];
+const router = require('express').Router();
 
-  if (/\/api\/social\/(facebook|instagram)/.test(req.path))
-    return handlers['/api/social/:social'];
+const mapQueries = (req, res, next) => {
+  req.query = Object.assign({}, req.query, req.params);
+  next();
+}
 
-  return next();
+const accounts = handlers => {
+  return router
+    .all('/api/social/:social', mapQueries, (req, res, next) => {
+      if (req.query.social === 'facebook' || req.query.social === 'instagram')
+        return handlers['/api/social/:social'](req, res);
+
+      return next();
+    })
+    .all('/api/social/:social/publish', mapQueries, (req, res, next) => {
+      if (req.query.social === 'facebook' || req.query.social === 'instagram')
+        return handlers['/api/social/:social/publish'](req, res);
+
+      return next();
+    });
 }
 
 module.exports = accounts;

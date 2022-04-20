@@ -5,18 +5,56 @@ module.exports = async function() {
 
   const {subdomain} = req;
 
-  const {feeds} = req.query;
+  const feeds = req.query.feeds ? req.query.feeds : '';
 
-  const feeds
+  const data = {}
 
-  if (feeds.indexOf('facebook') > -1) {
-    const {token, id} = await socials.Facebook.findOne({
+  const promises = [];
+
+  const hasInstagram = /(,\s*)?instagram(,\s*)?/.test(feeds) || !feeds;
+  const hasFacebook = /(,\s*)?facebook(,\s*)?/.test(feeds) || !feeds;
+
+  if (hasInstagram) {
+    const instagramPromise = socials.Instagram.findOne({
       subdomain
-    }, 'pageId token');
+    }, 'userId token')
+      .then(({userId, token}) => {
+        const ig = new Instagram(userId, token);
+    
+        return ig.getPosts();
+      });
 
-    const fb = new FBApi(token);
+    promises.push(instagramPromise);
+  }
+  
+  if (hasFacebook) {
+    const facebookPromise = socials.Facebook.findOne({
+      subdomain
+    }, 'token pageId')
+      .then(({token, pageId}) => {
+        const fb = new Facebook(pageId, token);
+    
+        return fb.getPosts();
+      });
 
+    promises.push(facebookPromise);
   }
 
+  try {
+    const resolves = await Promise.all(promises);
+    
+    if (hasInstagram)
+      data.instagram = resolves[0];
+    
+    if (hasFacebook) {
+      if (hasInstagram)
+        data.facebook = resolves[1];
+      else
+        data.facebook = resolves[0];
+    }
 
+    res.json({data});
+  } catch(err) {
+    res.status(500).send(err);
+  }
 }

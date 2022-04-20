@@ -37,6 +37,7 @@ app
   .use(express.urlencoded({ extended: true }))
 	.use(express.json())
 	.use((req, res, next) => {
+    req.query = Object.assign({}, req.query, req.params)
 		res.old_json = res.json;
 
     res.json = resp => {
@@ -53,19 +54,24 @@ app
   .use(cors(corsOpts))
 	.get('/', (req, res) => res.send(version));
 
-Object.entries(routesHandlers).forEach(([path, handler]) => app.all(path, (req, res, next) => {
+/*Object.entries(routesHandlers).forEach(([path, handler]) => app.all(path, (req, res, next) => {
   req.query = Object.assign({}, req.query, req.params);
   console.log(req.query, req.params)
   next();
-}, handler))
+}, handler))*/
 
 app
+  .use(accountsMiddleware(routesHandlers))
+  .use(pagesMiddleware(routesHandlers))
+  .use(pagesMiddleware(routesHandlers))
+  .use(socialMiddleware(routesHandlers))
 	.all('*',
     /*accountsMiddleware(routesHandlers),
     pagesMiddleware(routesHandlers),
     postsMiddleware(routesHandlers),
     socialMiddleware(routesHandlers),*/
 	(req, res) => {
+    console.log(req.method, req.path)
     if (Object.keys(routesHandlers).indexOf(req.path) === -1)
 		  return res.sendStatus(404);//TODO: Create not found status
 

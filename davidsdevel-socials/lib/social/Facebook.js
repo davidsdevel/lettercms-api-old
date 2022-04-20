@@ -34,10 +34,12 @@ class FacebookSDK extends Base {
         fetchOptions.unpublished_content_type = 'SCHEDULED';
     }
 
-    if (images && schedule)
+    if ((images && schedule) || schedule)
       fetchOptions.published = 'false';
     else
       fetchOptions.published = published.toString();
+
+    console.log(fetchOptions)
 
     return this._baseRequest(`/${this.ID}/feed`, 'POST', fetchOptions);
   }
@@ -48,11 +50,11 @@ class FacebookSDK extends Base {
   }
 
   /********* Photos **********/
-  async publishPhoto(url, isSchedule) {
+  async publishPhoto(url, isSchedule = false) {
     return this._baseRequest(`/${this.ID}/photos`, 'POST', {
       url,
-      temporary: isSchedule,
-      published: !isSchedule
+      temporary: isSchedule ? 'true' : 'false',
+      published: !isSchedule ? 'true' : 'false'
     });
   }
 }
