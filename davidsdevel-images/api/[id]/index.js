@@ -8,44 +8,37 @@ const isDev = process.env.NODE_ENV !== 'production'
 const POST = async function() {
   const {req, res} = this;
 
-  const form = formidable({ multiples: true });
+  const {subdomain} = req.query;
+  const {url} = req.body;
 
-  form.parse(req, async (err, fields, {file}) => {
-    const name = fields.name || file.name;
+  const urlSplitted = url.split('%2F');
 
-    const url = `${isDev ? 'http://localhost:3009' : 'https://lettercms-api-staging.herokuapp.com'}/api/image/davidsdevel/${name}`;
+  const {_id} = await images.create({
+    url,
+    subdomain,
+    thumbnail: url,
+    name: urlSplitted[urlSplitted.lenght - 1].split('?')[0]
+  });
 
-    const blob = fs.readFileSync(file.path);
-
-    const {_id} = await images.create({
-      url,
-      subdomain: 'davidsdevel',
-      type: file.type,
-      blob,
-      thumbnail: url,
-      name
-    });
-
-    res.json({
-      status: 'OK',
-      url,
-      thumbnail: url,
-      _id
-    });
+  res.json({
+    status: 'OK',
+    url,
+    thumbnail: url,
+    _id
   });
 }
 
 const GET = async function() {
   const {req, res} = this;
 
-  const {subdomain} = req.query; 
+  const {subdomain} = req; 
 
-  const data = await images.find({subdomain}, 'url thumbnail');
+  const data = await images.find({subdomain}, 'url thumbnail name');
 
   res.json(data);
 }
 
-module.exports= manageMethods({
+module.exports = manageMethods({
   POST,
   GET
 })

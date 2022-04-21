@@ -15,6 +15,7 @@ const accountsMiddleware = require('./middlewares/accounts');
 const pagesMiddleware = require('./middlewares/pages');
 const postsMiddleware = require('./middlewares/posts');
 const socialMiddleware = require('./middlewares/social');
+const imagesMiddleware = require('./middlewares/images');
 
 const routerDebug = debug('router');
 const queryDebug = debug('query');
@@ -65,11 +66,8 @@ app
   .use(pagesMiddleware(routesHandlers))
   .use(postsMiddleware(routesHandlers))
   .use(socialMiddleware(routesHandlers))
-	.all('*',
-    /*accountsMiddleware(routesHandlers),
-    pagesMiddleware(routesHandlers),
-    postsMiddleware(routesHandlers),
-    socialMiddleware(routesHandlers),*/
+  .use(imagesMiddleware(routesHandlers))
+  .all('*',
 	(req, res) => {
     if (Object.keys(routesHandlers).indexOf(req.path) === -1)
 		  return res.status(404).json({

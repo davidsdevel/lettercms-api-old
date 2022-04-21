@@ -1,51 +1,28 @@
 const {manageMethods} = require('@lettercms/utils');
 const {images} = require('@lettercms/models');
-const formidable = require('formidable');
-const fs = require('fs');
-
-const isDev = process.env.NODE_ENV !== 'production'
-
-const POST = async function() {
-  const {req, res} = this;
-
-  const {subdomain} = req;
-  const {url, name: reqName} = req.body;
-
-  let name = reqName;
-
-  if (!reqName) {
-    const urlSplitted = url.split('%2F');
-
-    name = urlSplitted[urlSplitted.lenght - 1].split('?')[0]
-  }
-
-  const {_id} = await images.create({
-    url,
-    subdomain,
-    thumbnail: url,
-    name
-  });
-
-  res.json({
-    status: 'OK',
-    url,
-    thumbnail: url,
-    _id
-  });
-}
+const {isValidObjectId} = require('mongoose');
 
 const GET = async function() {
-  const {req, res, find} = this;
+  const {req, res, findSingle} = this;
 
-  const {subdomain} = req; 
+  const {id} = req.query;
+  const {subdomain} = req;
 
-  const data = await find(req.query, images, {subdomain});
+  const condition = {
+    subdomain
+  };
 
-  res.json(data);
+  if (isValidObjectId(id))
+    condition._id = id;
+  else
+    condition.name = id;
+
+  const file = await findSingle(req.query, images, condition);
+
+  res.json(file);
 }
 
-module.exports = manageMethods({
-  POST,
+module.exports= manageMethods({
   GET
 })
 
