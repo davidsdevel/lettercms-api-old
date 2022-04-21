@@ -72,7 +72,10 @@ app
     socialMiddleware(routesHandlers),*/
 	(req, res) => {
     if (Object.keys(routesHandlers).indexOf(req.path) === -1)
-		  return res.sendStatus(404);//TODO: Create not found status
+		  return res.status(404).json({
+        status: 'not-found',
+        message: `Resource "${req.path}" not found`
+      });//TODO: Create not found status
 
     return routesHandlers[req.path](req, res);
 
