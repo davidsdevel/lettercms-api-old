@@ -5,7 +5,7 @@ const mapQueries = (req, res, next) => {
   next();
 }
 
-const accounts = handlers => router
-  .all('/api/image/:id', mapQueries, handlers['/api/image/:id']);
+const images = handlers => router
+  .all('/api/image/:id', mapQueries, (req, res) => handlers['/api/image/:id'](req, res));
 
-module.exports = accounts;
+module.exports = images;

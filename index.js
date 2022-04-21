@@ -36,10 +36,11 @@ const corsOpts = {
 
 app
   .use(express.urlencoded({ extended: true }))
-	.use(express.json())
-	.use((req, res, next) => {
+  .use(express.json())
+  .use((req, res, next) => {
+    console.log(req.path)
     req.query = Object.assign({}, req.query, req.params)
-		res.old_json = res.json;
+    res.old_json = res.json;
 
     res.json = resp => {
       debugResponse(resp);
@@ -51,9 +52,11 @@ app
     queryDebug(req.query);
 
     next()
-	})
+  })
   .use(cors(corsOpts))
-	.get('/', (req, res) => res.send(version));
+  .get('/', (req, res) => res.send(version));
+
+console.log(routesHandlers)
 
 /*Object.entries(routesHandlers).forEach(([path, handler]) => app.all(path, (req, res, next) => {
   req.query = Object.assign({}, req.query, req.params);
@@ -67,18 +70,15 @@ app
   .use(postsMiddleware(routesHandlers))
   .use(socialMiddleware(routesHandlers))
   .use(imagesMiddleware(routesHandlers))
-  .all('*',
-	(req, res) => {
+  .all('*', (req, res) => {
     if (Object.keys(routesHandlers).indexOf(req.path) === -1)
-		  return res.status(404).json({
+      return res.status(404).json({
         status: 'not-found',
         message: `Resource "${req.path}" not found`
-      });//TODO: Create not found status
+      });
 
     return routesHandlers[req.path](req, res);
 
-	});
-
-
+  });
 
 module.exports = app;

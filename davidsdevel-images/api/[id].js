@@ -24,7 +24,7 @@ const GET = async function() {
 
 module.exports= manageMethods({
   GET
-})
+});
 
 
 //module.exports = (_, res) => res.send('Hello World')
