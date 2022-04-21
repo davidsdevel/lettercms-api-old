@@ -63,7 +63,7 @@ app
 app
   .use(accountsMiddleware(routesHandlers))
   .use(pagesMiddleware(routesHandlers))
-  .use(pagesMiddleware(routesHandlers))
+  .use(postsMiddleware(routesHandlers))
   .use(socialMiddleware(routesHandlers))
 	.all('*',
     /*accountsMiddleware(routesHandlers),
@@ -71,7 +71,6 @@ app
     postsMiddleware(routesHandlers),
     socialMiddleware(routesHandlers),*/
 	(req, res) => {
-    console.log(req.method, req.path)
     if (Object.keys(routesHandlers).indexOf(req.path) === -1)
 		  return res.sendStatus(404);//TODO: Create not found status
 
