@@ -663,10 +663,10 @@
     ibm-cos-sdk "^1.11.0"
     yargs "^3.4.5"
 
-"@lettercms/models@0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@lettercms/models/-/models-0.0.4.tgz#aade5b2a6747b5f1d5f83e2381ee5a372e01758e"
-  integrity sha512-576S79CTI4Q7ergE0IqRi8MBoaz83LGlM3Qc0JJcg/lCzvcsv8y/OS3cZKBb7Tb0A55bMPl0BKWy6W3bbLmlzQ==
+"@lettercms/models@0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@lettercms/models/-/models-0.0.5.tgz#a477bf3da95bf29da44496995bd666cb118e68b1"
+  integrity sha512-BoHrKX0rUx7H8Pdevp63nghMetDjMDDc7IYZeyL4BOKqqnLQ0RM9rV4hhGnXfRtWRuseXNIYeK0ZIKDHttpo+Q==
   dependencies:
     bcrypt "^5.0.1"
     formidable "^1.2.2"
