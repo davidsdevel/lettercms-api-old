@@ -14,7 +14,9 @@ module.exports = async function() {
     accounts: true
   }, accounts.Accounts, {
     subdomain,
-    $where: `this._id !== "${account}"`
+    _id: {
+      $ne: account
+    }
   });
 
   res.json(data);

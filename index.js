@@ -10,7 +10,12 @@ const cors = require('cors');
 const debug = require('debug');
 const importHandlers = require('./lib/importHandlers');
 const generateRoutes = require('./lib/generateRoutes');
+
 const accountsMiddleware = require('./middlewares/accounts');
+const pagesMiddleware = require('./middlewares/pages');
+const postsMiddleware = require('./middlewares/posts');
+const socialMiddleware = require('./middlewares/social');
+const imagesMiddleware = require('./middlewares/images');
 
 const routerDebug = debug('router');
 const queryDebug = debug('query');
@@ -31,10 +36,11 @@ const corsOpts = {
 
 app
   .use(express.urlencoded({ extended: true }))
-	.use(express.json())
-	.use((req, res, next) => {
-    req.query = Object.assign({}, req.query, req.params);
-		res.old_json = res.json;
+  .use(express.json())
+  .use((req, res, next) => {
+    console.log(req.path)
+    req.query = Object.assign({}, req.query, req.params)
+    res.old_json = res.json;
 
     res.json = resp => {
       debugResponse(resp);
@@ -46,18 +52,33 @@ app
     queryDebug(req.query);
 
     next()
-	})
+  })
   .use(cors(corsOpts))
-	.get('/', (req, res) => res.send(version))
-	.all('*', accountsMiddleware(routesHandlers), 
-	(req, res) => {
-    if (Object.keys(routesHandlers).indexOf(req.url) === -1)
-		  return res.sendStatus(404);//TODO: Create not found status
+  .get('/', (req, res) => res.send(version));
 
-    return routesHandlers[req.url](req, res);
+console.log(routesHandlers)
 
-	});
+/*Object.entries(routesHandlers).forEach(([path, handler]) => app.all(path, (req, res, next) => {
+  req.query = Object.assign({}, req.query, req.params);
+  console.log(req.query, req.params)
+  next();
+}, handler))*/
 
+app
+  .use(accountsMiddleware(routesHandlers))
+  .use(pagesMiddleware(routesHandlers))
+  .use(postsMiddleware(routesHandlers))
+  .use(socialMiddleware(routesHandlers))
+  .use(imagesMiddleware(routesHandlers))
+  .all('*', (req, res) => {
+    if (Object.keys(routesHandlers).indexOf(req.path) === -1)
+      return res.status(404).json({
+        status: 'not-found',
+        message: `Resource "${req.path}" not found`
+      });
 
+    return routesHandlers[req.path](req, res);
+
+  });
 
 module.exports = app;

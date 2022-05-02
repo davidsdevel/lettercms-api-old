@@ -6,18 +6,22 @@ const {accounts} = require('@lettercms/models');
 
 module.exports = async function() {
   const {
-    isAdmin
-  } = this.req;
+    req: {
+      isAdmin,
+      body
+    },
+    res
+  } = this;
 
   if (!isAdmin)
-    return this.res.sendStatus(401);
+    return res.sendStatus(401);
 
   const {
     email,
     password
-  } = this.req.body;
+  } = body;
 
   const data = await accounts.Accounts.login(email, password);
 
-  this.res.json(data);
+  res.json(data);
 }

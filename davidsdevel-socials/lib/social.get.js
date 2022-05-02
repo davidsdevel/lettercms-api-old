@@ -10,71 +10,36 @@ module.exports = async function() {
   const {social} = req.query;
   const {subdomain} = req;
 
+  console.log(social)
+
   if (social === 'instagram') {
-    /*const {userId, token} = await socials.Instagram.findOne({
+    const {userId, token} = await socials.Instagram.findOne({
       subdomain
     }, 'userId token');
+    console.log(userId, token)
 
     const ig = new Instagram(userId, token);
-
+    console.log(ig)
     const data = await ig.getPosts();
-
-    return res.json(data);*/
-    return res.json({
-      data: [{
-          caption: 'Hello World',
-          id: '1',
-          ig_id: '2',
-          media_url: 'http://localhost:3000/images/landing-mobile.jpg',
-          permalink: '',
-          shortcode: '',
-          timestamp: '2021-03-31T18:10:00+0000',
-          username: 'davidsdevel'
-        }]
-      });
+    console.log(data)
+    return res.json(data);
   }
 
   if (social === 'facebook') {
-    /*const {token, pageId} = await socials.Facebook.findOne({
+    const {token, pageId} = await socials.Facebook.findOne({
       subdomain
     }, 'token pageId');
+    console.log(pageId, token)
+
 
     const fb = new Facebook(pageId, token);
+    console.log(fb)
+
 
     const data = await fb.getPosts();
+    console.log(data)
 
-    return res.json(data);*/
-
-    return res.json({
-      data: [
-        {
-          "attachments": {
-            "data": [
-              {
-                "description": "\u00bfTe imaginas crear una tienda sin invertir en productos? \u00bfSuena loco, no? Pues, esta esto se ha convertido en un gran modelo de negocio",
-                "media": {
-                  "image": {
-                    "height": 630,
-                    "src": "https://external-mia3-2.xx.fbcdn.net/safe_image.php?d=AQG6eGCzPslYNgsr&w=630&h=630&url=https\u00253A\u00252F\u00252F1.bp.blogspot.com\u00252F-G02Cr9jKhvY\u00252FXxTF5cdBG7I\u00252FAAAAAAAAAUE\u00252FN7oI_nbG4NwV7ytWUo0j2efLfKK69tzWgCLcBGAsYHQ\u00252Fw1200-h630-p-k-no-nu\u00252Fwhite-water-boat-753331.jpg&cfs=1&ccb=3-5&_nc_hash=AQFWFGVPi3To9PDn",
-                    "width": 630
-                  }
-                },
-                "target": {
-                  "url": "https://l.facebook.com/l.php?u=https\u00253A\u00252F\u00252Fwww.davidsdevel.tk\u00252F2020\u00252F07\u00252Fque-es-dropshipping.html&h=AT2_f5RGmdz_Rcp2FFd23tgGBSn65PPBxOjF_U4qK8d5i7VhgXg2IwWUXeuYUIFyyOMXxOH4x-b6CdSqUAjPRbUJt24-GF_oNHL-mO3yUI1WsuVzPy8gD_UeZOpn4JiCZG4i&s=1"
-                },
-                "title": "Aprende a crear un e-commerce sin productos - \u00bfQu\u00e9 es dropshipping?",
-                "type": "share",
-                "url": "https://l.facebook.com/l.php?u=https\u00253A\u00252F\u00252Fwww.davidsdevel.tk\u00252F2020\u00252F07\u00252Fque-es-dropshipping.html&h=AT2_f5RGmdz_Rcp2FFd23tgGBSn65PPBxOjF_U4qK8d5i7VhgXg2IwWUXeuYUIFyyOMXxOH4x-b6CdSqUAjPRbUJt24-GF_oNHL-mO3yUI1WsuVzPy8gD_UeZOpn4JiCZG4i&s=1"
-              }
-            ]
-          },
-          "message": "\ud83e\udd14\u00bfHas escuchado el termino Dropshipping?\n\nAprende que es y si es lo mejor para tu ecommerce\n\nhttps://www.davidsdevel.tk/2020/07/que-es-dropshipping.html",
-          id: "552760701890501_887301781769723",
-          created_time: "2020-07-21T03:09:56+0000",
-          full_picture: 'https://url'
-        }
-      ]
-    })
+    return res.json(data);
   }
    if (social === 'twitter') {
     /*const {token, pageId} = Facebook.findOne({

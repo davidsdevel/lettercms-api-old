@@ -117,7 +117,7 @@ module.exports = async function() {
     });
 
   if (hasMostCommented) {
-    const commentsRes = await posts.find({subdomain}, 'thumbnail title views comments url', {
+    const commentsRes = await posts.findOne({subdomain}, 'thumbnail title views comments url', {
       sort: {
         comments: -1
       },
@@ -125,10 +125,13 @@ module.exports = async function() {
       lean: true
     });
 
-    data.mostCommented = commentsRes.data[0];
+    data.mostCommented = commentsRes;
   }
 
-  conditions.$where = `this.time > new Date("${dateStart.toISOString()}") && this.time < new Date("${new Date(new Number(dateEnd) + (1000 * 60 * 60 * 24)).toISOString()}")`;
+  conditions.time = {
+    $gt: new Date(dateStart.toISOString()),
+    $lt: new Date(new Date(new Number(dateEnd) + (1000 * 60 * 60 * 24)).toISOString())
+  }
 
   //Create Object Properties
   if (hasDates) {

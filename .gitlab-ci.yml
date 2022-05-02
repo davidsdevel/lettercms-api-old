@@ -2,6 +2,7 @@ image: node:lts
 
 stages:
   - prepare
+#  - prepare-test
 #  - test
   - deploy
 
@@ -11,27 +12,40 @@ stages:
     key: lettercms-api
     paths:
       - node_modules
-  script:
-    - yarn
-    - yarn global add vercel
+  before_script: yarn
 
 prepare-production:
   extends: .prepare
-  script: echo hello
+  script: yarn global add vercel
   only:
     - master
 
-# test:
+# prepare-test:
 #   image: docker:latest
-#   stage: test
+#   stage: prepare-test
 #   services:
 #     - docker:dind
-#     - mongo
+#     
+#   
+#   script:
+#     - docker build -t microservices:latest
+#      - docker tag microservices:latest $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/microservices:latest
+#     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+#      - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/microservices:latest
+#   only:
+#     - production
+
+
+#test:
+#  stage: test
+#  services:
+#    - mongo
+#    - name: $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/microservices:latest
+#      alias: lettercms
 #   variables:
 #     MONGO_URL: 'mongodb://mongo/testing'
-#   before_script:
-#     - docker build -t microservices
-#     - docker run -d -p 3009:3009 microservices
+#  script:
+#    - yarn test
 #   only:
 #     - production
 
@@ -43,7 +57,7 @@ staging:
   before_script:
     - yarn
     - 'echo web: node dev > Procfile'
-    - tar zcv --wildcards --exclude='*/node_modules/*' --exclude='.git' -f master.tgz lib middlewares davidsdevel-accounts davidsdevel-blogs davidsdevel-pages davidsdevel-posts davidsdevel-socials davidsdevel-stats davidsdevel-users index.js dev.js yarn.lock package.json Procfile
+    - tar zcv --wildcards --exclude='*/node_modules/*' --exclude='.git' -f master.tgz lib middlewares davidsdevel-accounts davidsdevel-blogs davidsdevel-pages davidsdevel-posts davidsdevel-socials davidsdevel-images davidsdevel-stats davidsdevel-users index.js dev.js yarn.lock package.json Procfile
     - yarn lettercms --upload
   script:
     - yarn lettercms --deploy

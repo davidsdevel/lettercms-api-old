@@ -1,22 +1,30 @@
 const {manageMethods} = require('@lettercms/utils');
 const {images} = require('@lettercms/models');
-
+const {isValidObjectId} = require('mongoose');
 
 const GET = async function() {
-  const {req, res} = this;
+  const {req, res, findSingle} = this;
 
-  const {name, subdomain} = req.query;
+  const {id} = req.query;
+  const {subdomain} = req;
 
-  const file = await images.findOne({name, subdomain}, 'type blob');
+  const condition = {
+    subdomain
+  };
 
-  res.header("Content-Type", file.type);
+  if (isValidObjectId(id))
+    condition._id = id;
+  else
+    condition.name = id;
 
-  res.send(file.blob);
+  const file = await findSingle(req.query, images, condition);
+
+  res.json(file);
 }
 
 module.exports= manageMethods({
   GET
-})
+});
 
 
 //module.exports = (_, res) => res.send('Hello World')

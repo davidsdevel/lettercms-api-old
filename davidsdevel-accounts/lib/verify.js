@@ -1,5 +1,5 @@
-
-const {join} = require('path')
+const {join} = require('path');
+const crypto = require('crypto');
 
 process.env.GOOGLE_APPLICATION_CREDENTIALS = join(process.cwd(), 'davidsdevel-accounts', 'firebaseAdmin.json');
 
@@ -14,7 +14,7 @@ initializeApp({
 });
 
 const db = getDatabase();
-const ref = db.ref('verifications');
+const ref = db.ref().child('verifications');
 
 module.exports = async function() {
   const {
@@ -28,35 +28,40 @@ module.exports = async function() {
     delete decoded.exp;
     delete decoded.iat;
 
-    ref.set({
+    ref.push({
       email: decoded.email,
       name: decoded.name,
       status: 'verified'
     });
 
-    const db = await accounts.Accounts.createAccount(subdomain, decoded);
+    const emailHash = crypto.createHash('md5').update(decoded.email).digest('hex');
+
+    await accounts.Accounts.createAccount(req.subdomain, {
+      photo: `https://avatar.tobi.sh/${emailHash}.svg?text=${decoded.name[0]+decoded.lastname[0]}&size=250`,
+      ...decoded
+    });
   } catch(err) {
     switch(err.message) {
       case 'jwt expired':
-<<<<<<< HEAD
-        db.push({
-=======
-        ref.set({
->>>>>>> 6baba5a4ede63f76da4bb88754918282eebfd2dc
+        ref.push({
           email: decoded.email,
           status: 'expired'
         });
         break;
       case 'invalid token':
-<<<<<<< HEAD
-        db.push({
-=======
-        ref.set({
->>>>>>> 6baba5a4ede63f76da4bb88754918282eebfd2dc
+        ref.push({
           email: decoded.email,
           status: 'bad-token'
         });
         break;
+      case 'invalid signature':
+        ref.push({
+          email: decoded.email,
+          status: 'invalid-signature'
+        });
+        break;
+      default:
+        throw err
     }
   } finally {
     res.send(`

@@ -1,17 +1,17 @@
-const pagesRoutes = [
-  'exists'
-];
+const router = require('express').Router();
 
-const pages = handlers => (req, res, next) => {
-  if (req.query.url) {
-    if (pagesRoutes.indexOf(req.query.url) === -1)
-      return handlers['/api/page/:url'](req, res);
-  }
-
-  if (req.query._id)
-    return handlers['/api/page/grapes/:_id'](req, res);
-
-  return next();
+const mapQueries = (req, res, next) => {
+  req.query = Object.assign({}, req.query, req.params);
+  next();
 }
+
+const pages = handlers => router
+  .all('/api/page/:url', mapQueries, (req, res, next) => {
+    if (req.query.url === 'exists')
+      return next();
+      
+    return handlers['/api/page/:url'](req, res)
+  })
+  .all('/api/page/grapes/:_id', mapQueries, handlers['/api/page/grapes/:_id']);
 
 module.exports = pages;

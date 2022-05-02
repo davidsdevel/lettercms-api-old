@@ -1,4 +1,4 @@
-const {pages} = require('@lettercms/models');
+const {pages: pagesModel} = require('@lettercms/models');
 
 module.exports = async function() {
   const {req, res, find} = this;
@@ -13,7 +13,7 @@ module.exports = async function() {
   if (status)
     condition.pageStatus = status;
 
-  const pages = await find(req.query, pages, condition);
+  const pages = await find(req.query, pagesModel, condition);
 
   res.json(pages);
 }
