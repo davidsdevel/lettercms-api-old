@@ -13,6 +13,7 @@
   "author": "David's Devel <davidsdevel@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "@lettercms/build-utils": "^0.0.7",
     "dotenv": "^16.0.0",
     "ibm-cos-sdk": "^1.7.0",
     "jest": "^26.6.3"
@@ -22,11 +23,13 @@
   },
   "homepage": "https://gitlab.com/lettercms/api#readme",
   "dependencies": {
-    "@lettercms/models": "^0.0.1",
     "@lettercms/admin": "0.0.2",
+    "@lettercms/models": "^0.0.1",
     "@lettercms/sdk": "0.0.5",
-    "@lettercms/utils": "1.0.1",
+    "@lettercms/utils": "1.0.6",
+    "cors": "^2.8.5",
     "express": "^4.17.1",
+    "firebase-admin": "^10.0.2",
     "formidable": "^1.2.2",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.11.10"

@@ -1,4 +1,4 @@
-const {socials} = require(process.cwd() + '/mongo');
+const {socials} = require('@lettercms/models');
 const {Facebook, Instagram} = require('./social');
 
 module.exports = async function() {

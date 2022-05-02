@@ -1,4 +1,4 @@
-const {exists, manageMethods} = require(process.cwd() + '/utils');
+const {exists, manageMethods} = require('@lettercms/utils');
 
 module.exports = manageMethods({
   GET: exists

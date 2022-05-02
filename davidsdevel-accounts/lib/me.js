@@ -1,5 +1,4 @@
-const {accounts} = require(process.cwd() + '/mongo');
-const {isValidObjectId} = require('mongoose');
+const {accounts} = require('@lettercms/models');
 
 module.exports = async function() {
   const {
@@ -7,10 +6,6 @@ module.exports = async function() {
     res,
     findSingle
   } = this;
-
-  const {
-    emailHex
-  } = req.query;
 
   const {account} = req;
 

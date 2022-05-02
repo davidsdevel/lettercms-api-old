@@ -1,4 +1,4 @@
-const {posts: postModel, blogs} = require(process.cwd() + '/mongo');
+const {posts: postModel, blogs} = require('@lettercms/models');
 
 const isDev = process.env.NODE_ENV !== 'production';
 

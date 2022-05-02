@@ -1,4 +1,4 @@
-const {pages} = require(process.cwd() + '/mongo');
+const {pages} = require('@lettercms/models');
 
 module.exports = async function() {
   const {req, res} = this;

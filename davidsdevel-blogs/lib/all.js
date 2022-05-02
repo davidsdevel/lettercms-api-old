@@ -1,4 +1,4 @@
-const {blogs} = require(process.cwd() + '/mongo');
+const {blogs} = require('@lettercms/models');
 
 module.exports = async function() {
   const {

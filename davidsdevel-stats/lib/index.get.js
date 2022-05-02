@@ -1,4 +1,4 @@
-const {stats, posts} = require(process.cwd() + '/mongo');
+const {stats, posts} = require('@lettercms/models');
 
 const days = [
   'Sunday',

@@ -1,4 +1,4 @@
-const {pages} = require(process.cwd() + '/mongo');
+const {pages} = require('@lettercms/models');
 const {isValidObjectId} = require('mongoose');
 
 module.exports = async function() {

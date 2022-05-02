@@ -1,8 +1,20 @@
-const {accounts} = require(process.cwd() + '/mongo');
-const firebase = require('@firebase/admin');
+
+const {join} = require('path')
+
+process.env.GOOGLE_APPLICATION_CREDENTIALS = join(process.cwd(), 'davidsdevel-accounts', 'firebaseAdmin.json');
+
+const {accounts} = require('@lettercms/models');
+const {initializeApp, applicationDefault} = require('firebase-admin/app');
+const {getDatabase} = require('firebase-admin/database');
 const jwt = require('jsonwebtoken');
 
-firebase.database().ref("verification");
+initializeApp({
+  credential: applicationDefault(),
+  databaseURL: 'https://lettercms-1-default-rtdb.firebaseio.com'
+});
+
+const db = getDatabase();
+const ref = db.ref('verifications');
 
 module.exports = async function() {
   const {
@@ -16,7 +28,7 @@ module.exports = async function() {
     delete decoded.exp;
     delete decoded.iat;
 
-    db.push({
+    ref.set({
       email: decoded.email,
       name: decoded.name,
       status: 'verified'
@@ -26,13 +38,21 @@ module.exports = async function() {
   } catch(err) {
     switch(err.message) {
       case 'jwt expired':
+<<<<<<< HEAD
         db.push({
+=======
+        ref.set({
+>>>>>>> 6baba5a4ede63f76da4bb88754918282eebfd2dc
           email: decoded.email,
           status: 'expired'
         });
         break;
       case 'invalid token':
+<<<<<<< HEAD
         db.push({
+=======
+        ref.set({
+>>>>>>> 6baba5a4ede63f76da4bb88754918282eebfd2dc
           email: decoded.email,
           status: 'bad-token'
         });

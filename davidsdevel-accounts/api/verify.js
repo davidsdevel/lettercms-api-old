@@ -1,6 +1,6 @@
-const {manageMethods} = require(process.cwd() + '/utils');
-const POST = require('../lib/verify');
+const {manageMethods} = require('@lettercms/utils');
+const GET = require('../lib/verify');
 
 module.exports = manageMethods({
-  POST
+  GET
 });

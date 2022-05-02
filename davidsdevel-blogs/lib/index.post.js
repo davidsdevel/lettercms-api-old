@@ -1,8 +1,7 @@
-const {stats, blogs, accounts, posts} = require(process.cwd() + '/mongo');
+const {stats, blogs, accounts, posts} = require('@lettercms/models');
 
 module.exports = async function() {
   const {
-    Model,
     req,
     res
   } = this;

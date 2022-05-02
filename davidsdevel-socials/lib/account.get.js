@@ -1,4 +1,4 @@
-const {socials: socialModel} = require(process.cwd() + '/mongo');
+const {socials: socialModel} = require('@lettercms/models');
 
 /**
  *

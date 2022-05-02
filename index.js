@@ -6,11 +6,10 @@ if (process.env.NODE_ENV !== 'production')
 
 const express = require('express');
 const app = express();
+const cors = require('cors');
 const debug = require('debug');
-
-const generateRoutes = require('./lib/generateRoutes');
 const importHandlers = require('./lib/importHandlers');
-
+const generateRoutes = require('./lib/generateRoutes');
 const accountsMiddleware = require('./middlewares/accounts');
 
 const routerDebug = debug('router');
@@ -21,6 +20,14 @@ const debugServer = debug('server');
 
 const routesPath = generateRoutes();
 const routesHandlers = importHandlers(routesPath);
+
+const corsOpts = {
+  origin: true,
+  methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
+  credentials: true,
+  exposedHeaders: 'Authorization'
+}
 
 app
   .use(express.urlencoded({ extended: true }))
@@ -40,22 +47,9 @@ app
 
     next()
 	})
+  .use(cors(corsOpts))
 	.get('/', (req, res) => res.send(version))
-	.all('*', (req, res, next) => {
-		if (req.methods === 'OPTIONS') {
-			const origin = req.get('origin');
-
-	    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-	    res.header("Access-Control-Allow-Origin", origin);
-	    res.header("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE");
-	    res.header("Access-Control-Allow-Credentials", "true");
-
-	    return res.sendStatus(200);
-		}
-		return next();
-
-	},
-  accountsMiddleware(routesHandlers), 
+	.all('*', accountsMiddleware(routesHandlers), 
 	(req, res) => {
     if (Object.keys(routesHandlers).indexOf(req.url) === -1)
 		  return res.sendStatus(404);//TODO: Create not found status

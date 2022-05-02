@@ -1,5 +1,5 @@
-const {manageMethods} = require(process.cwd() + '/utils');
-const {images} = require(process.cwd() + '/mongo');
+const {manageMethods} = require('@lettercms/utils');
+const {images} = require('@lettercms/models');
 
 
 const GET = async function() {

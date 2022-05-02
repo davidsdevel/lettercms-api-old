@@ -1,4 +1,4 @@
-const {manageMethods} = require(process.cwd() + '/utils');
+const {manageMethods} = require('@lettercms/utils');
 const GET = require('../lib/emailHex.get');
 const PATCH = require('../lib/emailHex.patch');
 

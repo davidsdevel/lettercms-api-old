@@ -1,5 +1,5 @@
-const {manageMethods} = require(process.cwd() + '/utils');
-const {images} = require(process.cwd() + '/mongo');
+const {manageMethods} = require('@lettercms/utils');
+const {images} = require('@lettercms/models');
 const formidable = require('formidable');
 const fs = require('fs');
 
@@ -40,7 +40,11 @@ const GET = async function() {
 
   const {subdomain} = req.query; 
 
+<<<<<<< HEAD
   const data = await imagesfind({subdomain}, 'url thumbnail');
+=======
+  const data = await images.find({subdomain}, 'url thumbnail');
+>>>>>>> 6baba5a4ede63f76da4bb88754918282eebfd2dc
 
   res.json(data);
 }

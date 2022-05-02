@@ -1,6 +1,3 @@
-const fs = require('fs');
-const https = require('https');
-
 const app = require('./index');
 
 const PORT = process.env.PORT || 3009

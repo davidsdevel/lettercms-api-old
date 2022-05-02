@@ -1,5 +1,6 @@
-const {posts, blogs} = require(process.cwd() + '/mongo');
+const {posts, blogs} = require('@lettercms/models');
 const {isValidObjectId} = require('mongoose');
+const jwt = require('jsonwebtoken');
 
 const getFullUrl = (url, urlID, data) => {
   if (urlID == '1')

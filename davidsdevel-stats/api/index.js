@@ -1,4 +1,4 @@
-const {manageMethods} = require(process.cwd() + '/utils');
+const {manageMethods} = require('@lettercms/utils');
 const POST = require('../lib/index.post');
 const GET = require('../lib/index.get');
 
