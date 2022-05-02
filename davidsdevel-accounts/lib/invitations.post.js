@@ -1,4 +1,5 @@
-const {accounts} = require('@lettercms/models');
+const {accounts, blogs} = require('@lettercms/models');
+const {sendMail} = require('@lettercms/utils');
 
 module.exports = async function() {
   const {
@@ -16,7 +17,7 @@ module.exports = async function() {
       message: 'Accounts already exists'
     });
 
-  const existsInvitation = await accounts.Accounts.exists({
+  const existsInvitation = await accounts.Invitations.exists({
     email: body.email
   });
 
@@ -26,15 +27,22 @@ module.exports = async function() {
       message: `Invitation to "${body.email}" already sent`
     });
 
-  const {_id} = await accounts.Invitations.create({
+  await accounts.Invitations.create({
     ...body,
     subdomain
   });
 
-  //TODO: Send Email
+  const token = Buffer.from(body.email).toString('hex');
+
+  const {title} = await blogs.findOne({subdomain}, 'title');
+
+  await sendMail(body.email, `Has sido invitado a colaborar en ${title} - LetterCMS`, {
+    type: 'invitation',
+    title,
+    url:'https://lettercms-dashboard-staging.herokuapp.com/signin?token=' + token
+  });
 
   res.json({
-    id:_id,
     status: 'OK'
-  })
+  });
 }

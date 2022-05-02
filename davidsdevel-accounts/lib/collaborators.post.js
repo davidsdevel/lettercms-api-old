@@ -2,15 +2,37 @@ const {accounts} = require('@lettercms/models');
 
 module.exports = async function() {
   const {
-    req,
+    req: {
+      body,
+      subdomain
+    },
     res,
   } = this;
 
-  const {subdomain} = req;
+  const invitation = await accounts.Invitations.findOne({
+    email: body.email
+  });
 
-  await accounts.Accounts.createCollab(subdomain, req.body);
+  if (invitation === null)
+    return res.json({
+      status: 'not-invited',
+      messages: 'Collaborator not invited'
+    })
 
-  //TODO: send email with verify token
+  if (invitation.expireIn < Date.now())
+    return res.json({
+      status: 'invitation-expired',
+      message: `Invitation to ${body.email} expired`
+    });
+
+  await accounts.Accounts.createCollab(subdomain, body);
+  await accounts.Invitations.updateOne({
+    subdomain,
+    email: body.email
+  }, {
+    status: 'accepted'
+  });
+
   res.json({
     status: 'OK'
   });

@@ -1,0 +1,27 @@
+1) Crear invitacion
+
+POST /account/invitation
+{
+  email,
+  type,
+  permissions
+}
+
+2) se crea el token
+
+Buffer.from('{"email": "email@email.com"}').toString('hex');
+
+3) Se envia el email con la URL de acceso:
+/signin?token=<JSON-Hex>
+
+4) se decodifica el token
+Buffer.from('token', 'hex').toString('utf-8');
+
+5) se verifica el estado de la invitacion y se crear el colaborador
+POST /account/collaborator
+{
+  email,
+  name,
+  lastname,
+  password
+}

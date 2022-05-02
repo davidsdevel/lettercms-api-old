@@ -2,6 +2,11 @@ La implementacion es realmente sencilla. Hacer una peticion fetch del cliente co
 
 Este fetch se hara dentro del metodo "init" del Tracking del SDK.
 
+POST /stats/session
+{
+  action: 'start'
+}
+
 Para cerrar la sesion se enviara otro fetch al servidor con: las rutas visitadas, el tiempo de permanencia
 
 # To Do
