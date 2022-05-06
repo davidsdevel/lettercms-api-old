@@ -1,5 +1,6 @@
 const {stats} = require('@lettercms/models');
 const parser = require("ua-parser-js");
+const {join} = require('path')
 
 process.env.GOOGLE_APPLICATION_CREDENTIALS = join(process.cwd(), 'davidsdevel-accounts', 'firebaseAdmin.json');
 
