@@ -4,7 +4,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "node dev",
-    "test": "jest --detectOpenHandles --runInBand"
+    "test": "jest --detectOpenHandles --runInBand",
+    "lint": "eslint -c .eslintrc.js ."
   },
   "repository": {
     "type": "git",
