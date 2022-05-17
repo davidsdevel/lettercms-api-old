@@ -12,7 +12,7 @@ module.exports = {
     Atomics: 'readonly',
     SharedArrayBuffer: 'readonly',
   },
-  ignorePatterns: [ "testing/*" ],
+  ignorePatterns: ['testing/*'],
   parserOptions: {
     sourceType: 'commonjs',
     ecmaFeatures: {
@@ -21,10 +21,10 @@ module.exports = {
     ecmaVersion: 11,
   },
   rules: {
-    "semi": ["error", "always"],
-    "quotes": ["error", "single"],
-    "array-bracket-spacing": 'error',
-    "arrow-spacing": 'error',
+    'semi': ['error', 'always'],
+    'quotes': ['error', 'single'],
+    'array-bracket-spacing': 'error',
+    'arrow-spacing': 'error',
     complexity: 'error',
     curly: 'off',
     'no-buffer-constructor': 'error',
