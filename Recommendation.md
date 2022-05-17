@@ -49,6 +49,6 @@ Retornara como respuesta un Objeto con los posts ordenados desde el mas recomend
 ### Posts
 
 Para los posts se manejara el mismo esquema anterior pero con la siguiente URL:
-*/api/recommendation/post/<\postUrl>*
+**/api/recommendation/post/\<postUrl>**
 
 Este retornara los posts similares por orden descendente
