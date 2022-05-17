@@ -3,7 +3,7 @@ const router = require('express').Router();
 const mapQueries = (req, res, next) => {
   req.query = Object.assign({}, req.query, req.params);
   next();
-}
+};
 
 const accounts = handlers => {
   return router
@@ -19,6 +19,6 @@ const accounts = handlers => {
 
       return next();
     });
-}
+};
 
 module.exports = accounts;
