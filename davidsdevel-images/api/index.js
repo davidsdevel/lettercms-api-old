@@ -1,9 +1,5 @@
 const {manageMethods} = require('@lettercms/utils');
 const {images} = require('@lettercms/models');
-const formidable = require('formidable');
-const fs = require('fs');
-
-const isDev = process.env.NODE_ENV !== 'production'
 
 const POST = async function() {
   const {req, res} = this;
@@ -16,7 +12,7 @@ const POST = async function() {
   if (!reqName) {
     const urlSplitted = url.split('%2F');
 
-    name = urlSplitted[urlSplitted.lenght - 1].split('?')[0]
+    name = urlSplitted[urlSplitted.lenght - 1].split('?')[0];
   }
 
   const {_id} = await images.create({
@@ -32,7 +28,7 @@ const POST = async function() {
     thumbnail: url,
     _id
   });
-}
+};
 
 const GET = async function() {
   const {req, res, find} = this;
@@ -42,12 +38,12 @@ const GET = async function() {
   const data = await find(req.query, images, {subdomain});
 
   res.json(data);
-}
+};
 
 module.exports = manageMethods({
   POST,
   GET
-})
+});
 
 
 //module.exports = (_, res) => res.send('Hello World')

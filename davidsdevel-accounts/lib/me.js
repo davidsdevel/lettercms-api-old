@@ -18,4 +18,4 @@ module.exports = async function() {
     return res.sendStatus(404);
 
   res.json(data);
-}
+};

@@ -1,32 +1,23 @@
 const {stats} = require('@lettercms/models');
-const parser = require("ua-parser-js");
-const {join} = require('path')
+const firebase = require('../../firebaseInit');
+const {getDatabase} = require('firebase-admin/database');
+const parser = require('ua-parser-js');
 
-process.env.GOOGLE_APPLICATION_CREDENTIALS = join(process.cwd(), 'davidsdevel-accounts', 'firebaseAdmin.json');
-
-const { initializeApp, applicationDefault } = require('firebase-admin/app');
-const { getDatabase } = require('firebase-admin/database');
-
-initializeApp({
-  credential: applicationDefault(),
-  databaseURL: 'https://lettercms-1-default-rtdb.firebaseio.com'
-});
-
-const db = getDatabase();
+const app = firebase.init();
+const db = getDatabase(app);
 const ref = db.ref().child('stats');
 
 module.exports = async function() {
   const {req, res} = this;
 
   const {
-    sessionTime,
     routes,
     action
   } = req.body;
 
   const {subdomain} = req;
 
-  const ua = req.headers["user-agent"];
+  const ua = req.headers['user-agent'];
   const {os} = parser(ua);
 
   const subdomainRef = ref.child(subdomain);
@@ -79,4 +70,4 @@ module.exports = async function() {
       status: 'OK'
     });
   }
-}
+};

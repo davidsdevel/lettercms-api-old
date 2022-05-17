@@ -45,7 +45,7 @@ module.exports = async function() {
     tags: ['example'],
     content: '<div>Hello World</div>',
     authorEmail: ownerEmail
-  })
+  });
 
   //Make Public
   await posts.publishPost({id}, req.body);
@@ -54,4 +54,4 @@ module.exports = async function() {
     id: blog._id,
     status: 'OK'
   });
-}
+};

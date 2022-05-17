@@ -15,4 +15,4 @@ module.exports = async function() {
     'gjs-css': data.css || '',
     'gjs-styles': data.styles || ''
   });
-}
+};

@@ -23,4 +23,4 @@ module.exports = async function() {
   res.json({
     status: 'OK'
   });
-}
+};

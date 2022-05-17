@@ -1,5 +1,4 @@
 const {blogs} = require('@lettercms/models');
-const {isValidObjectId} = require('mongoose');
 
 module.exports = async function() {
   const {
@@ -26,4 +25,4 @@ module.exports = async function() {
   res.json({
     status:'not-modified'
   });
-}
+};

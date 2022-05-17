@@ -27,11 +27,11 @@ module.exports = async function() {
   if (isId)
     condition._id = emailHex;
   else
-    condition.email = Buffer.from(emailHex, "hex").toString('utf-8');
+    condition.email = Buffer.from(emailHex, 'hex').toString('utf-8');
 
   await accounts.Accounts.updateOne(condition, req.body);
 
   res.json({
     status: 'OK'
   });
-}
+};

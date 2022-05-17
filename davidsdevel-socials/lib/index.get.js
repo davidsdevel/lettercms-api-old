@@ -1,4 +1,5 @@
 const {socials} = require('@lettercms/models');
+const {Facebook, Instagram} = require('./social');
 
 module.exports = async function() {
   const {req, res} = this;
@@ -7,7 +8,7 @@ module.exports = async function() {
 
   const feeds = req.query.feeds ? req.query.feeds : '';
 
-  const data = {}
+  const data = {};
 
   const promises = [];
 
@@ -57,4 +58,4 @@ module.exports = async function() {
   } catch(err) {
     res.status(500).send(err);
   }
-}
+};

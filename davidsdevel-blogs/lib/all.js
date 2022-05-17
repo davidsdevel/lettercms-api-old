@@ -13,4 +13,4 @@ module.exports = async function() {
   const data = await find(query, blogs, {});
 
   res.json(data);
-}
+};

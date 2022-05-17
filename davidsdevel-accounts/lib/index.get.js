@@ -30,4 +30,4 @@ module.exports = async function() {
   }, accounts.Accounts, conditions);
 
   res.json(data);
-}
+};

@@ -25,7 +25,7 @@ class FacebookSDK extends Base {
     };
 
     if (link)
-      fetchOptions.link = link
+      fetchOptions.link = link;
 
     if (schedule) {
       fetchOptions.scheduled_publish_time = schedule;
@@ -39,7 +39,7 @@ class FacebookSDK extends Base {
     else
       fetchOptions.published = published.toString();
 
-    console.log(fetchOptions)
+    console.log(fetchOptions);
 
     return this._baseRequest(`/${this.ID}/feed`, 'POST', fetchOptions);
   }

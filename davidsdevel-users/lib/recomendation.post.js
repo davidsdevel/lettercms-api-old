@@ -4,11 +4,10 @@ var ger = new g.GER(esm);*/
 
 module.exports = async function() {
   const {
-    req,
     res
   } = this;
 
-  const {
+  /*const {
     id
   } = req.query;
   const {subdomain} = req;
@@ -22,9 +21,9 @@ module.exports = async function() {
   const month = date.getUTCMonth();
   const year = date.getFullYear();
 
-  const expires_at = `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`
+  const expires_at = `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
   
-  /*await ger.events([
+  await ger.events([
     {
       namespace: subdomain,
       person: id,
@@ -37,4 +36,4 @@ module.exports = async function() {
   res.json({
     status: 'OK'
   });
-}
+};

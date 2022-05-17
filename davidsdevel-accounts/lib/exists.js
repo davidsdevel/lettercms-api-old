@@ -7,4 +7,4 @@ module.exports = async function() {
     this.res.sendStatus(200);
   else
     this.res.sendStatus(404);
-}
+};

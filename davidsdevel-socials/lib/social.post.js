@@ -9,7 +9,7 @@ module.exports = async function() {
 
   const {feed, message, images} = req.body;
 
-  console.log(req.body)
+  console.log(req.body);
 
   const hasIg = feed === 'instagram';
 
@@ -28,7 +28,7 @@ module.exports = async function() {
     try {
 
     const data = await fb.publishPost(message, req.body);
-    console.log(data)
+    console.log(data);
     } catch(err) {
       console.log(err);
       return res.status(500).send(err);
@@ -48,5 +48,5 @@ module.exports = async function() {
     await ig.publishPost(message, images[0]);
   }
 
-  res.json({status: 'OK'})
-}
+  res.json({status: 'OK'});
+};

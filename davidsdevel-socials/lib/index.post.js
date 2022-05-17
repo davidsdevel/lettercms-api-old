@@ -8,7 +8,7 @@ module.exports = async function() {
 
   const {feeds, message, images} = req.body;
 
-  const hasIg = feeds.indexOf('instagram') > -1
+  const hasIg = feeds.indexOf('instagram') > -1;
 
   if (hasIg && !images && images.length !== 1) 
     return res.json({
@@ -35,4 +35,4 @@ module.exports = async function() {
 
     await ig.publishPost(message, images[0]);
   }
-}
+};

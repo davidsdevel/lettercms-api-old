@@ -15,4 +15,4 @@ module.exports = async function() {
     return res.status(404).json({message: 'Invitation not found'});
 
   return res.json(data);
-}
+};

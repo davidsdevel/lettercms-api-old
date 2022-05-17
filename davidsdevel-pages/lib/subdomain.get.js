@@ -16,4 +16,4 @@ module.exports = async function() {
   const pages = await find(req.query, pagesModel, condition);
 
   res.json(pages);
-}
+};

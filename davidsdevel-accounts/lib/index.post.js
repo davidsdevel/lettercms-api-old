@@ -1,6 +1,7 @@
 const {accounts} = require('@lettercms/models');
 const jwt = require('jsonwebtoken');
 const {sendMail} = require('@lettercms/utils');
+const {writeFileSync} = require('fs');
 
 module.exports = async function() {
   const {req,res} = this;
@@ -17,7 +18,7 @@ module.exports = async function() {
 
   const existsAccount = await accounts.Accounts.exists({
     email
-  })
+  });
 
   if (existsAccount)
     return res.json({
@@ -28,17 +29,20 @@ module.exports = async function() {
   const code = jwt.sign(req.body, process.env.JWT_AUTH, { expiresIn: 60 * 5 });
 
   try {
-    await sendMail(req.body.email, `${req.body.name} verifica tu cuenta - LetterCMS`, {
-      type: 'verify',
-      url: `https://lettercms-api-staging.herokuapp.com/api/account/verify?token=${code}`,
-      ...req.body
-    });
+    if (process.env.NODE_ENV !== 'production')
+      writeFileSync('verificationURL.txt', `https://lettercms-api-staging.herokuapp.com/api/account/verify?token=${code}&e=${Buffer.from(req.body.email).toString('hex')}`);
+    else
+      await sendMail(req.body.email, `${req.body.name} verifica tu cuenta - LetterCMS`, {
+        type: 'verify',
+        url: `https://lettercms-api-staging.herokuapp.com/api/account/verify?token=${code}&e=${Buffer.from(req.body.email).toString('hex')}`,
+        ...req.body
+      });
   } catch(err) {
     return res.status(500).json({
       status: 'error',
       message: 'Error Sending Email'
-    })
+    });
   }
   
   res.json({ status: 'OK' });
-}
+};

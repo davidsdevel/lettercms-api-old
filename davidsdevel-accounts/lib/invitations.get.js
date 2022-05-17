@@ -9,5 +9,5 @@ module.exports = async function() {
 
   const data = await find(query, accounts.Invitations, {subdomain});
 
-  res.json(data)
-}
+  res.json(data);
+};

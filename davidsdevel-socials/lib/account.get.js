@@ -43,4 +43,4 @@ module.exports = async function() {
   }
 
   res.json(socials);
-}
+};

@@ -21,7 +21,7 @@ module.exports = async function() {
     return res.status(400).json({
       status: 'no-id',
       message: 'Request must have "id" or "email"'
-    })
+    });
 
   const existsInvitation = await accounts.Invitations.exists(options);
 
@@ -34,4 +34,4 @@ module.exports = async function() {
     status: 'OK',
     message: `Invitation ${id ? id : `to "${email}"`} deleted`
   });
-}
+};

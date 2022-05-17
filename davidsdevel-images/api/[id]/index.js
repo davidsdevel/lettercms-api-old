@@ -20,7 +20,7 @@ const GET = async function() {
   const file = await findSingle(req.query, images, condition);
 
   res.json(file);
-}
+};
 
 module.exports= manageMethods({
   GET

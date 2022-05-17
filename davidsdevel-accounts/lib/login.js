@@ -1,14 +1,8 @@
 const {accounts} = require('@lettercms/models');
+const firebase = require('../../firebaseInit');
+const {getAuth} = require('firebase-admin/auth');
 
-process.env.GOOGLE_APPLICATION_CREDENTIALS = join(process.cwd(), 'davidsdevel-accounts', 'firebaseAdmin.json');
-
-const { initializeApp, applicationDefault } = require('firebase-admin/app');
-const { getAuth } = require('firebase-admin/auth');
-
-initializeApp({
-  credential: applicationDefault(),
-  databaseURL: 'https://lettercms-1-default-rtdb.firebaseio.com'
-});
+const app = firebase.init();
 
 module.exports = async function() {
   const {
@@ -30,10 +24,10 @@ module.exports = async function() {
   const data = await accounts.Accounts.login(email, password);
 
   if (body._includeFirebase) {
-    const auth = getAuth();
+    const auth = getAuth(app);
 
     data.firebaseToken = await auth.createCustomToken('lettercms');
   }
 
   res.json(data);
-}
+};
