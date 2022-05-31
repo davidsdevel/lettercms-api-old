@@ -14,7 +14,7 @@ module.exports = {
   },
   ignorePatterns: ['testing/*'],
   parserOptions: {
-    sourceType: 'commonjs',
+    sourceType: 'module',
     ecmaFeatures: {
       jsx: false,
     },
@@ -29,5 +29,5 @@ module.exports = {
     curly: 'off',
     'no-buffer-constructor': 'error',
     'no-var': 'error'
-  },
+  }
 };

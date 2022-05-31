@@ -37,7 +37,6 @@ app
   .use(express.urlencoded({ extended: true }))
   .use(express.json())
   .use((req, res, next) => {
-    console.log(req.path);
     req.query = Object.assign({}, req.query, req.params);
     res.old_json = res.json;
 

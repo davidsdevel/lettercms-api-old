@@ -1,8 +1,8 @@
 const {stats, posts} = require('@lettercms/models');
 
 Object.prototype.increment = function(key, value) {
-  this[key] = this[key] ? this[key] + value : value
-}
+  this[key] = this[key] ? this[key] + value : value;
+};
 
 const days = [
   'Sunday',
@@ -51,6 +51,21 @@ const initialDaysCounts = {
   Saturday: 0
 };
 
+const generateHour = date => {
+  let hour = date.getHours();
+
+  if (hour < 12)
+    hour = `${hour}AM`;
+  else if (hour === 12)
+    hour = `${hour}M`;
+  else if (hour > 12)
+    hour = `${hour - 12}PM`;
+  else if (hour === 0)
+    hour = '12AM';
+
+  return hour;
+}
+
 const generateDates = (daysCount, dateEnd) => {
   const dates = {};
 
@@ -65,7 +80,7 @@ const generateDates = (daysCount, dateEnd) => {
     }
 
     return dates;
-}
+};
 
 const generateRanges = (start, end) => {
   const dateEnd = end ? new Date(end) : Date.now();
@@ -75,8 +90,8 @@ const generateRanges = (start, end) => {
     dateEnd,
     dateStart,
     diff: (dateEnd - dateStart) / (1000 * 60 * 60 * 24)
-  }
-}
+  };
+};
 
 module.exports = async function() {
   const {
@@ -188,18 +203,8 @@ module.exports = async function() {
     }
 
     if (hasHours) {
-      let hour = e.time.getHours();
-
-      if (hour < 12) {
-        hour = `${hour}AM`;
-      } else if (hour === 12) {
-        hour = `${hour}M`;
-      } else if (hour > 12) {
-        hour = `${hour - 12}PM`;
-      } else if (hour === 0) {
-        hour = '12AM';
-      }
-      data.hours[hour] = data.hours[hour] + 1;
+      const hour = generateHour(e.time);
+      data.hours.increment(hour, 1);
     }
 
     if (hasDays) {
@@ -213,14 +218,14 @@ module.exports = async function() {
 
       const dateMonth = `${date < 10 ? '0' + date : date}-${month < 10 ? '0' + month : month}`;
 
-      data.dates.increment(dateMonth, 1)
+      data.dates.increment(dateMonth, 1);
     }
 
     if (hasOs)
       data.browsers.increment(e.os, 1);
 
     if (hasCountries)
-      data.browsers.increment(e.country, 1)
+      data.browsers.increment(e.country, 1);
 
     if (hasBrowsers)
       data.browsers.increment(e.browser, 1);

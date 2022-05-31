@@ -1,5 +1,5 @@
 const fetch = require('node-fetch');
-const {checkVerification} = require('../checkFirebase')
+const {checkVerification} = require('../checkFirebase');
 
 const baseRequest = {
   headers: {

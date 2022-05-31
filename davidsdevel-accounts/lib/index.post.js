@@ -13,7 +13,8 @@ module.exports = async function() {
     return res.sendStatus(401);
 
   const {
-    email
+    email,
+    isSubscribeToNewsletter
   } = req.body;
 
   const existsAccount = await accounts.Accounts.exists({
@@ -25,6 +26,25 @@ module.exports = async function() {
       code: 'email-exists',
       message: 'Email already exists'
     });
+
+
+  if (isSubscribeToNewsletter) {
+    try {
+      await accounts.Accounts.create({
+        email,
+        isSubscribeToNewsletter
+      });
+
+      return res.json({
+        status: 'OK'
+      });
+
+    } catch(err) {
+      return res.status(500).json({
+        message: 'Error al subscribir'
+      });
+    }
+  }
 
   const code = jwt.sign(req.body, process.env.JWT_AUTH, { expiresIn: 60 * 5 });
 
