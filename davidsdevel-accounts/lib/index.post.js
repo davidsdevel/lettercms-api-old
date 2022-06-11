@@ -2,6 +2,7 @@ const {accounts} = require('@lettercms/models');
 const jwt = require('jsonwebtoken');
 const {sendMail} = require('@lettercms/utils');
 const {writeFileSync} = require('fs');
+const {join} = require('path')
 
 module.exports = async function() {
   const {req,res} = this;
@@ -50,7 +51,7 @@ module.exports = async function() {
 
   try {
     if (process.env.NODE_ENV !== 'production')
-      writeFileSync('verificationURL.txt', `https://lettercms-api-staging.herokuapp.com/api/account/verify?token=${code}&e=${Buffer.from(req.body.email).toString('hex')}`);
+      writeFileSync(join(process.cwd(), 'verificationURL.txt'), `https://lettercms-api-staging.herokuapp.com/api/account/verify?token=${code}&e=${Buffer.from(req.body.email).toString('hex')}`);
     else
       await sendMail(req.body.email, `${req.body.name} verifica tu cuenta - LetterCMS`, {
         type: 'verify',

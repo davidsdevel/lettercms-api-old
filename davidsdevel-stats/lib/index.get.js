@@ -1,17 +1,17 @@
 const {stats, posts} = require('@lettercms/models');
 
-Object.prototype.increment = function(key, value) {
+function increment(key, value) {
   this[key] = this[key] ? this[key] + value : value;
-};
+}
 
 const days = [
-  'Sunday',
-  'Monday',
+  'Domingo',
+  'Lunes',
   'Martes',
   'Miercoles',
   'Jueves',
-  'Friday',
-  'Saturday',
+  'Viernes',
+  'Sabado'
 ];
 
 const hours = {
@@ -42,13 +42,13 @@ const hours = {
 };
 
 const initialDaysCounts = {
-  Sunday: 0,
-  Monday: 0,
+  Domingo: 0,
+  Lunes: 0,
   Martes: 0,
   Miercoles: 0,
   Jueves: 0,
-  Friday: 0,
-  Saturday: 0
+  Viernes: 0,
+  Sabado: 0
 };
 
 const generateHour = date => {
@@ -161,8 +161,10 @@ module.exports = async function() {
     data.views = {};
   if (hasDates)
     data.dates = generateDates(diff, dateEnd);  
-  if (hasGeneral)
-    data.general = await stats.Stats.findOne({subdomain});
+  if (hasGeneral) {
+    data.general = await stats.Stats.findOne({subdomain}, null, {lean: true});
+    data.general.bounceRate = (data.general.bounces / data.general.totalViews * 100).toFixed(1);
+  }
   if (hasMostCommented)
     data.mostCommented = await posts.findOne({subdomain}, 'thumbnail title views comments url', {
       sort: {
@@ -199,12 +201,12 @@ module.exports = async function() {
   views.forEach(async e => {
     if (hasGrowth) {
       if (e.time > week && !end)
-        data.increment('growht', 1);
+        increment.call(data, 'growht', 1);
     }
 
     if (hasHours) {
       const hour = generateHour(e.time);
-      data.hours.increment(hour, 1);
+      increment.call(data.hours, hour, 1);
     }
 
     if (hasDays) {
@@ -218,20 +220,20 @@ module.exports = async function() {
 
       const dateMonth = `${date < 10 ? '0' + date : date}-${month < 10 ? '0' + month : month}`;
 
-      data.dates.increment(dateMonth, 1);
+      increment.call(data.dates, dateMonth, 1);
     }
 
     if (hasOs)
-      data.browsers.increment(e.os, 1);
+      increment.call(data.os, e.os, 1);
 
     if (hasCountries)
-      data.browsers.increment(e.country, 1);
+      increment.call(data.countries, e.country, 1);
 
     if (hasBrowsers)
-      data.browsers.increment(e.browser, 1);
+      increment.call(data.browsers, e.browser, 1);
 
     if (hasViews || hasMostViewed)
-      data.views.increment(e.url, 1);
+      increment.call(data.views, e.url, 1);
     
   });
 
