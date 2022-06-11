@@ -30,15 +30,9 @@ module.exports = async function() {
       
   await posts.updateOne({url, subdomain}, {$inc: {views: 1}});
 
-<<<<<<< HEAD
-  await posts.Stats.updateOne({subdomain}, {$inc: {totalViews: 1}});
-
-  await posts.Views.create({
-=======
   await stats.Stats.updateOne({subdomain}, {$inc: {totalViews: 1}});
 
   await stats.Views.create({
->>>>>>> 6baba5a4ede63f76da4bb88754918282eebfd2dc
     subdomain,
     country: countryName,
     os: os.name ||'Unknown',

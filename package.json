@@ -27,7 +27,7 @@
   "homepage": "https://gitlab.com/lettercms/api#readme",
   "dependencies": {
     "@lettercms/admin": "0.0.2",
-    "@lettercms/models": "0.0.8",
+    "@lettercms/models": "0.0.9",
     "@lettercms/sdk": "0.0.5",
     "@lettercms/utils": "1.0.11",
     "cors": "^2.8.5",
