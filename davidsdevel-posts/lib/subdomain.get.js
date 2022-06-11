@@ -19,7 +19,7 @@ const getFullUrl = (url, urlID, data) => {
   const date = data.published.getDate();
 
   return `/${year}/${month}/${date}/${url}`;
-}
+};
 
 module.exports = async function() {
   const {
@@ -54,11 +54,11 @@ module.exports = async function() {
     return {
       ...e,
       fullUrl
-    }
+    };
   });
   
   if (req.get('origin') === ORIGIN)
     posts.recommended = await postModel.findOne(condition, null, {views: 'asc'});
 
   res.json(posts);
-}
+};

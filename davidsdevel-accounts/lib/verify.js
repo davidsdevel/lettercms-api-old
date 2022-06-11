@@ -1,20 +1,17 @@
-const {join} = require('path');
 const crypto = require('crypto');
 
-process.env.GOOGLE_APPLICATION_CREDENTIALS = join(process.cwd(), 'davidsdevel-accounts', 'firebaseAdmin.json');
-
 const {accounts} = require('@lettercms/models');
-const {initializeApp, applicationDefault} = require('firebase-admin/app');
-const {getDatabase} = require('firebase-admin/database');
+const firebase = require('../../firebaseInit');
+const { getDatabase } = require('firebase-admin/database');
 const jwt = require('jsonwebtoken');
 
-initializeApp({
-  credential: applicationDefault(),
-  databaseURL: 'https://lettercms-1-default-rtdb.firebaseio.com'
-});
-
-const db = getDatabase();
+const app = firebase.init();
+const db = getDatabase(app);
 const ref = db.ref().child('verifications');
+
+const isDev = process.env.NODE_ENV !== 'production';
+
+let sendVerification = isDev ? console.log : ref.push;
 
 module.exports = async function() {
   const {
@@ -22,13 +19,29 @@ module.exports = async function() {
     res
   } = this;
 
+  if (!req.query.e)
+    res.status(400).json({
+      status: 'bad-request',
+      message: 'You must set a valid "e" query into url'
+    });
+
   try {
     const decoded = jwt.verify(req.query.token, process.env.JWT_AUTH);
 
     delete decoded.exp;
     delete decoded.iat;
 
-    ref.push({
+    const existsAccount = await accounts.Accounts.exists({
+      email: decoded.email
+    });
+
+    if (existsAccount)
+      return res.json({
+        status: 'aready-exists',
+        message: `Account with email "${decoded.email}" already exists`
+      });
+
+    sendVerification({
       email: decoded.email,
       name: decoded.name,
       status: 'verified'
@@ -43,33 +56,46 @@ module.exports = async function() {
   } catch(err) {
     switch(err.message) {
       case 'jwt expired':
+<<<<<<< HEAD
         ref.push({
           email: decoded.email,
+=======
+        sendVerification({
+          email: Buffer.from(req.query.e, 'hex').tostring('utf-8'),
+>>>>>>> development
           status: 'expired'
         });
         break;
       case 'invalid token':
+<<<<<<< HEAD
         ref.push({
           email: decoded.email,
+=======
+        sendVerification({
+          email: Buffer.from(req.query.e, 'hex').tostring('utf-8'),
+>>>>>>> development
           status: 'bad-token'
         });
         break;
       case 'invalid signature':
+<<<<<<< HEAD
         ref.push({
           email: decoded.email,
+=======
+        sendVerification({
+          email: Buffer.from(req.query.e, 'hex').tostring('utf-8'),
+>>>>>>> development
           status: 'invalid-signature'
         });
         break;
       default:
-        throw err
+        throw err;
     }
   } finally {
-    res.send(`
-      <html>
-        <body>
-          <script>window.close()</script>
-        </body>
-      </html>
-    `);
+    res.send('<html><body><script>window.close()</script></body></html>');
   }
+<<<<<<< HEAD
 }
+=======
+};
+>>>>>>> development

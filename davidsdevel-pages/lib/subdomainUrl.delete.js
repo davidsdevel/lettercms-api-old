@@ -2,7 +2,7 @@ const {pages} = require('@lettercms/models');
 const {isValidObjectId} = require('mongoose');
 
 module.exports = async function() {
-  const {req, res, findSingle} = this;
+  const {req, res} = this;
 
   const {url} = req.query;
   const {subdomain} = req;
@@ -23,4 +23,4 @@ module.exports = async function() {
   res.json({
     status: 'OK'
   });
-}
+};

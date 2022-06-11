@@ -1,15 +1,22 @@
 const {posts} = require('@lettercms/models');
+const {sendMail} = require('@lettercms/utils');
 
 module.exports = async function() {
-  const {req, res} = this;
+  const {
+    req: {
+      body,
+      subdomain
+    },
+    res
+  } = this;
 
-  const {subdomain} = req;
-  const {status} = req.query;
+  const id = await posts.createPost(subdomain, body);
 
-  const id = await posts.createPost(subdomain, req.body);
+  //TODO send bulk mail when post
+  //TODO send firebase messaging notification when post
 
   res.json({
     status: 'OK',
     id
   });
-}
+};

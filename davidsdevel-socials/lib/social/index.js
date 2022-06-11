@@ -4,4 +4,4 @@ const Instagram = require('./Instagram');
 module.exports = {
   Facebook,
   Instagram
-}
+};

@@ -4,11 +4,10 @@ var ger = new g.GER(esm);
 */
 
 module.exports = async function() {
-  /*const {
-    req,
+ const {
     res
   } = this;
-
+  /*
   const {
     id,
     fields
@@ -27,4 +26,4 @@ module.exports = async function() {
   const post = await posts.single(recommendation[0].thing, fields ? fields.split(',') : null);
 */
   res.json({});
-}
+};

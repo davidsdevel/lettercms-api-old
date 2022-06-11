@@ -3,7 +3,6 @@ const {users} = require('@lettercms/models');
 module.exports = async function() {
   const {
     req: {
-      subdomain,
       body: {
         from,
         to
@@ -43,4 +42,4 @@ module.exports = async function() {
   res.json({
     status: 'OK'
   });
-}
+};

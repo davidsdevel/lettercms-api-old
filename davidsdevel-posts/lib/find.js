@@ -1,35 +1,43 @@
 const {posts, blogs} = require('@lettercms/models');
-const {isValidObjectId} = require('mongoose');
-const jwt = require('jsonwebtoken');
+
+const appendOnFields = (fields, field) => {
+  const splittedFields = fields.split(',');
+  if (splittedFields.indexOf(field) === -1) {
+    splittedFields.push(field);
+    return splittedFields.join(',');
+  }
+};
 
 const getFullUrl = (url, urlID, data) => {
+  const base = process.env.ENV === 'staging' ? `/${data.subdomain}`  : '';
+
   if (urlID == '1')
-    return `/${url}`;
+    return `${base}/${url}`;
+
   if (urlID == '2')
-    return `/${data.category}/${url}`;
+    return `${base}/${data.category}/${url}`;
 
   const year = data.published.getFullYear();
   const month = data.published.getMonth() + 1;
 
   if (urlID == '3')
-    return `/${year}/${month}/${url}`;
+    return `${base}/${year}/${month}/${url}`;
 
   const date = data.published.getDate();
 
-  return `/${year}/${month}/${date}/${url}`;
-}
+  return `${base}/${year}/${month}/${date}/${url}`;
+};
 
 module.exports = async function() {
-  const {req, res, findSingle} = this;
+  const {req: {subdomain, query}, res, findSingle} = this;
 
-  const {subdomain} = req;
   const {
     url,
     category,
     day,
     month,
     year
-  } = req.query;
+  } = query;
 
   const conditions = {
     subdomain,
@@ -40,9 +48,8 @@ module.exports = async function() {
 
   if (category)
     conditions.category = category;
-  if (day) {
+  if (day)
     conditions.$where = `this.published.getDate() === ${day}`;
-  }
   if (month) {
     let str = `this.published.getMonth() === ${month - 1}`;
     conditions.$where = conditions.$where ? [conditions.$where,  str].join(' && ') : str;
@@ -53,12 +60,14 @@ module.exports = async function() {
   }
 
   let data;
+  if (query.fields)
+    query.fields = appendOnFields(query.fields, 'subdomain');
 
   if (!category && !day && !month && !year) {
     const isId = /[a-z,0-9]{12}/i.test(url) || /[a-z,0-9]{24}/i.test(url);
 
     if (isId) {
-      data = await findSingle(req.query, posts, {
+      data = await findSingle(query, posts, {
         _id: url
       });
 
@@ -78,16 +87,10 @@ module.exports = async function() {
     }
   }
 
-  if (req.query.fields) {
-    const fields = req.query.fields.split(',');
+  if (query.fields)  
+    query.fields = appendOnFields(query.fields, 'published');
 
-    if (fields.indexOf('fullUrl') >= 0 && fields.indexOf('published') < 0)
-      fields.push('published');
-    
-    req.query.fields = fields.join(',');
-  }
-
-  data = await findSingle(req.query, posts, conditions);
+  data = await findSingle(query, posts, conditions);
 
   if (data === null)
     res.status(404).json({
@@ -103,4 +106,4 @@ module.exports = async function() {
       fullUrl
     });
   }
-}
+};

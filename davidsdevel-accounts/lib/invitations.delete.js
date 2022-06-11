@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-const {accounts} = require(process.cwd() + '/mongo');
-=======
 const {accounts} = require('@lettercms/models');
->>>>>>> 6baba5a4ede63f76da4bb88754918282eebfd2dc
 
 module.exports = async function() {
   const {
@@ -25,7 +21,7 @@ module.exports = async function() {
     return res.status(400).json({
       status: 'no-id',
       message: 'Request must have "id" or "email"'
-    })
+    });
 
   const existsInvitation = await accounts.Invitations.exists(options);
 
@@ -38,4 +34,4 @@ module.exports = async function() {
     status: 'OK',
     message: `Invitation ${id ? id : `to "${email}"`} deleted`
   });
-}
+};

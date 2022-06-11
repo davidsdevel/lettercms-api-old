@@ -17,7 +17,7 @@ module.exports = async function() {
     return res.json({
       status: 'not-invited',
       messages: 'Collaborator not invited'
-    })
+    });
 
   if (invitation.expireIn < Date.now())
     return res.json({
@@ -36,4 +36,4 @@ module.exports = async function() {
   res.json({
     status: 'OK'
   });
-}
+};

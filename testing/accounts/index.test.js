@@ -1,6 +1,6 @@
-const sdk = require('../../SDK');
-const admin = require('../../../sdk-admin');
-const Model = require('../../davidsdevel-accounts/lib/database');
+const fetch = require('node-fetch');
+
+
 
 sdk.setAccessToken(ACCESS_TOKEN);
 
@@ -32,7 +32,7 @@ describe('Accounts API Testing', () => {
     expect(blogRes).toMatchObject({
       id: /[a-z0-9]{24}/i,
       message: 'OK'
-    });    
+    });
   });
 
   test('POST - Create Existing Account', async () => {

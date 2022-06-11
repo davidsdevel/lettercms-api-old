@@ -1,33 +1,42 @@
 const {stats} = require('@lettercms/models');
-const parser = require("ua-parser-js");
-const {join} = require('path')
+const firebase = require('../../firebaseInit');
+const {getDatabase} = require('firebase-admin/database');
+const parser = require('ua-parser-js');
 
-process.env.GOOGLE_APPLICATION_CREDENTIALS = join(process.cwd(), 'davidsdevel-accounts', 'firebaseAdmin.json');
-
-const { initializeApp, applicationDefault } = require('firebase-admin/app');
-const { getDatabase } = require('firebase-admin/database');
-
-initializeApp({
-  credential: applicationDefault(),
-  databaseURL: 'https://lettercms-1-default-rtdb.firebaseio.com'
-});
-
-const db = getDatabase();
+const app = firebase.init();
+const db = getDatabase(app);
 const ref = db.ref().child('stats');
+
+/*fetch('http://localhost:3009/api/stats/session', {
+  method: 'POST',
+  headers: {
+    Authorization: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWJkb21haW4iOiJkYXZpZHNkZXZlbCIsImFjY291bnQiOiI2MjljNDM1M2U1ZDQ4NzA3NDQ0YzVmZjIiLCJpYXQiOjE2NTQ5MDUxNjN9.ErUqAL02Zm_cO8q-8EJD9g6WPe55hxm1bC8Kgvuv4CM',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    action: 'end',
+    routes: ['route1', 'route2'],
+    sessionTime: 600
+  })
+})*/
 
 module.exports = async function() {
   const {req, res} = this;
 
   const {
-    sessionTime,
     routes,
-    action
+    action,
+    sessionTime,
+    entryChannel
   } = req.body;
 
   const {subdomain} = req;
 
-  const ua = req.headers["user-agent"];
+  const ua = req.headers['user-agent'];
+
+
   const {os} = parser(ua);
+  const device = /Android|iPhone|iPad/.test(ua) ? 'mobile' : 'desktop';
 
   const subdomainRef = ref.child(subdomain);
 
@@ -58,11 +67,13 @@ module.exports = async function() {
       });
     }
 
-    /*await stats.Sessions.create({
+    await stats.Sessions.create({
       sessionTime,
       routes,
-      subdomain
-    });*/
+      subdomain,
+      device,
+      entryChannel
+    });
 
     const statsData = await subdomainRef.get();
 
@@ -79,4 +90,4 @@ module.exports = async function() {
       status: 'OK'
     });
   }
-}
+};

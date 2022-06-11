@@ -15,7 +15,7 @@ class BaseSDK {
   }
   static async exchangeToken(token) {
     try {
-      const {access_token} = await createRequest(`/oauth/access_token`, 'POST', {
+      const {access_token} = await createRequest('/oauth/access_token', 'POST', {
         grant_type: 'fb_exchange_token',
         client_id: process.env.FB_APP_ID,
         client_secret: process.env.FB_APP_SECRET,

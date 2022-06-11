@@ -9,7 +9,6 @@ module.exports = async function() {
   await users.updateOne({url, subdomain}, req.body);
 
   res.json({
-    status: 'OK',
-    data
+    status: 'OK'
   });
-}
+};

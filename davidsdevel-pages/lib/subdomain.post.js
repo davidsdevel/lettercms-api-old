@@ -11,4 +11,4 @@ module.exports = async function() {
     status: 'OK',
     id
   });
-}
+};

@@ -1,4 +1,3 @@
-const {pages} = require(process.cwd() + '/mongo');
 const {pages} = require('@lettercms/models');
 const {isValidObjectId} = require('mongoose');
 
@@ -20,7 +19,6 @@ module.exports = async function() {
   }
 
   let data;
-  let id;
 
   delete req.body.action;
 
@@ -49,4 +47,4 @@ module.exports = async function() {
     status: 'OK',
     data
   });
-}
+};

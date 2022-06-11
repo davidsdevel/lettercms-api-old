@@ -14,4 +14,4 @@ module.exports = async function() {
     res.sendStatus(404);
   else
     res.json(data);
-}
+};

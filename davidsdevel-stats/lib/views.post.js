@@ -1,13 +1,12 @@
 const {stats, posts} = require('@lettercms/models');
-const parser = require("ua-parser-js");
+const parser = require('ua-parser-js');
 const geoip = require('geoip-lite');
-const countries = require("i18n-iso-countries");
+const countries = require('i18n-iso-countries');
 
 module.exports = async function() {
   const {
     req,
-    res,
-    Model
+    res
   }  = this;
 
   const {subdomain} = req;
@@ -16,9 +15,9 @@ module.exports = async function() {
     url
   } = req.body;
 
-  const ua = req.headers["user-agent"];
-  const {browser, os, device} = parser(ua);
-  const look = geoip.lookup(req.ip)
+  const ua = req.headers['user-agent'];
+  const {browser, os} = parser(ua);
+  const look = geoip.lookup(req.ip);
 
   const countryName = look ? countries.getName(look.country, 'en') : 'Unknown';
 
@@ -51,4 +50,4 @@ module.exports = async function() {
   res.json({
     status: 'OK'
   });
-}
+};

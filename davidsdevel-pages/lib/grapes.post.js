@@ -1,16 +1,14 @@
 const {pages} = require('@lettercms/models');
 
 module.exports = async function() {
-  const {req, res} = this;
-
-  const {subdomain} = req;
-  const {_id} = req.query;
+  const {req: {body, query}, res} = this;
+  const {_id} = query;
 
   //TODO: Only Used by Letter CMS
-  const components = req.body['gjs-components'];
-  const html = req.body['gjs-html'];
-  const css = req.body['gjs-css'];
-  const styles = req.body['gjs-styles'];
+  const components = body['gjs-components'];
+  const html = body['gjs-html'];
+  const css = body['gjs-css'];
+  const styles = body['gjs-styles'];
 
   await pages.updatePage({_id}, {
     components,
@@ -22,4 +20,4 @@ module.exports = async function() {
   res.json({
     status: 'OK'
   });
-}
+};

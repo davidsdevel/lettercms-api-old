@@ -21,7 +21,6 @@ const routerDebug = debug('router');
 const queryDebug = debug('query');
 const bodyDebug = debug('body');
 const debugResponse = debug('response');
-const debugServer = debug('server');
 
 const routesPath = generateRoutes();
 const routesHandlers = importHandlers(routesPath);
@@ -32,31 +31,30 @@ const corsOpts = {
   allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
   credentials: true,
   exposedHeaders: 'Authorization'
-}
+};
 
 app
   .use(express.urlencoded({ extended: true }))
   .use(express.json())
   .use((req, res, next) => {
-    console.log(req.path)
-    req.query = Object.assign({}, req.query, req.params)
+    req.query = Object.assign({}, req.query, req.params);
     res.old_json = res.json;
 
     res.json = resp => {
       debugResponse(resp);
       return res.old_json(resp);
-    }
+    };
 
     routerDebug(req.method + ' - ' + req.url);
     bodyDebug(req.body);
     queryDebug(req.query);
 
-    next()
+    next();
   })
   .use(cors(corsOpts))
   .get('/', (req, res) => res.send(version));
 
-console.log(routesHandlers)
+console.log(routesHandlers);
 
 /*Object.entries(routesHandlers).forEach(([path, handler]) => app.all(path, (req, res, next) => {
   req.query = Object.assign({}, req.query, req.params);

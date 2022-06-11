@@ -1,6 +1,6 @@
 const app = require('./index');
 
-const PORT = process.env.PORT || 3009
+const PORT = process.env.PORT || 3009;
 
 /*if (process.env.NODE_ENV !== 'production') {
   https.createServer({

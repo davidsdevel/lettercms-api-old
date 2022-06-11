@@ -35,7 +35,6 @@ module.exports = async function() {
   }
 
   let data;
-  let id;
 
   delete req.body.action;
 
@@ -64,4 +63,4 @@ module.exports = async function() {
     status: 'OK',
     data
   });
-}
+};

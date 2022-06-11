@@ -20,4 +20,4 @@ module.exports = async function() {
   });
 
   res.json(data);
-}
+};

@@ -1,4 +1,4 @@
-const fetch = require('node-fetch')
+const fetch = require('node-fetch');
 const toQuery = require('@lettercms/sdk/cjs/lib/utils/objectToQueryString').default;
 
 const endpoint = 'https://graph.facebook.com';
@@ -9,7 +9,7 @@ module.exports = async (path, method, data) => {
   const dataParam = hasNotMethod ? method : data;
   const methodParam = hasNotMethod ? 'GET' : method;
   
-  const hasQuery = !!data
+  const hasQuery = !!data;
   const isGet = methodParam === 'GET';
 
   const query = toQuery(dataParam);
@@ -27,4 +27,4 @@ module.exports = async (path, method, data) => {
   } catch(err) {
     return Promise.reject(err);
   }
-} 
+}; 

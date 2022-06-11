@@ -1,18 +1,14 @@
-const {users} = require('@lettercms/models');
+const {users: usersModel} = require('@lettercms/models');
 
 module.exports = async function() {
-  const {req, res, find} = this;
+  const {req: {query, subdomain}, res, find} = this;
 
-  const {
-    status
-  } = req.query;
-  const {subdomain} = req;
 
   const condition = {
     subdomain
   };
 
-  const users = await find(req.query, users, condition);
+  const users = await find(query, usersModel, condition);
 
   res.json(users);
-}
+};

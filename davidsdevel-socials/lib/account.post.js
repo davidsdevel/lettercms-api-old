@@ -37,7 +37,7 @@ module.exports = async function() {
         username,
         cover: cover.source,
         picture: `https://graph.facebook.com/${pageID}/picture`
-      }
+      };
 
       await socials.Facebook.create(account);
     }
@@ -60,7 +60,7 @@ module.exports = async function() {
         name,
         username,
         picture: profile_picture_url
-      }
+      };
 
       await socials.Instagram.create(account);
     }
@@ -70,4 +70,4 @@ module.exports = async function() {
       ...account
     });
   }
-}
+};
