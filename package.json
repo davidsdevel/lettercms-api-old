@@ -29,7 +29,7 @@
     "@lettercms/admin": "0.0.2",
     "@lettercms/models": "0.0.9",
     "@lettercms/sdk": "0.0.5",
-    "@lettercms/utils": "1.0.11",
+    "@lettercms/utils": "1.0.12",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "firebase-admin": "^10.0.2",

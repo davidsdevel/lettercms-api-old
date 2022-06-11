@@ -56,35 +56,20 @@ module.exports = async function() {
   } catch(err) {
     switch(err.message) {
       case 'jwt expired':
-<<<<<<< HEAD
-        ref.push({
-          email: decoded.email,
-=======
         sendVerification({
           email: Buffer.from(req.query.e, 'hex').tostring('utf-8'),
->>>>>>> development
           status: 'expired'
         });
         break;
       case 'invalid token':
-<<<<<<< HEAD
-        ref.push({
-          email: decoded.email,
-=======
         sendVerification({
           email: Buffer.from(req.query.e, 'hex').tostring('utf-8'),
->>>>>>> development
           status: 'bad-token'
         });
         break;
       case 'invalid signature':
-<<<<<<< HEAD
-        ref.push({
-          email: decoded.email,
-=======
         sendVerification({
           email: Buffer.from(req.query.e, 'hex').tostring('utf-8'),
->>>>>>> development
           status: 'invalid-signature'
         });
         break;
@@ -94,8 +79,4 @@ module.exports = async function() {
   } finally {
     res.send('<html><body><script>window.close()</script></body></html>');
   }
-<<<<<<< HEAD
-}
-=======
 };
->>>>>>> development
