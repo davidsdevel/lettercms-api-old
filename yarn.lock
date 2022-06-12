@@ -634,10 +634,10 @@
     ibm-cos-sdk "^1.11.0"
     yargs "^3.4.5"
 
-"@lettercms/models@0.0.8":
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/@lettercms/models/-/models-0.0.8.tgz#256e807c5f60af52e38a846538b88abd16e3f1ba"
-  integrity sha512-UyL8edJyVAOYNzMSMuXksR3sV6iI1ECMJrN2SRslBs21kOJ4+9jp7ATR9cwOWCOHDhpcthK4gWVMr/oKnGEJyA==
+"@lettercms/models@0.0.9":
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/@lettercms/models/-/models-0.0.9.tgz#aadbc5c3314653cc461650071a8d70cc88f01a3d"
+  integrity sha512-vnel6CpO8hiOceDFQYlWILbfHsr9ypRQcT+ZbOeYl9miy8+ywAEzUYlqlAAif69ltDHmjWZgANq0Rxd57yj09g==
   dependencies:
     bcrypt "^5.0.1"
     formidable "^1.2.2"
@@ -658,10 +658,10 @@
     form-data "^3.0.0"
     isomorphic-unfetch "^3.1.0"
 
-"@lettercms/utils@1.0.11":
-  version "1.0.11"
-  resolved "https://registry.yarnpkg.com/@lettercms/utils/-/utils-1.0.11.tgz#7623caef2e05a1fd101219b10f3d0d06ac711bc1"
-  integrity sha512-gesxGe97VRH0ePYjgj27kTy6fCtl9zb29sAs07ObPxKeHFl+H+FDNJauSJEtScgMxTSo6/kHRovfuF04BVTlMQ==
+"@lettercms/utils@1.0.12":
+  version "1.0.12"
+  resolved "https://registry.yarnpkg.com/@lettercms/utils/-/utils-1.0.12.tgz#9ccd8a06e7b46ed88622310fdc9eba7e597dfa5f"
+  integrity sha512-ysv198gS+9qJ3qhK6BHo0vod5/PrfgSkrN2laz8lIM24ru+tUISXPSWPBecmrXJtlwCJDo3ECJ7UL6pMxrVa9g==
   dependencies:
     "@sentry/node" "^5.22.3"
     jsonwebtoken "^8.5.1"
@@ -5878,7 +5878,7 @@ safe-regex@^1.1.0:
   dependencies:
     ret "~0.1.10"
 
-"safer-buffer@>= 2.1.2 < 3", safer-buffer@^2.0.2, safer-buffer@^2.1.0, safer-buffer@~2.1.0:
+"safer-buffer@>= 2.1.2 < 3", "safer-buffer@>= 2.1.2 < 3.0.0", safer-buffer@^2.0.2, safer-buffer@^2.1.0, safer-buffer@~2.1.0:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
   integrity sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==

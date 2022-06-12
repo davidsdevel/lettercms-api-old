@@ -2,12 +2,15 @@ const {accounts} = require('@lettercms/models');
 
 module.exports = async function() {
   const {
-    req: {subdomain, query},
+    req: {subdomain, query, path},
     res,
     find
   } = this;
 
-  const data = await find(query, accounts.Invitations, {subdomain});
+  const data = await find({
+    ...query,
+    path
+  }, accounts.Invitations, {subdomain});
 
   res.json(data);
 };

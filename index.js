@@ -54,8 +54,6 @@ app
   .use(cors(corsOpts))
   .get('/', (req, res) => res.send(version));
 
-console.log(routesHandlers);
-
 /*Object.entries(routesHandlers).forEach(([path, handler]) => app.all(path, (req, res, next) => {
   req.query = Object.assign({}, req.query, req.params);
   console.log(req.query, req.params)

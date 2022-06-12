@@ -28,7 +28,7 @@ module.exports = async function() {
     find
   } = this;
 
-  const {subdomain} = req;
+  const {subdomain, path} = req;
   const {status} = req.query;
 
   const condition = {
@@ -43,7 +43,7 @@ module.exports = async function() {
   if (req.query.fields)
     req.query.fields += ',published';
 
-  const posts = await find({...req.query, posts:true}, postModel, condition);
+  const posts = await find({...req.query, posts:true, path}, postModel, condition);
 
   posts.data = posts.data.map(e => {
     let fullUrl;

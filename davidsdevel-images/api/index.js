@@ -4,7 +4,7 @@ const {images} = require('@lettercms/models');
 const POST = async function() {
   const {req, res} = this;
 
-  const {subdomain} = req;
+  const {subdomain, path} = req;
   const {url, name: reqName} = req.body;
 
   let name = reqName;
@@ -35,7 +35,10 @@ const GET = async function() {
 
   const {subdomain} = req; 
 
-  const data = await find(req.query, images, {subdomain});
+  const data = await find({
+    ...req.query,
+    path
+  }, images, {subdomain});
 
   res.json(data);
 };

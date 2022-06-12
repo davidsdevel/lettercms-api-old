@@ -2,7 +2,7 @@ const {blogs} = require('@lettercms/models');
 
 module.exports = async function() {
   const {
-    req: {isAdmin, query},
+    req: {isAdmin, query, path},
     res,
     find
   } = this;
@@ -10,7 +10,10 @@ module.exports = async function() {
   if (!isAdmin)
     return res.sendStatus(404);
 
-  const data = await find(query, blogs, {});
+  const data = await find({
+    ...query,
+    path
+  }, blogs, {});
 
   res.json(data);
 };

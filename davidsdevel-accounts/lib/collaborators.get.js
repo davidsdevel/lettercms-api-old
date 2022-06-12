@@ -7,10 +7,11 @@ module.exports = async function() {
     find
   } = this;
 
-  const {subdomain, account} = req;
+  const {subdomain, account, path} = req;
 
   const data = await find({
     ...req.query,
+    path,
     accounts: true
   }, accounts.Accounts, {
     subdomain,

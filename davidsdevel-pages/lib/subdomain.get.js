@@ -3,7 +3,7 @@ const {pages: pagesModel} = require('@lettercms/models');
 module.exports = async function() {
   const {req, res, find} = this;
 
-  const {subdomain} = req;
+  const {subdomain, path} = req;
   const {status} = req.query;
 
   const condition = {
@@ -13,7 +13,10 @@ module.exports = async function() {
   if (status)
     condition.pageStatus = status;
 
-  const pages = await find(req.query, pagesModel, condition);
+  const pages = await find({
+    ...req.query,
+    path
+  }, pagesModel, condition);
 
   res.json(pages);
 };
