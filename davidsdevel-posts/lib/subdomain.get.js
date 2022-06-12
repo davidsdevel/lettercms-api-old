@@ -1,25 +1,8 @@
 const {posts: postModel, blogs} = require('@lettercms/models');
+const getFullUrl = require('./getFullUrl');
 
 const isDev = process.env.NODE_ENV !== 'production';
-
 const ORIGIN = isDev ? 'http://localhost:3000' : 'https://lettercms-api-staging.herokuapp.com';
-
-const getFullUrl = (url, urlID, data) => {
-  if (urlID === '1')
-    return `/${url}`;
-  if (urlID === '2')
-    return `/${data.category}/${url}`;
-
-  const year = data.published.getFullYear();
-  const month = data.published.getMonth() + 1;
-
-  if (urlID === '3')
-    return `/${year}/${month}/${url}`;
-
-  const date = data.published.getDate();
-
-  return `/${year}/${month}/${date}/${url}`;
-};
 
 module.exports = async function() {
   const {
@@ -44,6 +27,17 @@ module.exports = async function() {
     req.query.fields += ',published';
 
   const posts = await find({...req.query, posts:true, path}, postModel, condition);
+
+  const draft = await postModel.countDocuments({subdomain, postStatus: 'draft'});
+  const published = await postModel.countDocuments({subdomain, postStatus: 'published'});
+  const imported = await postModel.countDocuments({subdomain, postStatus: 'imported'});
+
+  posts.total = {
+    draft,
+    published,
+    imported,
+    all: draft + published + imported
+  };
 
   posts.data = posts.data.map(e => {
     let fullUrl;

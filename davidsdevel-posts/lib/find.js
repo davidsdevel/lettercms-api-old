@@ -1,32 +1,7 @@
+const getFullUrl = require('./getFullUrl');
+const appendOnFields = require('./appendOnFields');
 const {posts, blogs} = require('@lettercms/models');
 
-const appendOnFields = (fields, field) => {
-  const splittedFields = fields.split(',');
-  if (splittedFields.indexOf(field) === -1) {
-    splittedFields.push(field);
-    return splittedFields.join(',');
-  }
-};
-
-const getFullUrl = (url, urlID, data) => {
-  const base = process.env.ENV === 'staging' ? `/${data.subdomain}`  : '';
-
-  if (urlID == '1')
-    return `${base}/${url}`;
-
-  if (urlID == '2')
-    return `${base}/${data.category}/${url}`;
-
-  const year = data.published.getFullYear();
-  const month = data.published.getMonth() + 1;
-
-  if (urlID == '3')
-    return `${base}/${year}/${month}/${url}`;
-
-  const date = data.published.getDate();
-
-  return `${base}/${year}/${month}/${date}/${url}`;
-};
 
 module.exports = async function() {
   const {req: {subdomain, query}, res, findSingle} = this;

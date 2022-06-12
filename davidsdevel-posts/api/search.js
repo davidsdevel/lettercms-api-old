@@ -1,3 +1,6 @@
-module.exports = (req, res) => {
-	res.send(req.query.q);
-};
+const {manageMethods} = require('@lettercms/utils')
+const GET = require('../lib/search');
+
+module.exports = manageMethods({
+  GET
+});
