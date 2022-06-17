@@ -18,5 +18,14 @@ module.exports = async function() {
     path
   }, pagesModel, condition);
 
+  const draft = await pagesModel.countDocuments({subdomain, pageStatus: 'draft'});
+  const published = await pagesModel.countDocuments({subdomain, pageStatus: 'published'});
+
+  pages.total = {
+    draft,
+    published,
+    all: draft + published
+  };
+
   res.json(pages);
 };

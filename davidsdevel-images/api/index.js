@@ -33,7 +33,7 @@ const POST = async function() {
 const GET = async function() {
   const {req, res, find} = this;
 
-  const {subdomain} = req; 
+  const {subdomain, path} = req; 
 
   const data = await find({
     ...req.query,

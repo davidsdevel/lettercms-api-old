@@ -31,5 +31,15 @@ module.exports = async function() {
     accounts: true
   }, accounts.Accounts, conditions);
 
+  const collaborator = await accounts.Accounts.countDocuments({subdomain, role: 'collaborator'});
+  const single = await accounts.Accounts.countDocuments({subdomain, role: 'single'});
+
+  data.total = {
+    collaborator,
+    single,
+    all: collaborator + single
+  };
+
+
   res.json(data);
 };

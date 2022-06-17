@@ -1,6 +1,6 @@
 const getFullUrl = require('./getFullUrl');
 const appendOnFields = require('./appendOnFields');
-const {posts, blogs} = require('@lettercms/models');
+const {posts, blogs, accounts: {Accounts}} = require('@lettercms/models');
 
 
 module.exports = async function() {
@@ -13,6 +13,8 @@ module.exports = async function() {
     month,
     year
   } = query;
+
+  let {fields} = query;
 
   const conditions = {
     subdomain,
@@ -35,16 +37,25 @@ module.exports = async function() {
   }
 
   let data;
-  if (query.fields)
-    query.fields = appendOnFields(query.fields, 'subdomain');
+  if (fields)
+    fields = appendOnFields(fields, 'subdomain');
 
   if (!category && !day && !month && !year) {
     const isId = /[a-z,0-9]{12}/i.test(url) || /[a-z,0-9]{24}/i.test(url);
 
     if (isId) {
+      if (fields)
+        fields = appendOnFields(fields, 'authorEmail');
+
       data = await findSingle(query, posts, {
         _id: url
       });
+
+      const author = await Accounts.findOne({subdomain, email: authorEmail}, 'name lastname');
+
+      data.author = `${author.name} ${author.lastname}`;
+
+      delete data.authorEmail;
 
       let fullUrl;
       if (data.postStatus === 'published')
@@ -62,10 +73,16 @@ module.exports = async function() {
     }
   }
 
-  if (query.fields)  
-    query.fields = appendOnFields(query.fields, 'published');
+  if (fields)
+    fields = appendOnFields(fields, 'published,authorEmail');
 
   data = await findSingle(query, posts, conditions);
+
+  const author = await Accounts.findOne({subdomain, email: authorEmail}, 'name lastname');
+
+  data.author = `${author.name} ${author.lastname}`;
+
+  delete data.authorEmail;
 
   if (data === null)
     res.status(404).json({
