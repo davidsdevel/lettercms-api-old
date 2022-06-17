@@ -1,5 +1,5 @@
 const fetch = require('node-fetch');
-const toQuery = require('@lettercms/sdk/cjs/lib/utils/objectToQueryString').default;
+const toQuery = data => `?${Object.entries(data).map(e => `${e[0]}=${e[1]}`).join('&')}`;
 
 const endpoint = 'https://graph.facebook.com';
 

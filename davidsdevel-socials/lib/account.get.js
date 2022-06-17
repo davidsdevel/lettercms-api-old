@@ -1,4 +1,5 @@
 const {socials: socialModel} = require('@lettercms/models');
+const {api} = require('./social/base');
 
 /**
  *
@@ -38,6 +39,15 @@ module.exports = async function() {
     const igData = await socialModel.Instagram.findOne({
       subdomain
     }, parsedFields);
+
+    const {token, userId} = igData;
+
+    const {profile_picture_url} = await api(`/${userId}`, {
+      access_token: token,
+      fields: 'profile_picture_url'
+    });
+
+    igData.picture = profile_picture_url;
 
     socials.instagram = igData;
   }
