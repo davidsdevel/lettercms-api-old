@@ -30,29 +30,44 @@ module.exports = async function() {
   const hasFB = await socialModel.Instagram.exists({subdomain});
 
   if ((sendAll || socialIncludes.indexOf('facebook') > -1) && hasFB) {
-
-    const fbData = await socialModel.Facebook.findOne({
+    const {token, pageId} = await socialModel.Facebook.findOne({
       subdomain
-    }, parsedFields);
+    }, 'token pageId');
 
-    socials.facebook = fbData;
+    const {cover, name, username} = await api(`/${pageId}`, {
+      access_token: token,
+      fields: 'name,username,cover'
+    });
+
+    socials.facebook  = {
+      subdomain,
+      pageId,
+      token: token,
+      name,
+      username,
+      cover: cover.source,
+      picture: `https://graph.facebook.com/${pageId}/picture`
+    };
   }
 
   if ((sendAll || socialIncludes.indexOf('instagram') > -1) && hasIG) {
-    const igData = await socialModel.Instagram.findOne({
+    const {token, userId} = await socialModel.Instagram.findOne({
       subdomain
-    }, parsedFields);
+    }, 'token userId');
 
-    const {token, userId} = igData;
-
-    const {profile_picture_url} = await api(`/${userId}`, {
+    const {name, profile_picture_url, username} = await api(`/${instagram_business_account.id}`, {
       access_token: token,
-      fields: 'profile_picture_url'
+      fields: 'name,profile_picture_url,username'
     });
 
-    igData.picture = profile_picture_url;
-
-    socials.instagram = igData;
+    socials.instagram = {
+      userId,
+      subdomain,
+      token,
+      name,
+      username,
+      picture: profile_picture_url
+    };
   }
 
   res.json(socials);
