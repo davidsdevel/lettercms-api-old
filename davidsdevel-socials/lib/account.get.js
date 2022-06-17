@@ -39,9 +39,11 @@ module.exports = async function() {
   }
 
   if ((sendAll || socialIncludes.indexOf('instagram') > -1) && hasIG) {
-    const {token, userId} = await socialModel.Instagram.findOne({
+    const igData = await socialModel.Instagram.findOne({
       subdomain
     }, parsedFields);
+
+    const {token, userId} = igData;
 
     const {profile_picture_url} = await api(`/${userId}`, {
       access_token: token,
