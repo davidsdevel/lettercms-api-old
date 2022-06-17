@@ -12,7 +12,8 @@ module.exports = async function() {
   const {subdomain} = req;
 
   const {
-    url
+    url,
+    referrer
   } = req.body;
 
   const ua = req.headers['user-agent'];
@@ -23,12 +24,13 @@ module.exports = async function() {
 
   const existsPost = await posts.exists({url, subdomain});
 
-    if (!existsPost)
+    if (!existsPost && url !== '/')
       return res.status(404).json({
         status: 'not-found'
       });
-      
-  await posts.updateOne({url, subdomain}, {$inc: {views: 1}});
+
+  if (url !== '/')    
+    await posts.updateOne({url, subdomain}, {$inc: {views: 1}});
 
   await stats.Stats.updateOne({subdomain}, {$inc: {totalViews: 1}});
 
@@ -38,7 +40,7 @@ module.exports = async function() {
     os: os.name ||'Unknown',
     browser: browser.name ||'Unknown',
     url,
-    referer: ''
+    referrer
   });
 
   res.json({
