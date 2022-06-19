@@ -1,6 +1,9 @@
 const {stats, posts} = require('@lettercms/models');
 
 function increment(key, value) {
+  if (!value)
+    return;
+
   this[key] = this[key] ? this[key] + value : value;
 }
 
@@ -131,6 +134,7 @@ module.exports = async function() {
   const hasDays = !fields || fields.includes('days');
   const hasDates = !fields || fields.includes('dates');
   const hasViews = !fields || fields.includes('views');
+  const hasReferrers = !fields || fields.includes('referrers');
   const hasGeneral = !fields || fields.includes('general');
   const hasGrowth = !fields || fields.includes('growth');
   const hasMostCommented = !fields || fields.includes('mostCommented');
@@ -157,6 +161,8 @@ module.exports = async function() {
     data.hours = hours;
   if (hasDays)
     data.days = initialDaysCounts;
+  if (hasReferrers)
+    data.referrers = {};
   if (hasViews || hasMostViewed)
     data.views = {};
   if (hasDates)
@@ -190,7 +196,7 @@ module.exports = async function() {
 
   
   if (hasTotal)
-    data.total = await stats.Views.estimatedDocumentCount(conditions);
+    data.total = await stats.Views.countDocuments(conditions);
 
   const views = await stats.Views.find(conditions);
   
@@ -233,7 +239,10 @@ module.exports = async function() {
       increment.call(data.browsers, e.browser, 1);
 
     if (hasViews || hasMostViewed)
-      increment.call(data.views, e.url, 1);
+      increment.call(data.views, e.url === '/' ? 'inicio' : e.url, 1);
+
+    if (hasReferrers)
+      increment.call(data.referrers, e.referrer, 1);
     
   });
 
