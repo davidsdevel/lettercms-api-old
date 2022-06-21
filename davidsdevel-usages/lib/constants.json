@@ -1,8 +1,0 @@
-{
-  "storage_limit": 67108864,
-  "storage_cuota": 1,
-  "pages_limit": 10,
-  "pages_quota": 1,
-  "ab_test_limit": 10,
-  "ab_test_quota": 1,
-}

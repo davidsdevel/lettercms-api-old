@@ -96,6 +96,7 @@ Queries:
 - caption
 - location_id
 - user_tags
+- is_carousel_item
 
 Response:
 ```json
@@ -103,9 +104,27 @@ Response:
   "id": "ig-media-id"
 }
 ```
+
+Create carousel
+
+POST /{ig-user-id}/media
+
+Queries
+- media_type=CAROUSEL
+- children = "{media-id}%2C{media-id}"
+
+
 Then Publish that Media
 
 POST /{ig-user-id}/media_publish
 
 Queries:
 - creation_id: {ig-media-id}
+
+
+aspect ratio 4:5 1.91:1
+min w 320
+max w 1440
+max size 8mb
+format jpg
+maax 2200 characters

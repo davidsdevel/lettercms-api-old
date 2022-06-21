@@ -39,8 +39,6 @@ class FacebookSDK extends Base {
     else
       fetchOptions.published = published.toString();
 
-    console.log(fetchOptions);
-
     return this._baseRequest(`/${this.ID}/feed`, 'POST', fetchOptions);
   }
   async getPosts() {

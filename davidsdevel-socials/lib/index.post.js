@@ -1,4 +1,4 @@
-const {socials} = require('@lettercms/models');
+const {socials, usage} = require('@lettercms/models');
 const {Facebook, Instagram} = require('./social');
 
 module.exports = async function() {
@@ -10,9 +10,10 @@ module.exports = async function() {
 
   const hasIg = feeds.indexOf('instagram') > -1;
 
-  if (hasIg && !images && images.length !== 1) 
+  if (hasIg && !images) 
     return res.json({
-      message: 'Instagram must have (1) image'
+      status: 'social/instagram-error',
+      message: 'Instagram must have at least 1 image'
     });
 
 
@@ -24,6 +25,10 @@ module.exports = async function() {
     const fb = new Facebook(pageId, token);
 
     await fb.publishPost(message, req.body);
+    
+    if (req.body.schedule)
+      await usage.updateOne({subdomain}, {$inc: {socialSchedule: 1}});
+
   }
 
   if (hasIg) {
@@ -33,6 +38,23 @@ module.exports = async function() {
 
     const ig = new Instagram(userId, token);
 
-    await ig.publishPost(message, images[0]);
+    if (req.bod.schedule) {
+      await schedule(req.body.schedule, {
+        method: 'POST',
+        url: 'https://lettercms-api-staging.herokuapp.com/api/social/instagram',
+        headers: {
+          Authorization: jwt.sign({subdomain}, process.env.JWT_AUTH),
+          'Content-Type': 'application/json' 
+        },
+        body: {
+          ...req.body,
+          schedule: undefined
+        }
+      });
+
+      await usage.updateOne({subdomain}, {$inc: {socialSchedule: 1}});
+    }
+    else
+      await ig.publishPost(message, images);
   }
 };

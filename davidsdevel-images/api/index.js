@@ -1,11 +1,11 @@
 const {manageMethods} = require('@lettercms/utils');
-const {images} = require('@lettercms/models');
+const {images, usage} = require('@lettercms/models');
 
 const POST = async function() {
   const {req, res} = this;
 
   const {subdomain, path} = req;
-  const {url, name: reqName} = req.body;
+  const {url, name: reqName, size} = req.body;
 
   let name = reqName;
 
@@ -22,10 +22,13 @@ const POST = async function() {
     name
   });
 
+  await usage.updateOne({subdomain}, {$inc: {storageSize: -size * 1024}});
+
   res.json({
     status: 'OK',
     url,
     thumbnail: url,
+    size,
     _id
   });
 };

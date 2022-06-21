@@ -1,136 +1,93 @@
-const mongoose = require('mongoose')
+const mongoose = global.mongo || require('mongoose');
+const models = require('@lettercms/models');
 
-class FakeServer {
-  constructor(resolve) {
-    this.headers = {};
-    this._status = null;
-    this.response = null;
-    this._route = null;
-
-    this.promiseResolve = resolve;
-  }
-
-  sendStatus(status) {
-    this._status = status;
-
-    this.__resolve();
-  }
-  status(status) {
-    this._status = status;
-
-    return this;
-  }
-  send(text) {
-    this.headers = {
-      ...this.headers,
-      'Content-Type': 'text/plain'
-    };
-
-    this._status = this._status || 200;
-
-    this.response = text;
-
-    this.__resolve();
-
-  }
-  json(json) {
-    this.headers = {
-      ...this.headers,
-      'Content-Type': 'application/json'
-    };
-
-    this._status = this._status || 200;
-
-    this.response = json;
-
-    this.__resolve()
-
-  }
-  end() {
-    this.__resolve();
-  }
-  header(name, value) {
-    this.headers[name.toLowerCase()] = value;
-  }
-
-  __init() {
-    this.headers = {
-      get: name => this.__get(name, this.headers)
-    };
-    this._status = null;
-    this.response = null;
-  }
-  __get(e, obj) {
-      const names = Object.keys(obj);
-
-        let match = '';
-        for(let name of names) {
-          const h = new RegExp(e, 'i');
-
-          if (h.test(name)) {
-            match = name;
-            break;
-          }
-        }
-
-      return obj[match];
-  }
-  __request(req) {
-    const headers = {}
-    
-    Object.entries(req.headers).forEach(e => {
-      headers[e[0].toLowerCase()] = e[1];
-    });
-
-    this._route({
-      ...req,
-      headers,
-      get: name => this.__get(name, this.headers)
-    }, this);
-  }
-  __setRoute(route) {
-    this._route = route;
-  }
-  async __resolve() {
-    const {
-      headers,
-      _status,
-      response
-    } = this;
-
-    await mongoose.disconnect()
-
-    this.promiseResolve({
-      headers,
-      status: _status,
-      response
-    });
-  }
+const aliases = {
+  accounts: {
+    name: 'BlogAccount',
+    path: '@lettercms/models/' 
+  },
+  invitations: {
+    name: 'BlogInvitations',
+    path: '@lettercms/models/' 
+  },
+  blogs: {
+    name: 'Blogs',
+    path: '@lettercms/models/' 
+  },
+  images: {
+    name: 'BlogImages',
+    path: '@lettercms/models/' 
+  },
+  pages: {
+    name: 'BlogPages',
+    path: '@lettercms/models/' 
+  },
+  posts: {
+    name: 'BlogPosts',
+    path: '@lettercms/models/' 
+  },
+  facebook: {
+    name: 'FacebookAccounts',
+    path: '@lettercms/models/' 
+  },
+  instagram: {
+    name: 'InstagramAccounts',
+    path: '@lettercms/models/' 
+  },
+  stats: {
+    name: 'BlogStats',
+    path: '@lettercms/models/' 
+  },
+  views: {
+    name: 'BlogViews',
+    path: '@lettercms/models/' 
+  },
+  sessions: {
+    name: 'BlogSessions',
+    path: '@lettercms/models/' 
+  },
+  users: {
+    name: 'BlogUsers',
+    path: '@lettercms/models/' 
+  },
 }
 
-exports.fakeServer = (route, req) => {
+const operation = (model, operation) => async (...args) => {
+  await mongoose.connect(process.env.MONGO_URL || 'mongodb://localhost/blog', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false,
+    useCreateIndex: true
+  })
+  
+  let mongoModel = null;
 
-  if (!req.method)
-    req.method = 'GET';
+  if (model === 'accounts')
+    mongoModel = models.accounts.Accounts;
+  else if (model === 'invitations')
+    mongoModel = models.accounts.Invitations;
+  else if (model === 'views')
+    mongoModel = models.stats.Views;
+  else if (model === 'sessions')
+    mongoModel = models.stats.Views;
+  else if (model === 'stats')
+    mongoModel = models.stats.Stats;
+  else if (model === 'facebook')
+    mongoModel = models.socials.Facebook;
+  else if (model === 'instagram')
+    mongoModel = models.socials.Instagram;
+  else
+    mongoModel = models[model];
 
-  if (req.method === 'GET' && !req.query)
-    req.query = {};
+  const res = await mongoModel[operation].apply(mongoModel, args);
+  await mongoose.disconnect();
 
-  if (!req.headers)
-    req.headers = {};
+  global.mongo = mongoose;
 
-  return new Promise((resolve, reject) => {
-    try {
-
-      const fake = new FakeServer(resolve);
-
-      fake.__init();
-
-      fake.__setRoute(route);
-
-      fake.__request(req); 
-    } catch(err) {
-      reject(err)
-    }
-  });
+  return Promise.resolve(res);
 }
+
+
+module.exports = exports = {
+  operation
+};

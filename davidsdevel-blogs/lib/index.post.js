@@ -1,4 +1,4 @@
-const {stats, blogs, accounts, posts} = require('@lettercms/models');
+const {stats, blogs, accounts, posts, usage} = require('@lettercms/models');
 
 module.exports = async function() {
   const {
@@ -29,6 +29,16 @@ module.exports = async function() {
     });
 
   await stats.Stats.create({
+    subdomain
+  });
+
+  const existsUsage = await usage.exists({subdomain})
+  if (existsUsage)
+    return res.status(400).json({
+      message:'Usage already Created'
+    });
+
+  await usage.create({
     subdomain
   });
 

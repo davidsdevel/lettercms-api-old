@@ -39,7 +39,7 @@ module.exports = async function() {
   await sendMail(body.email, `Has sido invitado a colaborar en ${title} - LetterCMS`, {
     type: 'invitation',
     title,
-    url:'https://lettercms-dashboard-staging.herokuapp.com/signin?token=' + token
+    url:'https://lettercms-dashboard-davidsdevel.vercel.app/invitation/' + token
   });
 
   res.json({

@@ -1,4 +1,5 @@
-const {accounts} = require('@lettercms/models');
+const {accounts, usage} = require('@lettercms/models');
+
 
 module.exports = async function() {
   const {
@@ -32,6 +33,7 @@ module.exports = async function() {
   }, {
     status: 'accepted'
   });
+  await usage.updateOne({subdomain}, {$inc: {accountsCollabs: 1}});
 
   res.json({
     status: 'OK'
