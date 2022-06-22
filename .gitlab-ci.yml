@@ -57,7 +57,7 @@ staging:
   before_script:
     - yarn
     - 'echo web: node dev > Procfile'
-    - tar zcv --wildcards --exclude='*/node_modules/*' --exclude='.git' -f master.tgz lib middlewares davidsdevel-accounts davidsdevel-emails davidsdevel-blogs davidsdevel-pages davidsdevel-posts davidsdevel-socials davidsdevel-images davidsdevel-stats davidsdevel-users firebaseInit.js index.js dev.js yarn.lock package.json Procfile
+    - tar zcv --wildcards --exclude='*/node_modules/*' --exclude='.git' -f master.tgz lib middlewares davidsdevel-* index.js dev.js yarn.lock package.json Procfile
     - yarn lettercms --upload
   script:
     - yarn lettercms --deploy
