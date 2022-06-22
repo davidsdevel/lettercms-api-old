@@ -1,17 +1,18 @@
 const crypto = require('crypto');
-
+const Pusher = require("pusher");
 const {accounts} = require('@lettercms/models');
-const firebase = require('../../firebaseInit');
-const { getDatabase } = require('firebase-admin/database');
 const jwt = require('jsonwebtoken');
-
-const app = firebase.init();
-const db = getDatabase(app);
-const ref = db.ref().child('verifications');
 
 const isDev = process.env.NODE_ENV !== 'production';
 
-let sendVerification = isDev ? console.log : ref.push;
+const pusher = new Pusher({
+  appId: "1427382",
+  key: "9ae451a4e165bf007ec4",
+  secret: "ff37ec2f501a38ed7718",
+  cluster: "us2",
+  useTLS: true
+});
+
 
 module.exports = async function() {
   const {
@@ -41,7 +42,7 @@ module.exports = async function() {
         message: `Account with email "${decoded.email}" already exists`
       });
 
-    sendVerification({
+    pusher.trigger(`lettercms-${process.env.NODE_ENV || 'development'}`, "verify", {
       email: decoded.email,
       name: decoded.name,
       status: 'verified'
@@ -56,20 +57,20 @@ module.exports = async function() {
   } catch(err) {
     switch(err.message) {
       case 'jwt expired':
-        sendVerification({
-          email: Buffer.from(req.query.e, 'hex').tostring('utf-8'),
+        pusher.trigger(`lettercms-${process.env.NODE_ENV || 'development'}`, "verify", {
+          email: Buffer.from(req.query.e, 'hex').toString('utf-8'),
           status: 'expired'
         });
         break;
       case 'invalid token':
-        sendVerification({
-          email: Buffer.from(req.query.e, 'hex').tostring('utf-8'),
+        pusher.trigger(`lettercms-${process.env.NODE_ENV || 'development'}`, "verify", {
+          email: Buffer.from(req.query.e, 'hex').toString('utf-8'),
           status: 'bad-token'
         });
         break;
       case 'invalid signature':
-        sendVerification({
-          email: Buffer.from(req.query.e, 'hex').tostring('utf-8'),
+        pusher.trigger(`lettercms-${process.env.NODE_ENV || 'development'}`, "verify", {
+          email: Buffer.from(req.query.e, 'hex').toString('utf-8'),
           status: 'invalid-signature'
         });
         break;

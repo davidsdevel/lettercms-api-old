@@ -32,7 +32,7 @@ module.exports = async function() {
     subdomain
   });
 
-  const existsUsage = await usage.exists({subdomain})
+  const existsUsage = await usage.exists({subdomain});
   if (existsUsage)
     return res.status(400).json({
       message:'Usage already Created'

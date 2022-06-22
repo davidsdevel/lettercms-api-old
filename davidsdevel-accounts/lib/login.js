@@ -1,8 +1,4 @@
 const {accounts} = require('@lettercms/models');
-const firebase = require('../../firebaseInit');
-const {getAuth} = require('firebase-admin/auth');
-
-const app = firebase.init();
 
 module.exports = async function() {
   const {
@@ -22,12 +18,6 @@ module.exports = async function() {
   } = body;
 
   const data = await accounts.Accounts.login(email, password);
-
-  if (body._includeFirebase) {
-    const auth = getAuth(app);
-
-    data.firebaseToken = await auth.createCustomToken('lettercms');
-  }
 
   res.json(data);
 };
