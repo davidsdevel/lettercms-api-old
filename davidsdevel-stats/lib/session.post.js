@@ -2,6 +2,7 @@ const {stats} = require('@lettercms/models');
 const firebase = require('../../firebaseInit');
 const {getDatabase} = require('firebase-admin/database');
 const parser = require('ua-parser-js');
+const getEntry = require('./generateEntryChannel');
 
 const app = firebase.init();
 const db = getDatabase(app);
@@ -27,7 +28,7 @@ module.exports = async function() {
     routes,
     action,
     sessionTime,
-    entryChannel
+    referrer
   } = req.body;
 
   const {subdomain} = req;
@@ -41,16 +42,16 @@ module.exports = async function() {
   const subdomainRef = ref.child(subdomain);
 
   if (action === 'start') {
-    const statsData = await subdomainRef.get();
+    //const statsData = await subdomainRef.get();
 
-    const statsOs = statsData[os.name];
+    /*const statsOs = statsData[os.name];
 
     const newStats = {
       activeUsers: statsData.activeUsers + 1,
       [os.name]: (statsOs || 0) + 1
-    };
+    };*/
 
-    await subdomainRef.set(newStats);
+    //await subdomainRef.set(newStats);
 
     return res.json({
       status: 'OK'
@@ -72,19 +73,19 @@ module.exports = async function() {
       routes,
       subdomain,
       device,
-      entryChannel
+      entryChannel: getEntry(referrer)
     });
 
-    const statsData = await subdomainRef.get();
+    //const statsData = await subdomainRef.get();
 
-    const statsOs = statsData[os.name];
+    //const statsOs = statsData[os.name];
 
-    const newStats = {
+    /*const newStats = {
       activeUsers: statsData.activeUsers - 1,
       [os.name]: statsOs - 1
-    };
+    };*/
 
-    await subdomainRef.set(newStats);
+    //await subdomainRef.set(newStats);
 
     res.json({
       status: 'OK'

@@ -24,7 +24,7 @@ module.exports = async function() {
     condition.postStatus = status;
 
   if (req.query.fields)
-    req.query.fields += ',published';
+    req.query.fields += ',published,postStatus';
 
   const posts = await find({...req.query, posts:true, path}, postModel, condition);
 
