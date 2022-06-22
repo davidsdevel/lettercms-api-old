@@ -1,6 +1,6 @@
 const getFullUrl = require('./getFullUrl');
 const appendOnFields = require('./appendOnFields');
-const {posts, blogs, ab, accounts: {Accounts}} = require('../../mongo');
+const {posts, blogs, ab, accounts: {Accounts}} = require('@lettercms/models');
 
 
 const generateConditions = query => {
