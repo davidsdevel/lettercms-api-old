@@ -1,6 +1,9 @@
 const {manageMethods} = require('@lettercms/utils');
-const POST = require('../lib/verify');
+const GET = require('../../../lib/order.get');
 
 module.exports = manageMethods({
-  POST
+  GET,
+  POST: GET
 });
+
+//PATCH

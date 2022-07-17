@@ -30,7 +30,9 @@ module.exports = async function() {
 
     const fb = new Facebook(pageId, token);
 
-    const data = await fb.getPosts();
+    const data = await fb.getPosts({
+      fields: 'message,id,created_time,full_picture'
+    });
 
     return res.json(data);
   }

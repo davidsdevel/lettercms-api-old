@@ -1,4 +1,56 @@
 const crypto = require('crypto');
+const {accounts} = require('@lettercms/models');
+
+
+module.exports = async function() {
+  const {
+    req,
+    res
+  } = this;
+
+  const {code, email} = req.body;
+
+  if (!code)
+    res.status(400).json({
+      status: 'bad-request',
+      message: 'You must set a valid code'
+    });
+
+  try {
+
+    const existsAccount = await accounts.Accounts.exists({
+      email
+    });
+
+    if (existsAccount)
+      return res.json({
+        status: 'aready-exists',
+        message: `Account with email "${email}" already exists`
+      });
+
+    const decoded = JSON.parse(Buffer.from(code, 'hex').toString('utf-8'));
+    const emailHash = Buffer.from(decoded.email).toString('hex');
+
+
+
+    await accounts.Accounts.createAccount({
+      photo: `https://avatar.tobi.sh/${emailHash}.svg?text=${decoded.name[0]+decoded.lastname[0]}&size=250`,
+      ...decoded
+    });
+
+    res.json({
+      status: 'OK'
+    });
+  } catch(err) {
+    console.error(err);
+    res.status(500).json({
+      status: 'verification-error',
+      message: 'Unable to verify account'
+    });
+  }
+};
+
+/*const crypto = require('crypto');
 const Pusher = require("pusher");
 const {accounts} = require('@lettercms/models');
 const jwt = require('jsonwebtoken');
@@ -81,3 +133,4 @@ module.exports = async function() {
     res.send('<html><body><script>window.close()</script></body></html>');
   }
 };
+*/

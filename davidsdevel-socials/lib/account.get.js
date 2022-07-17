@@ -21,13 +21,13 @@ module.exports = async function() {
   const socialIncludes = include ? include.split(/\s*,\s*/g) : [];
   const socialExcludes = exclude ? exclude.split(/\s*,\s*/g) : [];
 
-  const sendAll = socialIncludes !== null && socialExcludes !== null;
+  const sendAll = !include && !exclude;
 
   const socials = {};
   const parsedFields = fields ? fields.replace(/\s*,\s*/g, ' ') : [];
 
   const hasIG = await socialModel.Instagram.exists({subdomain});
-  const hasFB = await socialModel.Instagram.exists({subdomain});
+  const hasFB = await socialModel.Facebook.exists({subdomain});
 
   if ((sendAll || socialIncludes.indexOf('facebook') > -1) && hasFB) {
     const {token, pageId} = await socialModel.Facebook.findOne({
@@ -55,7 +55,7 @@ module.exports = async function() {
       subdomain
     }, 'token userId');
 
-    const {name, profile_picture_url, username} = await api(`/${instagram_business_account.id}`, {
+    const {name, profile_picture_url, username} = await api(`/${userId}`, {
       access_token: token,
       fields: 'name,profile_picture_url,username'
     });

@@ -62,7 +62,6 @@ module.exports = async function() {
 
   const {name, lastname} = Accounts.findOne({email: data.authorEmail}, 'name lastname');
 
-  delete data.authorEmail;
   data.author = `${name} ${lastname}`;
 
   if (data.postStatus === 'published')

@@ -49,15 +49,15 @@ module.exports = async function() {
 
   req.body.role = 'admin';
 
-  const code = jwt.sign(req.body, process.env.JWT_AUTH, { expiresIn: 60 * 5 });
+  const code = Buffer.from(JSON.stringify(req.body)).toString('hex'); //jwt.sign(req.body, process.env.JWT_AUTH, { expiresIn: 60 * 5 });
 
   try {
     if (process.env.NODE_ENV !== 'production')
-      writeFileSync(join(process.cwd(), 'verificationURL.txt'), `https://lettercms-api-staging.herokuapp.com/api/account/verify?token=${code}&e=${Buffer.from(req.body.email).toString('hex')}`);
+      writeFileSync(join(process.cwd(), 'verificationURL.txt'), code);
     else
       await sendMail(req.body.email, `${req.body.name} verifica tu cuenta - LetterCMS`, {
         type: 'verify',
-        url: `https://lettercms-api-staging.herokuapp.com/api/account/verify?token=${code}&e=${Buffer.from(req.body.email).toString('hex')}`,
+        code,
         ...req.body
       });
   } catch(err) {

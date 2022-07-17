@@ -32,11 +32,7 @@ module.exports = async function() {
       account = {
         subdomain,
         pageId: pageID,
-        token: longLive,
-        name,
-        username,
-        cover: cover.source,
-        picture: `https://graph.facebook.com/${pageID}/picture`
+        token: longLive
       };
 
       await socials.Facebook.create(account);
@@ -56,10 +52,7 @@ module.exports = async function() {
       account = {
         userId,
         subdomain,
-        token: longLive,
-        name,
-        username,
-        picture: profile_picture_url
+        token: longLive
       };
 
       await socials.Instagram.create(account);

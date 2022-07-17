@@ -41,9 +41,9 @@ class FacebookSDK extends Base {
 
     return this._baseRequest(`/${this.ID}/feed`, 'POST', fetchOptions);
   }
-  async getPosts() {
-    return this._baseRequest(`/${this.ID}/feed`, {
-      fields: 'attachments,message,id,created_time,full_picture'
+  async getPosts(opts) {
+    return this._baseRequest(`/${this.ID}/scheduled_posts`, {
+      ...opts
     });
   }
 

@@ -1,4 +1,4 @@
-const {stats, blogs, accounts, posts, usage} = require('@lettercms/models');
+const {stats, blogs, accounts, posts, usage, payment} = require('@lettercms/models');
 
 module.exports = async function() {
   const {
@@ -15,32 +15,20 @@ module.exports = async function() {
 
   const {ownerEmail, subdomain} = req.body;
 
+  const existsBlog = await blogs.exists({stats});
+  if (existsBlog)
+    return res.status(400).json({
+      status: 'already-exists',
+      message:'Blog already exists'
+    });
+
   //Create Blog
   const blog = await blogs.create(req.body);
 
-  //Initialize Blog Stats
-  const exists = await stats.Stats.exists({
-    subdomain
-  });
-
-  if (exists)
-    return res.status(400).json({
-      message: 'Stats already created'
-    });
-
-  await stats.Stats.create({
-    subdomain
-  });
-
-  const existsUsage = await usage.exists({subdomain});
-  if (existsUsage)
-    return res.status(400).json({
-      message:'Usage already Created'
-    });
-
-  await usage.create({
-    subdomain
-  });
+  //Initialize Blog Data
+  await stats.Stats.create({subdomain});
+  await usage.create({subdomain});
+  await payment.Payment.create({subdomain});
 
   //Link subdomain to account 
   await accounts.Accounts.updateOne({email: ownerEmail}, {subdomain});

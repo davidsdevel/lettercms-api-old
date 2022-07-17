@@ -6,7 +6,7 @@ module.exports = async function() {
 
   const {subdomain} = req;
 
-  const feeds = req.query.feeds ? req.query.feeds : '';
+  const {feeds = '', limit} = req.query;
 
   const data = {};
 
@@ -35,7 +35,10 @@ module.exports = async function() {
       .then(({token, pageId}) => {
         const fb = new Facebook(pageId, token);
     
-        return fb.getPosts();
+        return fb.getPosts({
+          limit,
+          fields: 'attachments,message,id,sheduled_publish_time,full_picture'
+        });
       });
 
     promises.push(facebookPromise);
