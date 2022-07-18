@@ -12,7 +12,7 @@ module.exports = async function() {
   } = this;
   const {email} = await Accounts.findById(account);
 
-  const id = await posts.createPost(subdomain, {authorEmail: email, body});
+  const id = await posts.createPost(subdomain, {authorEmail: email, ...body});
 
   //TODO send bulk mail when post
   //TODO send firebase messaging notification when post

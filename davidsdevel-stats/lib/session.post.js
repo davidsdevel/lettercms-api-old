@@ -1,5 +1,6 @@
 const {stats} = require('@lettercms/models');
 const parser = require('ua-parser-js');
+const getEntry = require('./generateEntryChannel');
 
 module.exports = async function() {
   const {req, res} = this;
