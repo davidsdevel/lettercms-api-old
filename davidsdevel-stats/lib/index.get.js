@@ -264,7 +264,7 @@ module.exports = async function() {
       lean: true
     });
 
-    data.mostViewed = viewsRes;
+    data.mostViewed = viewsRes[0];
 
     if (!hasViews)
       delete data.views;
