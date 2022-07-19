@@ -256,7 +256,11 @@ module.exports = async function() {
 
     const mostViewedURL = sorted[0][0];
 
-    const viewsRes = await posts.findOne({subdomain, url: mostViewedURL}, 'thumbnail title views comments url', {
+    const viewsRes = await posts.find({subdomain, url: mostViewedURL}, 'thumbnail title views comments url', {
+      sort: {
+        views: -1
+      },
+      limit: 1,
       lean: true
     });
 
