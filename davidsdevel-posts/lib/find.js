@@ -1,6 +1,7 @@
 const getFullUrl = require('./getFullUrl');
 const appendOnFields = require('./appendOnFields');
 const {posts, blogs, ab, accounts: {Accounts}} = require('@lettercms/models');
+const {isValidObjectId} = require('mongoose');
 
 
 const generateConditions = query => {
@@ -35,7 +36,8 @@ module.exports = async function() {
   let conditions = {}
 
   // If ID
-  const isId = /[a-z,0-9]{12}/i.test(url) || /[a-z,0-9]{24}/i.test(url)
+  //const isId = /[a-z,0-9]{12}/i.test(url) || /[a-z,0-9]{24}/i.test(url)
+  const isId = isValidObjectId(url)
 
   if (isId)
     conditions._id = url;
