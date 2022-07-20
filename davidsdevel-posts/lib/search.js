@@ -2,16 +2,14 @@ const getFullUrl = require('./getFullUrl');
 const appendOnFields = require('./appendOnFields');
 const {posts: postsModel, blogs} = require('@lettercms/models');
 
-
 module.exports = async function() {
-  const {req: {subdomain, query, path}, res, search} = this;
+  const {req: {subdomain, query, path}, res, find} = this;
 
   const {
     q,
-    status
+    status,
+    tag
   } = query;
-
-  console.log(q)
 
   const conditions = {
     subdomain,
@@ -21,12 +19,17 @@ module.exports = async function() {
   if (status)
     condition.postStatus = status;
 
+  if (tag)
+    condition.tags = {
+      $in: tag
+    }
+
   if (query.fields)
-    query.fields += ',published';
+    query.fields += ',published,postStatus';
 
   const {url: urlID} = await blogs.findOne({subdomain}, 'url');
 
-  const posts = await search({...query, path}, postsModel, conditions);
+  const posts = await find({...query, path}, postsModel, conditions);
 
   posts.data = posts.data.map(e => {
     let fullUrl;
