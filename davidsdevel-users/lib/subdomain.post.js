@@ -1,12 +1,25 @@
-const {users} = require('@lettercms/models');
+const {posts, users: {Ratings, Users}} = require('@lettercms/models');
 
 module.exports = async function() {
   const {req: {subdomain, body}, res} = this;
 
-  const {_id} = await users.create({...body, subdomain});
+  const {_id: id} = await Users.create({...body, subdomain});
+
+  posts.find({subdomain, postStatus: 'published'}, '_id')
+    .then(data => {
+      Promise.allSettled(
+        data.map(({_id}) => {
+          Ratings.create({
+            userID: id,
+            post: _id,
+            subdomain
+          });
+        })
+      ).then(() => console.log('Done'))
+    });
 
   res.json({
     status: 'OK',
-    id: _id
+    id
   });
 };

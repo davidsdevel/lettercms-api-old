@@ -1,37 +1,40 @@
-/*var g = require('ger')
-var esm = new g.MemESM()
-var ger = new g.GER(esm);*/
+const {posts, users: {Users, Ratings}} = require('@lettercms/models');
+
+const parseTags = arr => {
+  const tags = {};
+
+  arr.forEach(e => tags[e] = 1);
+
+  return tags;
+}
 
 module.exports = async function() {
   const {
-    res
+    res,
+    req: {
+      query: {
+        id
+      },
+      body: {
+        url
+      },
+      subdomain
+    }
   } = this;
 
-  /*const {
-    id
-  } = req.query;
-  const {subdomain} = req;
-  const {url} = req.body;
+  const existsUrl = await posts.exists({subdomain, url});
 
-  const now = Date.now();
+  if (!existsUrl)
+    return res.json({
+      status: 'not-found'
+    });
 
-  const date = new Date(now  + (1000 * 60 * 60 * 24 * 30));
 
-  const day = date.getDate();
-  const month = date.getUTCMonth();
-  const year = date.getFullYear();
+  const {tags, _id} = await posts.findOne({subdomain, url}, 'tags');
 
-  const expires_at = `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
-  
-  await ger.events([
-    {
-      namespace: subdomain,
-      person: id,
-      action: 'views',
-      thing: url,
-      expires_at
-    }
-  ]);*/
+  const views = parseTags(tags);
+  const {postsView} = await Users.findOneAndUpdate({_id: id}, {$push: {views}, $inc: {postsView: 1}});
+  await Ratings.updateOne({post: _id}, {viewed: true});
 
   res.json({
     status: 'OK'

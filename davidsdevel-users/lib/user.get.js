@@ -1,4 +1,4 @@
-const {users} = require('@lettercms/models');
+const {users: {Users}} = require('@lettercms/models');
 
 module.exports = async function() {
   const {req, res, findSingle} = this;
@@ -6,7 +6,7 @@ module.exports = async function() {
   const {id} = req.query;
   const {subdomain} = req;
 
-  const data = await findSingle({...req.query, subdomain}, users, {
+  const data = await findSingle({...req.query, subdomain}, Users, {
     _id: id
   });
 

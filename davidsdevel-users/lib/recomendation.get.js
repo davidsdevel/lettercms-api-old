@@ -1,29 +1,68 @@
-/*var g = require('ger')
-var esm = new g.MemESM()
-var ger = new g.GER(esm);
-*/
+const {posts: postModel, blogs, users: {Users, Ratings}} = require('@lettercms/models');
+const getFullUrl = require('./getFullUrl');
+
+const isDev = process.env.NODE_ENV !== 'production';
+const ORIGIN = isDev ? 'http://localhost:3000' : 'https://lettercms-api-staging.herokuapp.com';
 
 module.exports = async function() {
- const {
-    res
-  } = this;
-  /*
   const {
-    id,
-    fields
-  } = req.query;
-  const {subdomain} = req;
+    req,
+    res,
+    find
+  } = this;
 
-  const {recommendation} = await ger.recommendations_for_person(subdomain, id, {
-    actions: {
-      views: 1
-    },
-    recommendations_per_neighbour: 1
+  const {subdomain, path} = req;
+  const {id} = req.query;
+  
+  const {url: urlID} = await blogs.findOne({subdomain}, 'url');
+
+  const haveModel = await Users.exists({_id: id, hasRecommendations: true});
+  
+  let posts = null;
+
+  if (req.query.fields)
+    req.query.fields += ',published,postStatus';
+  
+  
+  if (!haveModel) {
+    const condition = {
+      subdomain,
+      postStatus: 'published'
+    };
+    
+    posts = await find({...req.query, posts:true, path}, postModel, condition);
+  } else {
+    const select = req.query.fields ? req.query.fields.split(',').join(' ') : null;
+    delete req.query.fields;
+
+    console.log(select)
+    posts = await find({
+      ...req.query,
+      path,
+      populate: {
+        path: 'post',
+        select
+      },
+      lean: true,
+      recommendation: true
+    }, Ratings, {userID: id});
+
+    posts.data = posts.data.map(e => e.post);
+
+    console.log(posts)
+  }
+
+  posts.data = posts.data.map(e => {
+    let fullUrl;
+
+    if (e.postStatus === 'published')
+      fullUrl = getFullUrl(e.url, urlID, e);
+
+    return {
+      ...e,
+      fullUrl
+    };
   });
 
-  const {posts} = sdk.useSubdomain(subdomain);
-
-  const post = await posts.single(recommendation[0].thing, fields ? fields.split(',') : null);
-*/
-  res.json({});
+  res.json(posts);
 };

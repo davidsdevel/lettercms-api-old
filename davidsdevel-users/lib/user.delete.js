@@ -1,4 +1,4 @@
-const {users} = require('@lettercms/models');
+const {users: {Users, Ratings}} = require('@lettercms/models');
 
 module.exports = async function() {
   const {req: {
@@ -8,7 +8,8 @@ module.exports = async function() {
     }
   }, res} = this;
 
-  await users.deleteOne({_id: id, subdomain});
+  await Users.deleteOne({_id: id, subdomain});
+  await Ratings.deleteMany({userID: id});
 
   res.json({
     status: 'OK'
