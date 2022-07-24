@@ -5,29 +5,32 @@ const countries = require('i18n-iso-countries');
 
 module.exports = async function() {
   const {
-    req,
+    req: {
+      subdomain,
+      body: {
+        url,
+        referrer
+      },
+      headers,
+      ip
+    },
     res
   }  = this;
 
-  const {subdomain} = req;
-
-  const {
-    url,
-    referrer
-  } = req.body;
-
-  const ua = req.headers['user-agent'];
+  const ipDir = headers['X-Forwarded-For'] || headers['REMOTE_ADDR'] || ip;
+  
+  const ua = headers['user-agent'];
   const {browser, os} = parser(ua);
-  const look = geoip.lookup(req.ip);
+  const look = geoip.lookup(ipDir);
 
   const countryName = look ? countries.getName(look.country, 'en') : 'Unknown';
 
   const existsPost = await posts.exists({url, subdomain});
 
-    if (!existsPost && url !== '/')
-      return res.status(404).json({
-        status: 'not-found'
-      });
+  if (!existsPost && url !== '/')
+    return res.status(404).json({
+      status: 'not-found'
+    });
 
   if (url !== '/')    
     await posts.updateOne({url, subdomain}, {$inc: {views: 1}});
