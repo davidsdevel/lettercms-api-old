@@ -12,13 +12,16 @@ module.exports = async function() {
         referrer
       },
       headers,
+      header,
       ip
     },
     res
   }  = this;
 
   console.log(headers['X-Forwarded-For'])
+  console.log(header['X-Forwarded-For'])
   console.log(headers['REMOTE_ADDR'])
+  console.log(header['REMOTE_ADDR'])
   console.log(ip)
 
   const ipDir = headers['X-Forwarded-For'] || headers['REMOTE_ADDR'] || ip;
