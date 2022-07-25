@@ -19,3 +19,13 @@ DELETE /api/payment/invoice/:id
 
 Export as PDF, JSON, XML
 GET /api/payment/invoice/:id/export
+
+
+POST /v2/invoicing/generate-next-invoice-number
+
+List invoice
+/v2/invoicing/invoices
+fields
+page
+page_size
+total_required
