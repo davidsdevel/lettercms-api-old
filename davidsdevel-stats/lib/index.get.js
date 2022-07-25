@@ -193,12 +193,14 @@ module.exports = async function() {
     $gt: new Date(dateStart.toISOString()),
     $lt: new Date(new Date(new Number(dateEnd) + (1000 * 60 * 60 * 24)).toISOString())
   };
-
   
   if (hasTotal)
     data.total = await stats.Views.countDocuments(conditions);
 
   const views = await stats.Views.find(conditions);
+
+  if (dateStart)
+    data.general.totalViews = views.length;
   
   const weekDate = new Date(dateEnd - (1000 * 60 * 60 * 24 * 7));
 

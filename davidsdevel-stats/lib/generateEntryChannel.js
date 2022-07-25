@@ -1,9 +1,8 @@
-
 module.exports = url => {
   if (/google\./.test(url))
     return 'organic';
 
-  if (/(facebook|twitter|linkedin|instagram|pinterest|)\./)
+  if (/(facebook|twitter|linkedin|instagram|pinterest|)\./.test(url))
     return 'social';
 
   if (!url)

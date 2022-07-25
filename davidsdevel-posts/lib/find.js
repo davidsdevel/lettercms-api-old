@@ -1,6 +1,6 @@
 const getFullUrl = require('./getFullUrl');
 const appendOnFields = require('./appendOnFields');
-const {posts, blogs, ab, accounts: {Accounts}} = require('@lettercms/models');
+const {posts, blogs, accounts: {Accounts}} = require('@lettercms/models');
 const {isValidObjectId} = require('mongoose');
 
 
@@ -35,8 +35,6 @@ module.exports = async function() {
 
   let conditions = {}
 
-  // If ID
-  //const isId = /[a-z,0-9]{12}/i.test(url) || /[a-z,0-9]{24}/i.test(url)
   const isId = isValidObjectId(url)
 
   if (isId)

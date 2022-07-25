@@ -28,7 +28,12 @@ module.exports = async function() {
   //Initialize Blog Data
   await stats.Stats.create({subdomain});
   await usage.create({subdomain});
-  await payment.Payment.create({subdomain});
+
+  const date = new Date();
+  await payment.Payment.create({
+    subdomain,
+    nextPayment: date.setMonth(date.getMonth() + 1)
+  });
 
   //Link subdomain to account 
   await accounts.Accounts.updateOne({email: ownerEmail}, {subdomain});
@@ -46,7 +51,10 @@ module.exports = async function() {
   });
 
   //Make Public
-  await posts.publishPost({id}, req.body);
+  await posts.updateOne({_id: id}, {
+    postStatus: 'published',
+    published: new Date()
+  });
 
   return res.json({
     id: blog._id,
