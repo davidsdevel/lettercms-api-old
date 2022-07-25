@@ -9,6 +9,11 @@ module.exports = async function() {
 
   const {id} = query;
 
+  query.populate = {
+    path: 'blog',
+    select: 'title subdomain'
+  }
+
   const data = await findSingle(query, accounts.Invitations, {_id: id});
 
   if (data === null)

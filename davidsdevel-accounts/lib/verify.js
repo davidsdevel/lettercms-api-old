@@ -1,6 +1,14 @@
 const crypto = require('crypto');
 const {accounts} = require('@lettercms/models');
+const {scryptSync, timingSafeEqual} = require('crypto');
 
+const compare = (a, b) => {
+  const [pass, salt] = b.split('.');
+
+  const buffer = scryptSync(a, salt, 64);
+
+  return timingSafeEqual(Buffer.from(pass, 'hex'), buffer);
+}
 
 module.exports = async function() {
   const {
@@ -8,13 +16,25 @@ module.exports = async function() {
     res
   } = this;
 
-  const {code, email} = req.body;
+  const {token} = req.body;
 
-  if (!code)
-    res.status(400).json({
+  if (!token)
+    return res.status(400).json({
       status: 'bad-request',
       message: 'You must set a valid code'
     });
+
+  const [key, dataHex] = token.split('@');
+
+  const isValid = compare(process.env.JWT_AUTH, key);
+
+  if (!isValid)
+    return res.json({
+      status: 'invalid-token'
+    });
+
+  const decoded = JSON.parse(Buffer.from(dataHex, 'hex').toString('utf-8'));
+  const {email} = decoded;
 
   try {
 
@@ -28,10 +48,7 @@ module.exports = async function() {
         message: `Account with email "${email}" already exists`
       });
 
-    const decoded = JSON.parse(Buffer.from(code, 'hex').toString('utf-8'));
-    const emailHash = Buffer.from(decoded.email).toString('hex');
-
-
+    const emailHash = Buffer.from(email).toString('hex');
 
     await accounts.Accounts.createAccount({
       photo: `https://avatar.tobi.sh/${emailHash}.svg?text=${decoded.name[0]+decoded.lastname[0]}&size=250`,

@@ -1,5 +1,8 @@
 const {accounts, blogs} = require('@lettercms/models');
 const {sendMail} = require('@lettercms/utils');
+const {writeFileSync} = require('fs');
+const {join} = require('path');
+const jwt = require('jsonwebtoken');
 
 module.exports = async function() {
   const {
@@ -27,20 +30,24 @@ module.exports = async function() {
       message: `Invitation to "${body.email}" already sent`
     });
 
-  await accounts.Invitations.create({
+  const blog = await blogs.findOne({subdomain}, 'title', {lean: true});
+  const token = jwt.sign({subdomain}, process.env,JWT_AUTH);
+
+  const {_id} = await accounts.Invitations.create({
     ...body,
-    subdomain
+    subdomain,
+    blog: blog._id
   });
 
-  const token = Buffer.from(body.email).toString('hex');
-
-  const {title} = await blogs.findOne({subdomain}, 'title');
-
-  await sendMail(body.email, `Has sido invitado a colaborar en ${title} - LetterCMS`, {
-    type: 'invitation',
-    title,
-    url:'https://lettercms-dashboard-davidsdevel.vercel.app/invitation/' + token
-  });
+  
+  if (process.env.NODE_ENV !== 'production')
+    writeFileSync(join(process.cwd(), 'invitation.txt'), _id.toString());
+  else
+    await sendMail(body.email, `Has sido invitado a colaborar en ${blog.title} - LetterCMS`, {
+      type: 'invitation',
+      title,
+      url: `https://lettercms-dashboard-davidsdevel.vercel.app/invitation/${_id}?token=${token}`
+    });
 
   res.json({
     status: 'OK'

@@ -1,6 +1,5 @@
 const {accounts, usage} = require('@lettercms/models');
 
-
 module.exports = async function() {
   const {
     req: {

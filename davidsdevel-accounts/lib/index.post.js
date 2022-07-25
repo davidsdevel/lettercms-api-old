@@ -1,8 +1,15 @@
 const {accounts} = require('@lettercms/models');
-const jwt = require('jsonwebtoken');
 const {sendMail} = require('@lettercms/utils');
+const {scryptSync, randomBytes} = require('crypto');
 const {writeFileSync} = require('fs');
-const {join} = require('path')
+const {join} = require('path');
+
+const generateSecretHash = key => {
+  const salt = randomBytes(8).toString('hex');
+  const buffer = scryptSync(key, salt, 64);
+
+  return `${buffer.toString('hex')}.${salt}`;
+}
 
 module.exports = async function() {
   const {req,res} = this;
@@ -24,7 +31,7 @@ module.exports = async function() {
 
   if (existsAccount)
     return res.json({
-      code: 'email-exists',
+      status: 'email-exists',
       message: 'Email already exists'
     });
 
@@ -49,15 +56,15 @@ module.exports = async function() {
 
   req.body.role = 'admin';
 
-  const code = Buffer.from(JSON.stringify(req.body)).toString('hex'); //jwt.sign(req.body, process.env.JWT_AUTH, { expiresIn: 60 * 5 });
+  const key = generateSecretHash(process.env.JWT_AUTH); //jwt.sign(req.body, process.env.JWT_AUTH, { expiresIn: 60 * 5 });
+  const hex = Buffer.from(JSON.stringify(req.body)).toString('hex');
 
   try {
     if (process.env.NODE_ENV !== 'production')
-      writeFileSync(join(process.cwd(), 'verificationURL.txt'), code);
+      writeFileSync(join(process.cwd(), 'verificationURL.txt'), req.body.code);
     else
       await sendMail(req.body.email, `${req.body.name} verifica tu cuenta - LetterCMS`, {
         type: 'verify',
-        code,
         ...req.body
       });
   } catch(err) {
@@ -67,5 +74,8 @@ module.exports = async function() {
     });
   }
   
-  res.json({ status: 'OK' });
+  res.json({
+    status: 'OK',
+    token: `${key}@${hex}`
+  });
 };
