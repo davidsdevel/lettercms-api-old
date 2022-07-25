@@ -11,18 +11,12 @@ module.exports = async function() {
         url,
         referrer
       },
-      headers,
-      header,
-      ip
+      headers
     },
     res
   }  = this;
 
-  console.log(headers)
-  console.log(header)
-  console.log(ip)
-
-  const ipDir = headers['X-Forwarded-For'] || headers['REMOTE_ADDR'] || ip;
+  const ipDir = headers['x-forwarded-for'];
   
   const ua = headers['user-agent'];
   const {browser, os} = parser(ua);
