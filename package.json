@@ -15,7 +15,7 @@
   "author": "David's Devel <davidsdevel@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "@lettercms/build-utils": "0.0.8",
+    "@lettercms/build-utils": "latest",
     "dotenv": "^16.0.0",
     "eslint": "^5.16.0 || ^6.8.0",
     "ibm-cos-sdk": "^1.7.0",
@@ -26,8 +26,8 @@
   },
   "homepage": "https://gitlab.com/lettercms/api#readme",
   "dependencies": {
-    "@lettercms/models": "0.0.12",
-    "@lettercms/utils": "1.0.15",
+    "@lettercms/models": "latest",
+    "@lettercms/utils": "latest",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "formidable": "^1.2.2",
