@@ -17,6 +17,10 @@ module.exports = async function() {
     res
   }  = this;
 
+  console.log(headers['X-Forwarded-For'])
+  console.log(headers['REMOTE_ADDR'])
+  console.log(ip)
+
   const ipDir = headers['X-Forwarded-For'] || headers['REMOTE_ADDR'] || ip;
   
   const ua = headers['user-agent'];
