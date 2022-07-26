@@ -29,6 +29,8 @@
     "@lettercms/models": "latest",
     "@lettercms/utils": "latest",
     "ua-parser-js": "^1.0.2",
+    "geoip-lite": "^1.4.5",
+    "i18n-iso-countries": "^7.5.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "formidable": "^1.2.2",
