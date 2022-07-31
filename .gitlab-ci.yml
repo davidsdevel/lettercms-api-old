@@ -57,7 +57,7 @@ staging:
   before_script:
     - yarn
     - 'echo web: node dev > Procfile'
-    - tar zcv --wildcards --exclude='*/node_modules/*' --exclude='.git' -f master.tgz lib middlewares davidsdevel-* index.js dev.js yarn.lock package.json Procfile brain.js
+    - tar zcv --wildcards --exclude='*/node_modules/*' --exclude='.git' -f master.tgz lib middlewares davidsdevel-* index.js dev.js yarn.lock package.json Procfile brain.js migration.js
     - yarn lettercms --upload
   script:
     - yarn lettercms --deploy
