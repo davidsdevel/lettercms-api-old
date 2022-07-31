@@ -26,21 +26,16 @@ const mongoose = require('mongoose');
   const rr = await Promise.allSettled(r.map(async e => {
     const {_id} = await Accounts.findOne({email: e.authorEmail});
 
-    return posts.updateMany({authorEmail: e.authorEmail}, {author: _id, $unset: {authorEmail:1}});
+    return posts.updateMany({authorEmail: e.authorEmail}, {author: _id, authorEmail: null});
   }));
-
-  console.log(rr)
-
 
   const r2 = await posts.find({authorEmail: {$exists: false}}, 'subdomain', {lean: true});
   const r2r = await Promise.allSettled(r2.map(async e => {
     const {ownerEmail} = await blogs.findOne({subdomain: e.subdomain}, 'ownerEmail', {lean: true});
     const {_id} = await Accounts.findOne({email: ownerEmail}, '_id', {lean: true});
 
-    return posts.updateMany({subdomain: e.subdomain, authorEmail: {$exists: false}}, {author: _id, $unset: {authorEmail:true}});
+    return posts.updateMany({subdomain: e.subdomain, authorEmail: {$exists: false}}, {author: _id, authorEmail: null});
   }));
-
-  console.log(r2r);
  
   const u = Users.updateMany({}, {$unset: {email: 1}});
 
