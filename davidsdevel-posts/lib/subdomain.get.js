@@ -1,4 +1,4 @@
-const {posts: postModel, blogs} = require('@lettercms/models');
+const {posts: postModel, blogs} = require('@lettercms/models')(['posts', 'blogs']);
 const getFullUrl = require('./getFullUrl');
 
 const isDev = process.env.NODE_ENV !== 'production';
@@ -26,7 +26,17 @@ module.exports = async function() {
   if (req.query.fields)
     req.query.fields += ',published,postStatus';
 
-  const posts = await find({...req.query, posts:true, path}, postModel, condition);
+  const selectAccount = req.query.fields?.split(',').filter(e => e.includes('author.')).map(e => e.split('.')[1]).join(' ');
+
+  const posts = await find({
+    ...req.query,
+    posts:true,
+    path,
+    sort: req.query.status === 'published' ? 'published' : req.query.sort || 'created',
+    populate: {
+    path: 'BlogAccount',
+    select: selectAccount
+  }}, postModel, condition);
 
   const draft = await postModel.countDocuments({subdomain, postStatus: 'draft'});
   const published = await postModel.countDocuments({subdomain, postStatus: 'published'});

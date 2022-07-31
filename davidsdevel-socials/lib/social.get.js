@@ -1,4 +1,4 @@
-﻿const {socials} = require('@lettercms/models');
+﻿const {socials} = require('@lettercms/models')(['facebook', 'instagram']);
 const {Facebook, Instagram} = require('./social');
 
 module.exports = async function() {

@@ -1,4 +1,4 @@
-const {posts: postModel, blogs, users: {Users, Ratings}} = require('@lettercms/models');
+const {posts: postModel, blogs, users: {Users, Ratings}} = require('@lettercms/models')(['posts', 'blogs', 'users', 'ratings']);
 const getFullUrl = require('./getFullUrl');
 
 const isDev = process.env.NODE_ENV !== 'production';
@@ -35,7 +35,6 @@ module.exports = async function() {
     const select = req.query.fields ? req.query.fields.split(',').join(' ') : null;
     delete req.query.fields;
 
-    console.log(select)
     posts = await find({
       ...req.query,
       path,

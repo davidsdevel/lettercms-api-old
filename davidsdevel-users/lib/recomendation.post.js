@@ -1,4 +1,4 @@
-const {posts, users: {Users, Ratings}} = require('@lettercms/models');
+const {posts, users: {Users, Ratings}} = require('@lettercms/models')(['posts', 'users', 'ratings']);
 const jwt = require('jsonwebtoken');
 const fetch = require('node-fetch');
 

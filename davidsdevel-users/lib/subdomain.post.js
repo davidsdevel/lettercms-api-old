@@ -1,4 +1,4 @@
-const {posts, users: {Ratings, Users}} = require('@lettercms/models');
+const {posts, users: {Ratings, Users}} = require('@lettercms/models')(['posts', 'users', 'ratings']);
 
 module.exports = async function() {
   const {req: {subdomain, body}, res} = this;

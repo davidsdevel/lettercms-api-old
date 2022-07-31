@@ -1,4 +1,4 @@
-const {stats, blogs, accounts, posts, usage, payment} = require('@lettercms/models');
+const {stats, blogs, accounts, posts, usage, payment} = require('@lettercms/models')(['blogs', 'stats', 'accounts', 'posts', 'payment', 'usage']);
 
 module.exports = async function() {
   const {

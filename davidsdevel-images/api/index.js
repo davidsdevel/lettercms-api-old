@@ -1,5 +1,5 @@
+const {images, usage} = require('@lettercms/models')(['images', 'usage']);
 const {manageMethods} = require('@lettercms/utils');
-const {images, usage} = require('@lettercms/models');
 
 const POST = async function() {
   const {req, res} = this;

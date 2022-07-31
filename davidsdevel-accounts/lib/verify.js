@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-const {accounts} = require('@lettercms/models');
+const {accounts} = require('@lettercms/models')(['accounts']);
 const {scryptSync, timingSafeEqual} = require('crypto');
 
 const compare = (a, b) => {

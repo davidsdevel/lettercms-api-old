@@ -1,4 +1,4 @@
-const {stats, posts} = require('@lettercms/models');
+const {stats, posts} = require('@lettercms/models')(['posts', 'views', 'stats']);
 const parser = require('ua-parser-js');
 const geoip = require('geoip-lite');
 const countries = require('i18n-iso-countries');
@@ -22,7 +22,7 @@ module.exports = async function() {
   const {browser, os} = parser(ua);
   const look = geoip.lookup(ipDir);
 
-  const countryName = look ? countries.getName(look.country, 'en') : 'Unknown';
+  const countryName = look ? countries.getName(look.country, 'es') : 'Unknown';
 
   const existsPost = await posts.exists({url, subdomain});
 
@@ -35,15 +35,17 @@ module.exports = async function() {
     await posts.updateOne({url, subdomain}, {$inc: {views: 1}});
 
   await stats.Stats.updateOne({subdomain}, {$inc: {totalViews: 1}});
-
-  await stats.Views.create({
+  const viewData = {
     subdomain,
     country: countryName,
     os: os.name ||'Unknown',
     browser: browser.name ||'Unknown',
-    url,
-    referrer
-  });
+    url
+  }
+  if (referrer && referrer != 'undefined' && referrer != 'null')
+    viewData.referrer = referrer;
+
+  await stats.Views.create();
 
   res.json({
     status: 'OK'

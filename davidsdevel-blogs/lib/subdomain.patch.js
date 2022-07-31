@@ -1,4 +1,4 @@
-const {blogs} = require('@lettercms/models');
+const {blogs} = require('@lettercms/models')(['blogs']);
 
 module.exports = async function() {
   const {

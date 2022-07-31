@@ -1,4 +1,4 @@
-const {posts: postModel, blogs, users: {Users, Ratings}} = require('@lettercms/models');
+const {posts: postModel, blogs, users: {Users, Ratings}} = require('@lettercms/models')(['posts', 'blogs', 'users', 'ratings']);
 const getFullUrl = require('./getFullUrl');
 const {isValidObjectId} = require('mongoose');
 
@@ -21,6 +21,14 @@ module.exports = async function() {
 
   const condition = isValidObjectId(postID) ? {_id: postID} : {subdomain, url: postID};
 
+  const existsPost = await post.exists(condition);
+
+  if (!existsPost)
+    return res.status(404).json({
+      status: 'not-found',
+      message: 'Post not found'
+    })
+
   let recommended = null;
 
   const {tags, _id} = await postModel.findOne(condition, 'tags');
@@ -28,6 +36,7 @@ module.exports = async function() {
   const tagsMapped = tags.map(e => ({tags: {$in: e}}));
   
   const similars = await postModel.find({
+    subdomain,
     $nor:[{_id}],
     $or: tagsMapped,
     postStatus: 'published'

@@ -1,6 +1,6 @@
 const getFullUrl = require('./getFullUrl');
 const appendOnFields = require('./appendOnFields');
-const {posts: postsModel, blogs} = require('@lettercms/models');
+const {posts: postsModel, blogs} = require('@lettercms/models')(['posts', 'blogs']);
 
 module.exports = async function() {
   const {req: {subdomain, query, path}, res, find} = this;

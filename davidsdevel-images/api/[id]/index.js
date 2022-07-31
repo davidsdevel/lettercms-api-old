@@ -1,5 +1,5 @@
+const {images} = require('@lettercms/models')(['images']);
 const {manageMethods} = require('@lettercms/utils');
-const {images} = require('@lettercms/models');
 const {isValidObjectId} = require('mongoose');
 
 const GET = async function() {

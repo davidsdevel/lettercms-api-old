@@ -16,6 +16,7 @@ const pagesMiddleware = require('./middlewares/pages');
 const postsMiddleware = require('./middlewares/posts');
 const socialMiddleware = require('./middlewares/social');
 const imagesMiddleware = require('./middlewares/images');
+const commentsMiddleware = require('./middlewares/comments');
 const usersMiddleware = require('./middlewares/users');
 
 const routerDebug = debug('router');
@@ -67,6 +68,7 @@ app
   .use(postsMiddleware(routesHandlers))
   .use(socialMiddleware(routesHandlers))
   .use(imagesMiddleware(routesHandlers))
+  .use(commentsMiddleware(routesHandlers))
   .use(usersMiddleware(routesHandlers))
   .all('*', (req, res) => {
     if (Object.keys(routesHandlers).indexOf(req.path) === -1)

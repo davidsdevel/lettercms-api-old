@@ -1,5 +1,5 @@
 const captureOrder = require('./paypal/captureOrder');
-const {payment} = require('@lettercms/models');
+const {payment} = require('@lettercms/models')(['payment']);
 
 module.exports = async function() {
   const {req: {body: {orderID, amount, email}, subdomain}, res} = this;

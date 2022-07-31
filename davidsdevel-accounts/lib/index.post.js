@@ -1,4 +1,4 @@
-const {accounts} = require('@lettercms/models');
+const {accounts} = require('@lettercms/models')(['accounts']);
 const {sendMail} = require('@lettercms/utils');
 const {scryptSync, randomBytes} = require('crypto');
 const {writeFileSync} = require('fs');

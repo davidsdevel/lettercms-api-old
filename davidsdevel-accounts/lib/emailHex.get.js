@@ -1,4 +1,4 @@
-const {accounts} = require('@lettercms/models');
+const {accounts} = require('@lettercms/models')(['accounts']);
 const {isValidObjectId} = require('mongoose');
 
 module.exports = async function() {
@@ -32,7 +32,10 @@ module.exports = async function() {
     });
 
   if (data === null)
-    return res.sendStatus(404);
+    return res.status(404).json({
+      status: 'not-found',
+      message:'Account does not exists'
+    });
 
   res.json(data);
 };

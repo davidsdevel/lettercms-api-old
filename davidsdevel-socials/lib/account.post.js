@@ -1,4 +1,4 @@
-const {socials} = require('@lettercms/models');
+const {socials} = require('@lettercms/models')(['facebook', 'instagram']);
 const {exchangeToken, api} = require('./social/base');
 
 /**

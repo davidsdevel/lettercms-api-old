@@ -1,4 +1,4 @@
-const {posts, users: {Ratings}} = require('@lettercms/models');
+const {posts, users: {Ratings}} = require('@lettercms/models')(['posts', 'ratings']);
 const {isValidObjectId} = require('mongoose');
 
 module.exports = async function() {

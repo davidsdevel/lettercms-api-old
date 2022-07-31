@@ -1,4 +1,4 @@
-const {accounts} = require('@lettercms/models');
+const {accounts: {Accounts}} = require('@lettercms/models')(['accounts']);
 
 module.exports = async function() {
   const {
@@ -13,7 +13,7 @@ module.exports = async function() {
     ...req.query,
     path,
     accounts: true
-  }, accounts.Accounts, {
+  }, Accounts, {
     subdomain,
     _id: {
       $ne: account

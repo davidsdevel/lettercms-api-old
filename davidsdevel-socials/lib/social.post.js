@@ -1,4 +1,4 @@
-const {socials, usage} = require('@lettercms/models');
+const {socials, usage} = require('@lettercms/models')(['facebook', 'instagram', 'usage']);
 const {schedule} = require('@lettercms/utils');
 const {Facebook, Instagram} = require('./social');
 

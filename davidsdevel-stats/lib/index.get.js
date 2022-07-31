@@ -1,4 +1,4 @@
-const {stats, posts} = require('@lettercms/models');
+const {stats, posts} = require('@lettercms/models')(['stats', 'views', 'posts']);
 
 function increment(key, value) {
   if (!value)

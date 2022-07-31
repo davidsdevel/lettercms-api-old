@@ -1,4 +1,4 @@
-const {users: {Users}} = require('@lettercms/models');
+const {users: {Users}} = require('@lettercms/models')(['users']);
 
 module.exports = async function() {
   const {req, res} = this;

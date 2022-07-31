@@ -1,4 +1,4 @@
-const {posts} = require('@lettercms/models');
+const {posts} = require('@lettercms/models')(['posts']);
 const formidable = require('formidable');
 
 module.exports = async function() {

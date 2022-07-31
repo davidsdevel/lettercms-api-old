@@ -1,4 +1,4 @@
-const {stats} = require('@lettercms/models');
+const {stats} = require('@lettercms/models')(['sessions', 'stats']);
 const parser = require('ua-parser-js');
 const getEntry = require('./generateEntryChannel');
 

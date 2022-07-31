@@ -1,6 +1,6 @@
 const getFullUrl = require('./getFullUrl');
 const appendOnFields = require('./appendOnFields');
-const {posts, blogs, accounts: {Accounts}} = require('@lettercms/models');
+const {posts, blogs, accounts: {Accounts}} = require('@lettercms/models')(['posts', 'blogs', 'accounts']);
 const {isValidObjectId} = require('mongoose');
 
 
@@ -35,7 +35,7 @@ module.exports = async function() {
 
   let conditions = {}
 
-  const isId = isValidObjectId(url)
+  const isId = isValidObjectId(url) && !url.includes('-');
 
   if (isId)
     conditions._id = url;
@@ -55,14 +55,15 @@ module.exports = async function() {
 
   const {url: urlID} = await blogs.findOne({subdomain}, 'url');
 
-  if (query.fields)
-    query.fields = appendOnFields(query.fields, 'authorEmail');
-
-  const data = await  findSingle(query, posts, conditions);
-
-  const {name, lastname} = Accounts.findOne({email: data.authorEmail}, 'name lastname');
-
-  data.author = `${name} ${lastname}`;
+  const select = query.fields?.split(',').filter(e=> e.includes('author.')).map(e => e.split('.')[1]).join(' ');
+  
+  const data = await  findSingle({
+    ...query,
+    populate: {
+      path: 'author',
+      select
+    }
+  }, posts, conditions);
 
   if (data.postStatus === 'published')
     data.fullUrl = getFullUrl(url, urlID, data);

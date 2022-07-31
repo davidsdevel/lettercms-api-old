@@ -1,4 +1,4 @@
-const {usage, social} = require('@lettercms/models');
+const {usage, social} = require('@lettercms/models')(['usage', 'instagram']);
 const constants = require('./constants');
 const {api} = require('../../davidsdevel-socials/lib/social/base');
 

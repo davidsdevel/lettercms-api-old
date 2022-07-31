@@ -1,4 +1,4 @@
-const {posts, accounts: {Accounts}} = require('@lettercms/models');
+const {posts, accounts: {Accounts}} = require('@lettercms/models')(['posts', 'accounts']);
 const {sendMail} = require('@lettercms/utils');
 
 module.exports = async function() {
@@ -10,9 +10,7 @@ module.exports = async function() {
     },
     res
   } = this;
-  const {email} = await Accounts.findById(account);
-
-  const id = await posts.createPost(subdomain, {authorEmail: email, ...body});
+  const id = await posts.createPost(subdomain, {author: account, ...body});
 
   //TODO send bulk mail when post
   //TODO send firebase messaging notification when post

@@ -1,4 +1,4 @@
-const {users: {Users, Ratings}} = require('@lettercms/models');
+const {users: {Users, Ratings}} = require('@lettercms/models')(['users', 'ratings', 'comments']);
 
 module.exports = async function() {
   const {
@@ -43,10 +43,12 @@ module.exports = async function() {
 
   //TODO do training
   
+  await comment.updateMany({post: from}, {post: to});
+  await Ratings.deleteMany({userID: from});
+
   await Users.deleteOne({
     _id: from
   });
-  await Ratings.deleteMany({userID: from});
 
 
   res.json({
