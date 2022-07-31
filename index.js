@@ -4,6 +4,8 @@ global.mongo = require('mongoose');
 if (process.env.NODE_ENV !== 'production')
   require('dotenv').config();
 
+const PORT = process.env.PORT || 3009;
+
 const express = require('express');
 const app = express();
 const cors = require('cors');
