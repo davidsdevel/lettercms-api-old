@@ -243,7 +243,7 @@ module.exports = async function() {
     if (hasViews || hasMostViewed)
       increment.call(data.views, e.url === '/' ? 'inicio' : e.url, 1);
 
-    if (hasReferrers)
+    if (hasReferrers && e.referrer)
       increment.call(data.referrers, e.referrer, 1);
     
   });

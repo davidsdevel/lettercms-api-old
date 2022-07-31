@@ -9,7 +9,7 @@ const mongoose = require('mongoose');
  *
  */
 
- module.exports = async function() {
+ (async function() {
    const m = await mongoose.createConnection(process.env.MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -20,6 +20,8 @@ const mongoose = require('mongoose');
   const {posts, users: {Users}, accounts: {Accounts}} = require('@lettercms/models')(m, ['posts', 'accounts', 'users']);
 
 
+  await Users.syncIndexes();
+  await Accounts.syncIndexes();
   //Migrating postsSchema
   const r = await posts.find({authorEmail: {$exists: true}}, 'authorEmail', {lean: true});
   
@@ -41,7 +43,6 @@ const mongoose = require('mongoose');
   console.log(p3)
  
   const u = await Users.updateMany({}, {$unset: {email: 1}});
-
   console.log(u);
- };
+ })();
  
