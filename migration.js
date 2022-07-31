@@ -36,8 +36,11 @@ const mongoose = require('mongoose');
 
     return posts.updateMany({subdomain: e.subdomain, authorEmail: {$exists: false}}, {author: _id, authorEmail: null});
   }));
+
+  const p3 = await posts.updateMany({author: {$exists: true}}, {authorEmail: null});
+  console.log(p3)
  
-  const u = Users.updateMany({}, {$unset: {email: 1}});
+  const u = await Users.updateMany({}, {$unset: {email: 1}});
 
   console.log(u);
  };
