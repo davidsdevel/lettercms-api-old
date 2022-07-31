@@ -21,7 +21,7 @@ module.exports = async function() {
 
   const condition = isValidObjectId(postID) ? {_id: postID} : {subdomain, url: postID};
 
-  const existsPost = await post.exists(condition);
+  const existsPost = await postModel.exists(condition);
 
   if (!existsPost)
     return res.status(404).json({
