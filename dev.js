@@ -1,7 +1,5 @@
 const cluster = require('cluster');
-const app = require('./index');
-
-require('./migration')();
+const {init} = require('./index');
 
 const PORT = process.env.PORT || 3009;
 const numCPUs = process.env.WEB_CONCURRENCY || 4;
@@ -21,5 +19,5 @@ if (cluster.isMaster) {
     cluster.fork();
   });
 } else {
-  app.listen(PORT, () => console.log('Listen'));
+  init();
 }
