@@ -24,7 +24,7 @@ module.exports = async function() {
     req.query.fields += ',published,postStatus';
   
   
-  if (!haveModel) {
+  if (!haveModel || id === 'no-user') {
     const condition = {
       subdomain,
       postStatus: 'published'

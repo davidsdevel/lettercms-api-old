@@ -1,4 +1,4 @@
-const {comments, posts, users: {Users}} = require('@lettercms/models')(['comments', 'posts', 'users'])
+const {comments, posts, users: {Users}, stats: {Stats}} = require('@lettercms/models')(['stats', 'comments', 'posts', 'users'])
 
 module.exports = async function() {
   const {
@@ -46,6 +46,7 @@ module.exports = async function() {
   });
 
   await posts.updateOne({_id: postID}, {$inc: {comments: 1}});
+  await Stats.updateOne({subdomain}, {$inc: {totalComments: 1}});
 
   res.json({
     status: 'OK',

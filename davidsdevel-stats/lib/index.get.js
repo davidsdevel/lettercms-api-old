@@ -1,4 +1,19 @@
-const {stats, posts} = require('@lettercms/models')(['stats', 'views', 'posts']);
+const {stats, posts, comments: commentsModel, users: {Users}} = require('@lettercms/models')(['stats', 'views', 'posts', 'comments', 'users']);
+
+const parseFields = fields => {
+  if (!fields)
+    return {
+      all: true
+    };
+
+  const fieldsObj = {};
+
+  fields.split(',').forEach(e => {
+    fieldsObj[e] = true;
+  });
+
+  return fieldsObj;
+}
 
 function increment(key, value) {
   if (!value)
@@ -86,8 +101,8 @@ const generateDates = (daysCount, dateEnd) => {
 };
 
 const generateRanges = (start, end) => {
-  const dateEnd = end ? new Date(end) : Date.now();
-  const dateStart = new Date(start ? start : dateEnd - (1000 * 60 * 60 * 24 * 30));
+  const dateEnd = new Date(end || Date.now());
+  const dateStart = new Date(start || dateEnd - (1000 * 60 * 60 * 24 * 30));
  
   return {
     dateEnd,
@@ -111,9 +126,10 @@ module.exports = async function() {
     browser,
     country,
     start,
-    end,
-    fields
+    end
   } = query;
+
+  const fields = parseFields(query.fields);
 
   const conditions = {
     subdomain
@@ -127,19 +143,21 @@ module.exports = async function() {
       message: 'Stats does not exists'
     });
 
-  const hasOs = !fields || (fields.includes('os') && !fields.includes('most'));
-  const hasCountries = !fields || fields.includes('countries');
-  const hasBrowsers = !fields || fields.includes('browsers');
-  const hasHours = !fields || fields.includes('hours');
-  const hasDays = !fields || fields.includes('days');
-  const hasDates = !fields || fields.includes('dates');
-  const hasViews = !fields || fields.includes('views');
-  const hasReferrers = !fields || fields.includes('referrers');
-  const hasGeneral = !fields || fields.includes('general');
-  const hasGrowth = !fields || fields.includes('growth');
-  const hasMostCommented = !fields || fields.includes('mostCommented');
-  const hasMostViewed = !fields || fields.includes('mostViewed');
-  const hasTotal = !fields || fields.includes('total');
+  const hasData =           fields.all || fields.data || query.fields.includes('data.');
+  const hasOs =             fields.all || fields.data || fields['data.os'];
+  const hasCountries =      fields.all || fields.data || fields['data.countries'];
+  const hasBrowsers =       fields.all || fields.data || fields['data.browsers'];
+  const hasHours =          fields.all || fields.data || fields['data.hours'];
+  const hasDays =           fields.all || fields.data || fields['data.days'];
+  const hasDates =          fields.all || fields.data || fields['data.dates'];
+  const hasDataViews =      fields.all || fields.data || fields['data.views'];
+  const hasReferrers =      fields.all || fields.data || fields['data.referrers'];
+  const hasGeneral =        fields.all || fields.general;
+  const hasMostCommented =  fields.all || fields.general || fields['general.mostCommented'];
+  const hasMostViewed =     fields.all || fields.general || fields['general.mostViewed'];
+  const hasViews =          fields.all || fields.views;
+  const hasComments =       fields.all || fields.comments;
+  const hasSubscriptors =   fields.all || fields.subscriptors;
 
   const {dateEnd, dateStart, diff} = generateRanges(start, end);
 
@@ -149,69 +167,84 @@ module.exports = async function() {
       message: 'End date must be greather than start date'
     });
 
-  let data = {};
+  let data = hasData ? {} : undefined;
+  let general;
+  let views;
+  let comments;
+  let subscriptors;
 
-  if (hasOs)
+  if (hasOs) {
     data.os = {};
-  if (hasCountries)
+    if (os)
+      conditions.os = new RegExp(os, 'i');
+  }
+  if (hasCountries) {
     data.countries = {};
-  if (hasBrowsers)
+    if (country)
+      conditions.country = new RegExp(country, 'i');
+  }
+  if (hasBrowsers) {
     data.browsers = {};
+    if (browser)
+      conditions.browser = new RegExp(browser, 'i');
+  }
+
   if (hasHours)
     data.hours = hours;
   if (hasDays)
     data.days = initialDaysCounts;
   if (hasReferrers)
     data.referrers = {};
-  if (hasViews || hasMostViewed)
+  if (hasDataViews)
     data.views = {};
   if (hasDates)
     data.dates = generateDates(diff, dateEnd);  
-  if (hasGeneral) {
-    data.general = await stats.Stats.findOne({subdomain}, null, {lean: true});
-    data.general.bounceRate = (data.general.bounces / data.general.totalViews * 100).toFixed(1);
-  }
-  if (hasMostCommented)
-    data.mostCommented = await posts.findOne({subdomain}, 'thumbnail title views comments url', {
-      sort: {
-        comments: -1
-      },
-      limit: 1,
-      lean: true
-    });
+  if (hasGeneral || query.fields.includes('general.')) {
+    const generalSelect = query.fields.split(',').filter(e => e.startsWith('general.')).map(e => e.split('.')[1]).join(' ');
+    
+    general = await stats.Stats.findOne({subdomain}, generalSelect, {lean: true});
 
-  if (hasOs)
-    conditions.os = new RegExp(os, 'i');
-  if (hasBrowsers)
-    conditions.browser = new RegExp(browser, 'i');
-  if (hasCountries)
-    conditions.country = new RegExp(country, 'i');
+    if (fields['general.bounceRate'])
+      general.bounceRate = (general.bounces / general.totalViews * 100).toFixed(1);
+  }
+    
   if (url)
     conditions.url = url;
   
   conditions.time = {
-    $gt: new Date(dateStart.toISOString()),
-    $lt: new Date(new Date(new Number(dateEnd) + (1000 * 60 * 60 * 24)).toISOString())
+    $gt: dateStart,
+    $lt: +dateEnd + (1000 * 60 * 60 * 24)
   };
+
+  const viewData = await stats.Views.find(conditions);
+
+  if (hasViews)
+    views = viewData.length;
   
-  if (hasTotal)
-    data.total = await stats.Views.countDocuments(conditions);
-
-  const views = await stats.Views.find(conditions);
-
-  if (dateStart)
-    data.general.totalViews = views.length;
+  if (hasComments)
+    comments = await commentsModel.countDocuments({published: conditions.time, subdomain});
   
-  const weekDate = new Date(dateEnd - (1000 * 60 * 60 * 24 * 7));
+  if (hasSubscriptors)
+    subscriptors = await Users.countDocuments({subscriptionTime: conditions.time, subdomain});
 
-  const week = new Date(weekDate);
+  if (hasMostViewed)
+    general.mostViewed = await posts.findOne({subdomain}, 'thumbnail title views comments url', {
+      sort: {
+        views: -1
+      },
+      lean: true
+    });
 
-  views.forEach(async e => {
-    if (hasGrowth) {
-      if (e.time > week && !end)
-        increment.call(data, 'growht', 1);
-    }
+  if (hasMostCommented)
+    general.mostCommented = await posts.findOne({subdomain}, 'thumbnail title views comments url', {
+      sort: {
+        comments: -1
+      },
+      lean: true
+    });
 
+
+  viewData.forEach(async e => {
     if (hasHours) {
       const hour = generateHour(e.time);
       increment.call(data.hours, hour, 1);
@@ -240,7 +273,7 @@ module.exports = async function() {
     if (hasBrowsers)
       increment.call(data.browsers, e.browser, 1);
 
-    if (hasViews || hasMostViewed)
+    if (hasDataViews)
       increment.call(data.views, e.url === '/' ? 'inicio' : e.url, 1);
 
     if (hasReferrers && e.referrer)
@@ -248,29 +281,11 @@ module.exports = async function() {
     
   });
 
-
-  const viewsArr = Object.entries(data.views);
-
-  if (hasMostViewed && viewsArr.length > 0) {
-    //Get Most Viewed
-
-    const sorted = viewsArr.sort(([_, a], [__, b]) =>  a > b ? +1 : -1);
-
-    const mostViewedURL = sorted[0][0];
-
-    const viewsRes = await posts.find({subdomain}, 'thumbnail title views comments url', {
-      sort: {
-        views: -1
-      },
-      limit: 1,
-      lean: true
-    });
-
-    data.mostViewed = viewsRes[0];
-
-    if (!hasViews)
-      delete data.views;
-  }
-
-  res.json(data);
+  res.json({
+    general,
+    data,
+    views,
+    comments,
+    subscriptors
+  });
 };

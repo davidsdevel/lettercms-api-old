@@ -1,7 +1,7 @@
 const cluster = require('cluster');
 const {init} = require('./index');
 
-const numCPUs = 2;
+const numCPUs = process.env.WEB_CONCURRENCY || 1;
 
 if (cluster.isMaster) {
   console.log('Master cluster setting up ' + numCPUs + ' workers...');

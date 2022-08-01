@@ -11,8 +11,6 @@
   "dependencies": {
     "@lettercms/utils": "latest",
     "@lettercms/models": "latest",
-    "bcrypt": "^5.0.0",
-    "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.11.10"
   }
 }

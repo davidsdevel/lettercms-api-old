@@ -66,7 +66,7 @@ module.exports = async function() {
 
   const similar = await postModel.findOne({_id: ordered[0]._id}, select, {lean: true});
   
-  if (id === 'no-user')
+  if (id.includes('no-user'))
     recommended = await postModel.findOne({_id: ordered[1]._id}, select, {lean: true});
   else {
 
