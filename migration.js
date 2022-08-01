@@ -39,7 +39,7 @@ const mongoose = require('mongoose');
 
   const p3 = await posts.updateMany({author: {$exists: true}}, {authorEmail: null});
 
-  const s = await Stats.updateMany({}, {totalComments: 0});
+  const s = await Stats.updateMany({}, {$set:{totalComments: 0}});
   console.log(s)
  })();
  

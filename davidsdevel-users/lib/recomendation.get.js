@@ -1,5 +1,6 @@
 const {posts: postModel, blogs, users: {Users, Ratings}} = require('@lettercms/models')(['posts', 'blogs', 'users', 'ratings']);
 const getFullUrl = require('./getFullUrl');
+const {isValidObjectId} = require('mongoose');
 
 const isDev = process.env.NODE_ENV !== 'production';
 const ORIGIN = isDev ? 'http://localhost:3000' : 'https://lettercms-api-staging.herokuapp.com';
@@ -16,7 +17,7 @@ module.exports = async function() {
   
   const {url: urlID} = await blogs.findOne({subdomain}, 'url');
 
-  const haveModel = await Users.exists({_id: id, hasRecommendations: true});
+  const haveModel = isValidObjectId(id) ? await Users.exists({_id: id, hasRecommendations: true}) : false;
   
   let posts = null;
 
