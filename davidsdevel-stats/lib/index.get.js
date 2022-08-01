@@ -202,7 +202,7 @@ module.exports = async function() {
   if (hasGeneral || query.fields.includes('general.')) {
     const generalSelect = query.fields.split(',').filter(e => e.startsWith('general.')).map(e => e.split('.')[1]).join(' ');
     
-    general = await stats.Stats.findOne({subdomain}, generalSelect, {lean: true});
+    general = await stats.Stats.findOne({subdomain}, generalSelect);
 
     if (fields['general.bounceRate'])
       general.bounceRate = (general.bounces / general.totalViews * 100).toFixed(1);
