@@ -21,6 +21,8 @@ const accounts = handlers => {
       if (accountsRoutes.indexOf(req.query.emailHex) === -1)
         return handlers['/api/account/:emailHex'](req, res);
 
+      delete req.query.emailHex;
+
       return next();
     });
 
