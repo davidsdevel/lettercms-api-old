@@ -4,7 +4,7 @@ WORKDIR /usr/src/app
 
 COPY . ./
 
-RUN npm ci --only=production
+RUN yarn --no-progress --prod -s
 
 CMD [ "node", "dev" ]
 
