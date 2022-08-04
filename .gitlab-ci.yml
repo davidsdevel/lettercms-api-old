@@ -1,130 +1,18 @@
 image: node:lts
 
 stages:
-  - prepare
-#  - prepare-test
-#  - test
-  - deploy
+  - prepare-test
 
-.prepare:
-  stage: prepare
-  cache:
-    key: lettercms-api
-    paths:
-      - node_modules
-  before_script: yarn
-
-prepare-production:
-  extends: .prepare
-  script: yarn global add vercel
-  only:
-    - master
-
-# prepare-test:
-#   image: docker:latest
-#   stage: prepare-test
-#   services:
-#     - docker:dind
-#     
-#   
-#   script:
-#     - docker build -t microservices:latest
-#      - docker tag microservices:latest $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/microservices:latest
-#     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-#      - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/microservices:latest
-#   only:
-#     - production
-
-
-#test:
-#  stage: test
-#  services:
-#    - mongo
-#    - name: $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/microservices:latest
-#      alias: lettercms
-#   variables:
-#     MONGO_URL: 'mongodb://mongo/testing'
-#  script:
-#    - yarn test
-#   only:
-#     - production
-
-staging:
-  stage: deploy
-  variables:
-    ENV: staging
-    VERSION: $CI_COMMIT_SHORT_SHA
-  before_script:
-    - yarn
-    - 'echo web: node dev > Procfile'
-    - tar zcv --wildcards --exclude='*/node_modules/*' --exclude='.git' -f master.tgz lib middlewares davidsdevel-* index.js dev.js yarn.lock package.json Procfile brain.js migration.js
-    - yarn lettercms --upload
+prepare-test:
+  image: docker:latest
+  stage: prepare-test
+  services:
+    - docker:dind
   script:
-    - yarn lettercms --deploy
-  environment:
-    name: staging
-    url: https://lettercms-api-staging.herokuapp.com
+    - docker build -t microservices:latest
+    - docker tag microservices:latest $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/microservices:latest
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/microservices:latest
   only:
-    - master
+    - docker-deploy
 
-.deploy-vercel:
-  stage: deploy
-  variables:
-    PREVIEW_URL: https://$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG.$VERCEL_SCOPE.vercel.app
-    VERCEL_SCOPE: lettercms
-  environment:
-    name: vercel/${VERCEL_PATH/davidsdevel-/}
-    url: $PREVIEW_URL
-  before_script:
-    - cd $VERCEL_PATH
-    - vercel secrets add my-mongodb-uri $MONGO_URL -t $VERCEL_TOKEN
-    - vercel secrets add sentry-dsn $SENTRY_DSN -t $VERCEL_TOKEN
-    - vercel secrets add jwt-token $JWT_AUTH -t $VERCEL_TOKEN
-  script:
-    - DEPLOYMENT_URL=$(vercel --name $CI_PROJECT_NAME --confirm -t $VERCEL_TOKEN)
-    - vercel alias set $DEPLOYMENT_URL $PREVIEW_URL -t $VERCEL_TOKEN
-  only:
-    - production
-
-deploy-account:
-  extends: .deploy-vercel
-  variables:
-    VERCEL_PATH: davidsdevel-accounts
-deploy-blog:
-  extends: .deploy-vercel
-  variables:
-    VERCEL_PATH: davidsdevel-blog
-deploy-page:
-  extends: .deploy-vercel
-  variables:
-    VERCEL_PATH: davidsdevel-pages
-deploy-post:
-  extends: .deploy-vercel
-  variables:
-    VERCEL_PATH: davidsdevel-posts
-deploy-stat:
-  extends: .deploy-vercel
-  variables:
-    VERCEL_PATH: davidsdevel-stats
-deploy-user:
-  extends: .deploy-vercel
-  variables:
-    VERCEL_PATH: davidsdevel-users
-
-# TODO: Deploy to Vercel
-#
-# production:
-#   extends: staging
-#   needs:
-#     - job: build-production
-#       artifacts: true
-#   variables:
-#     HEROKU_APP: lettercms-api
-#     TYPE: latest
-#     SENTRY_VERSION: '{"version": "${VERSION/v/}"}'
-#   environment:
-#     name: production
-#   after_script:
-#     - 'curl https://sentry.io/api/hooks/release/builtin/5410236/e0ed8ecb580d6fd8ebee31f724156e2fe3fe5d4fb2ba69014b64c2832e9b948b/ -X POST -H "${CONTENT_TYPE}" -d "${SENTRY_VERSION}"'
-#   only:
-#     - production
