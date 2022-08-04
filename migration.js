@@ -17,7 +17,7 @@ const mongoose = require('mongoose');
     useCreateIndex: true
   });
 
-  const {posts, users: {Users}, stats:{Stats}, accounts: {Accounts}} = require('@lettercms/models')(m, ['stats', 'posts', 'accounts', 'users']);
+  const {payment:{Payment}, posts, users: {Users}, stats:{Stats}, accounts: {Accounts}} = require('@lettercms/models')(m, ['stats', 'posts', 'accounts', 'users', 'payment']);
 
   await Accounts.syncIndexes();
   //Migrating postsSchema
@@ -38,8 +38,7 @@ const mongoose = require('mongoose');
   }));
 
   const p3 = await posts.updateMany({author: {$exists: true}}, {authorEmail: null});
-
-  const s = await Stats.updateMany({}, {$set:{totalComments: 0}});
-  console.log(s)
+  const now = Date.now()
+  const p5 = await Payment.updateMany({lastPayment: {$exists: false}}, {$set: {lastPayment: now}});
  })();
  
