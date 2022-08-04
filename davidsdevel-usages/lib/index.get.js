@@ -47,11 +47,11 @@ module.exports = async function() {
     },
     files: {
       storage: {
-        used: filesStorage * 1024,
+        used: filesStorage,
         label: 'Almacenamiento',
         units: 'GB',
         price: '0.6',
-        available: (constants.files.storage.limit - filesStorage) * 1024
+        available: (constants.files.storage.limit - filesStorage)
       },
       upload: {
         used: filesUpload,

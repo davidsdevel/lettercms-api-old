@@ -48,8 +48,6 @@ module.exports = async function() {
     }, Ratings, {userID: id});
 
     posts.data = posts.data.map(e => e.post);
-
-    console.log(posts)
   }
 
   posts.data = posts.data.map(e => {

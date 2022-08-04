@@ -183,16 +183,28 @@ describe('Account API Testing', () => {
       status: 'OK'
     });
     
-    const add = await Accounts.findOne({_id: id});
+    const add = await Accounts.findOne({_id: id}, null, {lean: true});
     expect(add).toMatchObject({
       name: 'David',
       lastname: 'Gonzalez',
+      firstTime: true,
+      isSubscribeToNewsletter: false,
       email: 'account-patch@test.com',
       ocupation: 'developer',
-      password: '1234',
+      password: /\$2b\$10\$(\w|\.|\/){53}/i,
       role: 'admin',
       __v: 0,
-      _id: /[a-z0-9]{12,24}/
+      _id: /[a-z0-9]{12,24}/i,
+      subdomain: "accounts-account",
+      permissions:[
+        "posts",
+        "pages",
+        "stats",
+        "social",
+        "email",
+        "config",
+        "accounts"
+      ]
     });
 
     const patchData = await fetch(`http://microservices:3009/api/account/${id}`, {
@@ -208,16 +220,28 @@ describe('Account API Testing', () => {
       status: 'OK'
     });
 
-    const patch = await Accounts.findOne({_id: id});
+    const patch = await Accounts.findOne({_id: id}, null, {lean: true});
     expect(patch).toMatchObject({
-      name: 'Juan',
       lastname: 'Gonzalez',
+      name: 'Juan',
+      firstTime: true,
+      isSubscribeToNewsletter: false,
       email: 'account-patch@test.com',
       ocupation: 'developer',
-      password: '1234',
+      password: /\$2b\$10\$(\w|\.|\/){53}/,
       role: 'admin',
       __v: 0,
-      _id: /[a-z0-9]{12,24}/
+      _id: /[a-z0-9]{12,24}/,
+      subdomain: "accounts-account",
+      permissions:[
+        "posts",
+        "pages",
+        "stats",
+        "social",
+        "email",
+        "config",
+        "accounts"
+      ]
     });
   })
 

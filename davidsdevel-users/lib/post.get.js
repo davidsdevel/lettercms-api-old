@@ -59,9 +59,9 @@ module.exports = async function() {
   }).sort((a,b) => a.matches > b.matches ? -1 : +1);
 
   if (ordered.length < 1) {
-    ordered = await postModel.find({_id: {$ne: _id}, postStatus: 'published'}, '_id', {lean: true, sort: {published: -1}, limit: 2});
+    ordered = await postModel.find({_id: {$ne: _id}, subdomain, postStatus: 'published'}, '_id', {lean: true, sort: {published: -1}, limit: 2});
   } else if (ordered.length < 2) {
-    ordered[1] = await postModel.findOne({_id: {$ne: _id}, postStatus: 'published'}, '_id', {lean: true, sort: {published: -1}});   
+    ordered[1] = await postModel.findOne({_id: {$ne: _id}, subdomain, postStatus: 'published'}, '_id', {lean: true, sort: {published: -1}});   
   }
 
   const similar = await postModel.findOne({_id: ordered[0]._id}, select, {lean: true});
@@ -71,6 +71,7 @@ module.exports = async function() {
   else {
 
     const rated = await Ratings.findOne({
+      subdomain,
       $and: [
         {post: {$ne: _id}},
         {post: {$ne: similar._id}}

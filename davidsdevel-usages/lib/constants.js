@@ -38,8 +38,8 @@ module.exports = exports = {
   },
   files: {
     storage: {
-      limit: 250 / 1024, //kb
-      quota: 0.06 / 1024 / 1024 //per KB
+      limit: 250 * 1024 * 1024, //bytes
+      quota: 0.06 / 1024 / 1024 / 1024 //per bytes
     },
     upload: {
       limit: 300, //uploads daily

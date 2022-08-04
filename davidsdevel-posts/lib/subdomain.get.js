@@ -1,9 +1,6 @@
 const {posts: postModel, blogs} = require('@lettercms/models')(['posts', 'blogs']);
 const getFullUrl = require('./getFullUrl');
 
-const isDev = process.env.NODE_ENV !== 'production';
-const ORIGIN = isDev ? 'http://localhost:3000' : 'https://lettercms-api-staging.herokuapp.com';
-
 module.exports = async function() {
   const {
     req,
@@ -34,9 +31,9 @@ module.exports = async function() {
     path,
     sort: req.query.status === 'published' ? 'published' : req.query.sort || 'created',
     populate: {
-    path: 'BlogAccount',
-    select: selectAccount
-  }}, postModel, condition);
+      path: 'author',
+      select: selectAccount
+    }}, postModel, condition);
 
   const draft = await postModel.countDocuments({subdomain, postStatus: 'draft'});
   const published = await postModel.countDocuments({subdomain, postStatus: 'published'});
@@ -60,9 +57,6 @@ module.exports = async function() {
       fullUrl
     };
   });
-  
-  if (req.get('origin') === ORIGIN)
-    posts.recommended = await postModel.findOne(condition, null, {views: 'asc'});
 
   res.json(posts);
 };
