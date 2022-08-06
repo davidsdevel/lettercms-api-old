@@ -1,8 +1,73 @@
 image: node:lts
 
 stages:
+  - review
+  - prepare
   - prepare-test
+  - migration-test
+  - api-test
+  - deploy
+  - release
 
+
+########## Templates
+
+.heroku-deploy:
+  image: ruby:2.6
+  stage: deploy
+  script:
+    - gem install dpl
+    - rm -rf testing
+    - dpl --provider=heroku --app=$HEROKU_APP --api-key=$HEROKU_API_KEY
+  environment:
+    name: $ENV_NAME
+    url: https://$HEROKU_APP.herokuapp.com
+
+.prepare:
+  stage: prepare
+  cache:
+    key: lettercms-api
+    paths:
+      - node_modules
+  before_script: yarn
+
+.vercel-deploy:
+    stage: deploy
+   variables:
+      PREVIEW_URL: https://$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG.$VERCEL_SCOPE.vercel.app
+     VERCEL_SCOPE: lettercms
+   environment:
+      name: vercel/${VERCEL_PATH/davidsdevel-/}
+     url: $PREVIEW_URL
+   before_script:
+      - cd $VERCEL_PATH
+     - vercel secrets add my-mongodb-uri $MONGO_URL -t $VERCEL_TOKEN
+     - vercel secrets add sentry-dsn $SENTRY_DSN -t $VERCEL_TOKEN
+     - vercel secrets add jwt-token $JWT_AUTH -t $VERCEL_TOKEN
+   script:
+      - DEPLOYMENT_URL=$(vercel --name $CI_PROJECT_NAME --confirm -t $VERCEL_TOKEN)
+     - vercel alias set $DEPLOYMENT_URL $PREVIEW_URL -t $VERCEL_TOKEN
+   only:
+      - production
+
+
+
+
+
+############### Review
+review:
+  extends: .heroku-deploy
+  stage: review
+  variables:
+    HEROKU_APP: lettercms-api-staging
+  before_script:
+    - ENV_NAME=review/lettercms-api-staging
+  only:
+    - master
+
+
+
+################## Staging
 prepare-test:
   image: docker:latest
   stage: prepare-test
@@ -10,8 +75,91 @@ prepare-test:
     - docker:dind
   script:
     - docker build -t microservices:latest .
-    - docker tag microservices:latest $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/microservices:latest
+     - docker tag microservices:latest $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/microservices:latest
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/microservices:latest
+     - docker push $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/microservices:latest
   only:
-    - docker-deploy
+    - master2
+
+test:
+  stage: test
+  services:
+    - mongo
+    - name: $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/microservices:latest
+      alias: microservices
+   variables:
+     MONGO_URL: 'mongodb://mongo/testing'
+  script:
+    - yarn test
+   only:
+     - production
+
+
+
+staging:
+  stage: deploy
+  variables:
+    ENV: staging
+    VERSION: $CI_COMMIT_SHORT_SHA
+  before_script:
+    - yarn
+    - 'echo web: node migration && node dev > Procfile'
+    - tar zcv --wildcards --exclude='*/node_modules/*' --exclude='.git' -f master.tgz lib middlewares davidsdevel-* index.js dev.js yarn.lock package.json Procfile brain.js migration.js
+    - yarn lettercms --upload
+  script:
+    - yarn lettercms --deploy
+  environment:
+    name: staging
+    url: https://lettercms-api-staging.herokuapp.com
+  only:
+    - master2
+
+
+
+
+
+deploy-account:
+  extends: .deploy-vercel
+  variables:
+    VERCEL_PATH: davidsdevel-accounts
+
+deploy-blog:
+  extends: .deploy-vercel
+  variables:
+    VERCEL_PATH: davidsdevel-blog
+deploy-page:
+  extends: .deploy-vercel
+  variables:
+    VERCEL_PATH: davidsdevel-pages
+deploy-post:
+  extends: .deploy-vercel
+  variables:
+    VERCEL_PATH: davidsdevel-posts
+deploy-stat:
+  extends: .deploy-vercel
+  variables:
+    VERCEL_PATH: davidsdevel-stats
+deploy-user:
+  extends: .deploy-vercel
+  variables:
+    VERCEL_PATH: davidsdevel-users
+
+ # TODO: Deploy to Vercel
+ #
+ # production:
+  #   extends: staging
+ #   needs:
+  #     - job: build-production
+ #       artifacts: true
+ #   variables:
+  #     HEROKU_APP: lettercms-api
+ #     TYPE: latest
+ #     SENTRY_VERSION: '{"version": "${VERSION/v/}"}'
+ #   environment:
+  #     name: production
+ #   after_script:
+  #     - 'curl https://sentry.io/api/hooks/release/builtin/5410236/e0ed8ecb580d6fd8ebee31f724156e2fe3fe5d4fb2ba69014b64c2832e9b948b/ -X POST -H "${CONTENT_TYPE}" -d "${SENTRY_VERSION}"'
+ #   only:
+  #     - production
+
+
