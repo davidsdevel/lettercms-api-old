@@ -115,28 +115,28 @@ staging:
 
 
 deploy-account:
-  extends: .deploy-vercel
+  extends: .vercel-deploy
   variables:
     VERCEL_PATH: davidsdevel-accounts
 
 deploy-blog:
-  extends: .deploy-vercel
+  extends: .vercel-deploy
   variables:
     VERCEL_PATH: davidsdevel-blog
 deploy-page:
-  extends: .deploy-vercel
+  extends: .vercel-deploy
   variables:
     VERCEL_PATH: davidsdevel-pages
 deploy-post:
-  extends: .deploy-vercel
+  extends: .vercel-deploy
   variables:
     VERCEL_PATH: davidsdevel-posts
 deploy-stat:
-  extends: .deploy-vercel
+  extends: .vercel-deploy
   variables:
     VERCEL_PATH: davidsdevel-stats
 deploy-user:
-  extends: .deploy-vercel
+  extends: .vercel-deploy
   variables:
     VERCEL_PATH: davidsdevel-users
 
