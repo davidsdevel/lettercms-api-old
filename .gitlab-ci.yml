@@ -20,7 +20,7 @@ stages:
     - rm -rf testing
     - dpl --provider=heroku --app=$HEROKU_APP --api-key=$HEROKU_API_KEY
   environment:
-    name: $ENV_NAME
+    name: review/lettercms-api
     url: https://$HEROKU_APP.herokuapp.com
 
 .prepare:
