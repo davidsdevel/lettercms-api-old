@@ -32,23 +32,23 @@ stages:
   before_script: yarn
 
 .vercel-deploy:
-    stage: deploy
-   variables:
-      PREVIEW_URL: https://$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG.$VERCEL_SCOPE.vercel.app
-     VERCEL_SCOPE: lettercms
-   environment:
-      name: vercel/${VERCEL_PATH/davidsdevel-/}
-     url: $PREVIEW_URL
-   before_script:
-      - cd $VERCEL_PATH
-     - vercel secrets add my-mongodb-uri $MONGO_URL -t $VERCEL_TOKEN
-     - vercel secrets add sentry-dsn $SENTRY_DSN -t $VERCEL_TOKEN
-     - vercel secrets add jwt-token $JWT_AUTH -t $VERCEL_TOKEN
-   script:
-      - DEPLOYMENT_URL=$(vercel --name $CI_PROJECT_NAME --confirm -t $VERCEL_TOKEN)
-     - vercel alias set $DEPLOYMENT_URL $PREVIEW_URL -t $VERCEL_TOKEN
-   only:
-      - production
+  stage: deploy
+  variables:
+    PREVIEW_URL: https://$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG.$VERCEL_SCOPE.vercel.app
+    VERCEL_SCOPE: lettercms
+  environment:
+    name: vercel/${VERCEL_PATH/davidsdevel-/}
+    url: $PREVIEW_URL
+  before_script:
+    - cd $VERCEL_PATH
+    - vercel secrets add my-mongodb-uri $MONGO_URL -t $VERCEL_TOKEN
+    - vercel secrets add sentry-dsn $SENTRY_DSN -t $VERCEL_TOKEN
+    - vercel secrets add jwt-token $JWT_AUTH -t $VERCEL_TOKEN
+  script:
+    - DEPLOYMENT_URL=$(vercel --name $CI_PROJECT_NAME --confirm -t $VERCEL_TOKEN)
+    - vercel alias set $DEPLOYMENT_URL $PREVIEW_URL -t $VERCEL_TOKEN
+  only:
+    - production
 
 
 
@@ -87,13 +87,12 @@ test:
     - mongo
     - name: $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/microservices:latest
       alias: microservices
-   variables:
-     MONGO_URL: 'mongodb://mongo/testing'
+  variables:
+    MONGO_URL: 'mongodb://mongo/testing'
   script:
     - yarn test
-   only:
-     - production
-
+  only:
+    - production
 
 
 staging:
@@ -113,9 +112,6 @@ staging:
     url: https://lettercms-api-staging.herokuapp.com
   only:
     - master2
-
-
-
 
 
 deploy-account:
