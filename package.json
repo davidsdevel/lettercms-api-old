@@ -35,7 +35,8 @@
     "express": "^4.17.1",
     "formidable": "^1.2.2",
     "jsonwebtoken": "^8.5.1",
-    "pusher": "^5.1.0-beta"
+    "pusher": "^5.1.0-beta",
+    "mongoose": "^5"
   },
   "description": ""
 }
