@@ -61,7 +61,7 @@ review:
   variables:
     HEROKU_APP: lettercms-api-staging
   before_script:
-    - ENV_NAME=review/lettercms-api-staging
+    - export ENV_NAME=review/lettercms-api-staging
   only:
     - master
 
