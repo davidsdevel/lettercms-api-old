@@ -199,7 +199,7 @@ module.exports = async function() {
     data.views = {};
   if (hasDates)
     data.dates = generateDates(diff, dateEnd);  
-  if (hasGeneral || query.fields.includes('general.')) {
+  if (hasGeneral && query.fields.includes('general.')) {
     const generalSelect = query.fields.split(',').filter(e => e.startsWith('general.')).map(e => e.split('.')[1]).join(' ');
     
     general = await stats.Stats.findOne({subdomain}, generalSelect, {lean: true});

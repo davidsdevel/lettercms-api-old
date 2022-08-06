@@ -19,7 +19,7 @@ module.exports = async function() {
   
   const {url: urlID} = await blogs.findOne({subdomain}, 'url');
 
-  const condition = isValidObjectId(postID) ? {_id: postID} : {subdomain, url: postID};
+  const condition = isValidObjectId(postID) && !postID.includes('-') ? {_id: postID} : {subdomain, url: postID};
 
   const existsPost = await postModel.exists(condition);
 

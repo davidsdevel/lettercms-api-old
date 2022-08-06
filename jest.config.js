@@ -5,6 +5,11 @@ module.exports = {
     JWT_AUTH: 'davidsdevel'
   },
   testTimeout: 10000,
-  testMatch: ['**/testing/index.test.js'],
+  testMatch: [
+  '**/davidsdevel-*/testing/me.test.js',
+  '**/davidsdevel-*/testing/login.test.js',
+  '**/davidsdevel-*/testing/exists.test.js',
+  '**/davidsdevel-*/testing/account.test.js'
+  ],
   setupFiles: ['./jestInit.js']
 };

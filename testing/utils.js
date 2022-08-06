@@ -62,6 +62,9 @@ const operation = (model, operation) => async (...args) => {
   
   let mongoModel = null;
 
+  const models = require('@lettercms/models')([model]);
+  console.log(models)
+
   if (model === 'accounts')
     mongoModel = models.accounts.Accounts;
   else if (model === 'invitations')
@@ -69,13 +72,21 @@ const operation = (model, operation) => async (...args) => {
   else if (model === 'views')
     mongoModel = models.stats.Views;
   else if (model === 'sessions')
-    mongoModel = models.stats.Views;
+    mongoModel = models.stats.Sessions;
   else if (model === 'stats')
     mongoModel = models.stats.Stats;
   else if (model === 'facebook')
     mongoModel = models.socials.Facebook;
   else if (model === 'instagram')
     mongoModel = models.socials.Instagram;
+  else if (model === 'payment')
+    mongoModel = models.payment.Payment;
+  else if (model === 'invoices')
+    mongoModel = models.payment.Invoices;
+  else if (model === 'users')
+    mongoModel = models.users.Users;
+  else if (model === 'ratings')
+    mongoModel = models.users.Ratings;
   else
     mongoModel = models[model];
 
