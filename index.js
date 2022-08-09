@@ -17,7 +17,6 @@ const accountsMiddleware = require('./middlewares/accounts');
 const pagesMiddleware = require('./middlewares/pages');
 const postsMiddleware = require('./middlewares/posts');
 const socialMiddleware = require('./middlewares/social');
-const imagesMiddleware = require('./middlewares/images');
 const commentsMiddleware = require('./middlewares/comments');
 const usersMiddleware = require('./middlewares/users');
 
@@ -69,7 +68,6 @@ app
   .use(pagesMiddleware(routesHandlers))
   .use(postsMiddleware(routesHandlers))
   .use(socialMiddleware(routesHandlers))
-  .use(imagesMiddleware(routesHandlers))
   .use(commentsMiddleware(routesHandlers))
   .use(usersMiddleware(routesHandlers))
   .all('*', (req, res) => {
