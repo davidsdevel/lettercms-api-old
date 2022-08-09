@@ -65,6 +65,10 @@ module.exports = async function() {
     });
 
   if (action === 'publish' && !data.exists) {
+    Facebook.findOne({subdomain}).then({
+      subdomain
+    })
+    
     Users.find({subdomain}, '_id hasRecommendations mlModel')
       .then(users => {
         Promise.allSettled(

@@ -15,13 +15,12 @@ const {api} = require('./social/base');
 module.exports = async function() {
   const {req, res} = this;
 
-  const {include, exclude, fields} = req.query;
+  const {include, fields} = req.query;
   const {subdomain} = req;
 
   const socialIncludes = include ? include.split(/\s*,\s*/g) : [];
-  const socialExcludes = exclude ? exclude.split(/\s*,\s*/g) : [];
 
-  const sendAll = !include && !exclude;
+  const sendAll = !include;
 
   const socials = {};
   const parsedFields = fields ? fields.replace(/\s*,\s*/g, ' ') : [];

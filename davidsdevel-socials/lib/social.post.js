@@ -25,15 +25,23 @@ module.exports = async function() {
     }, 'pageId token');
 
     const fb = new Facebook(pageId, token);
-    try {
 
-    await fb.publishPost(message, req.body);
+    try {
+      let publishRes = await fb.publishPost(message, req.body);
 
     if (req.body.schedule)
       await usage.updateOne({subdomain}, {$inc: {socialSchedule: 1}});
 
+    return res.json({
+      status: 'OK',
+      id: publishRes.id
+    })
+
     } catch(err) {
-      return res.status(500).send(err);
+      return res.status(500).json({
+        status: 'server-error',
+        message: err
+      });
     }
   }
 
@@ -44,7 +52,7 @@ module.exports = async function() {
 
     const ig = new Instagram(userId, token);
 
-    if (req.bod.schedule) {
+    if (req.body.schedule) {
       await schedule(req.body.schedule, {
         method: 'POST',
         url: 'https://lettercms-api-staging.herokuapp.com/api/social/instagram',

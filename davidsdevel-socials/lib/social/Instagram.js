@@ -6,17 +6,18 @@ class IG extends Base {
 
     let containerID = null;
     if (typeof image === 'string') {
-      const {id} = await this._baseRequest(`/${this.ID}/media`, 'POST', {
+      const a = await this._baseRequest(`/${this.ID}/media`, 'POST', {
         caption,
         image_url: image
       });
 
-      containerID = id;
+      console.log(a)
+      containerID = a.id;
     } else {
       if (image.length > 10)
         return Promise.reject({
           status: 'social/publish-error',
-          message: 'Instagram posts only can have 10 images'
+          message: 'Instagram only can post 10 images'
         });
 
       const ids = await Promise.all(
@@ -30,6 +31,7 @@ class IG extends Base {
 
       const {id} = await this._baseRequest(`/${this.ID}/media`, 'POST', {
         media_type: 'CAROUSEL',
+        caption,
         children: ids.map(e => e.id).join('%2C')
       });
 

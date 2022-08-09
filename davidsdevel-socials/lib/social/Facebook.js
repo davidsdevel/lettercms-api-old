@@ -12,10 +12,10 @@ class FacebookSDK extends Base {
         return this.publishPhoto(images[0]);
       }
 
-      const postImages = await Promise.all(images.map(url => this.publishPhoto(url, !!schedule)));
-
+      const postImages = await Promise.all(images.map(url => this.publishPhoto(url, true)));
+        
       postImages.forEach(({id}, i) => {
-        imagesPaths[`attached_media[${i}]`] = {media_fbid: id};
+        imagesPaths[`attached_media[${i}]`] = JSON.stringify({media_fbid: id});
       });
     }
 
@@ -37,7 +37,7 @@ class FacebookSDK extends Base {
     if ((images && schedule) || schedule)
       fetchOptions.published = 'false';
     else
-      fetchOptions.published = published.toString();
+      fetchOptions.published = published;
 
     return this._baseRequest(`/${this.ID}/feed`, 'POST', fetchOptions);
   }
