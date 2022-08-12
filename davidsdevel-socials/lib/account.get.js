@@ -61,7 +61,7 @@ module.exports = async function() {
       subdomain
     }, 'token userId');
 
-    const {name, profile_picture_url, username} = await api(`/${userId}`, {
+    const {name, profile_picture_url, username, error} = await api(`/${userId}`, {
       access_token: token,
       fields: 'name,profile_picture_url,username'
     });
