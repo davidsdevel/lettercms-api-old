@@ -33,20 +33,27 @@ module.exports = async function() {
       subdomain
     }, 'token pageId');
 
-    const {cover, name, username} = await api(`/${pageId}`, {
+    const {cover, name, username, error} = await api(`/${pageId}`, {
       access_token: token,
       fields: 'name,username,cover'
     });
 
-    socials.facebook  = {
-      subdomain,
-      pageId,
-      token: token,
-      name,
-      username,
-      cover: cover.source,
-      picture: `https://graph.facebook.com/${pageId}/picture`
-    };
+    if (error) {
+      socials.facebook = {
+        status: 'auth-error'
+      }
+    } else {
+      socials.facebook  = {
+        subdomain,
+        pageId,
+        token: token,
+        name,
+        username,
+        cover: cover.source,
+        picture: `https://graph.facebook.com/${pageId}/picture`
+      };
+    }
+
   }
 
   if ((sendAll || socialIncludes.indexOf('instagram') > -1) && hasIG) {
