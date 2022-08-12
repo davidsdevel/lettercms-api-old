@@ -66,14 +66,20 @@ module.exports = async function() {
       fields: 'name,profile_picture_url,username'
     });
 
-    socials.instagram = {
-      userId,
-      subdomain,
-      token,
-      name,
-      username,
-      picture: profile_picture_url
-    };
+    if (error) {
+      socials.instagram = {
+        status: 'auth-error'
+      }
+    } else {
+      socials.instagram = {
+        userId,
+        subdomain,
+        token,
+        name,
+        username,
+        picture: profile_picture_url
+      };
+    }
   }
 
   res.json(socials);
