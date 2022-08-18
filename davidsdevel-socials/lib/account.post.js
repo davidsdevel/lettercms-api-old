@@ -23,23 +23,13 @@ module.exports = async function() {
     const longLive = await exchangeToken(accessToken);
 
     if (type === 'facebook') {
-        const {name, username, cover} = await api(`/${pageID}`, {
-          access_token: longLive,
-          fields: 'name,username,cover'
-        });
+      account = {
+        subdomain,
+        pageId: pageID,
+        token: longLive
+      };
 
-        account = {
-          subdomain,
-          pageId: pageID,
-          token: longLive
-        };
-
-      const existsFB = await socials.Facebook.exists({subdomain}); 
-
-      if (existsFB)
-        await socials.Facebook.updateOne({subdomain}, {token: longLive});
-      else
-        await socials.Facebook.create(account);
+      await socials.Facebook.create(account);
     }
 
     if (type === 'instagram') {
@@ -48,23 +38,18 @@ module.exports = async function() {
         fields: 'instagram_business_account'
       });
 
-      const {id: userId, name, profile_picture_url, username} = await api(`/${instagram_business_account.id}`, {
-        access_token: longLive,
-        fields: 'name,profile_picture_url,username'
+      const {id: userId} = await api(`/${instagram_business_account.id}`, {
+        access_token: longLive
       });
 
       account = {
         userId,
         subdomain,
+        pageId: pageID,
         token: longLive
       };
 
-      const existsIG = await socials.Instagram.exists({subdomain}); 
-
-      if (existsIG)
-        await socials.Instagram.updateOne({subdomain}, {token: longLive});
-      else
-        await socials.Instagram.create(account);
+      await socials.Instagram.create(account);
     }
 
     res.json({
