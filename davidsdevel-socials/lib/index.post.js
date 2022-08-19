@@ -38,7 +38,7 @@ module.exports = async function() {
 
     const ig = new Instagram(userId, token);
 
-    if (req.bod.schedule) {
+    if (req.body.schedule) {
       await schedule(req.body.schedule, {
         method: 'POST',
         url: 'https://lettercms-api-staging.herokuapp.com/api/social/instagram',
