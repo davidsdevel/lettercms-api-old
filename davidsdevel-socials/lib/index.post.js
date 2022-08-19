@@ -57,4 +57,8 @@ module.exports = async function() {
     else
       await ig.publishPost(message, images);
   }
+
+  res.json({
+    status: 'OK'
+  });
 };
