@@ -1,4 +1,4 @@
-const {posts, users: {Ratings, Users}} = require('@lettercms/models')(['posts', 'ratings', 'users']);
+const {posts, users: {Ratings, Users}, socials: {Facebook}} = require('@lettercms/models')(['facebook', 'posts', 'ratings', 'users']);
 const {isValidObjectId} = require('mongoose');
 const brain = require('../../brain');
 
