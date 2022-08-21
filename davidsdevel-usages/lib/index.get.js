@@ -28,11 +28,11 @@ module.exports = async function() {
 
   const {token, userId} = socials.Instagram.findOne({subdomain}, 'userId token');
 
-  console.log(data, token, userId)
   const data = await api(`/${userId}/content_publishing_limit`, {
     access_token: token,
     fields: 'quota_usage'
   });
+  console.log(data, token, userId)
 
 
   const isUsed = 1//data[0].quota_usage;
