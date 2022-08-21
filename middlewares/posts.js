@@ -14,6 +14,9 @@ const mapQueries = (req, res, next) => {
 const posts = handlers => router
   .all('/api/post/:year/:month/:day/:url', mapQueries, handlers['/api/post/:year/:month/:day/:url'])
   .all('/api/post/:year/:month/:url', mapQueries, handlers['/api/post/:year/:month/:url'])
+  .all('/api/post/:url/publish', mapQueries, handlers['/api/post/:url/publish'])
+  .all('/api/post/:url/draft', mapQueries, handlers['/api/post/:url/draft'])
+  .all('/api/post/:url/update', mapQueries, handlers['/api/post/:url/update'])
   .all('/api/post/:category/:url', mapQueries, handlers['/api/post/:category/:url'])
   .all('/api/post/:url', mapQueries, (req, res, next) => {
     if (postsRoutes.indexOf(req.query.url) === -1)
