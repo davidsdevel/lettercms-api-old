@@ -1,4 +1,4 @@
-const {usage, social} = require('@lettercms/models')(['usage', 'instagram']);
+const {usage, socials} = require('@lettercms/models')(['usage', 'instagram']);
 const constants = require('./constants');
 const {api} = require('../../davidsdevel-socials/lib/social/base');
 
@@ -26,7 +26,7 @@ module.exports = async function() {
     filesUpload
   } = await usage.findOne({subdomain});
 
-  const {token, userId} = social.Instagram.findOne({subdomain}, 'token userId');
+  const {token, userId} = socials.Instagram.findOne({subdomain}, 'token userId');
 
   const {data} = await api(`/${userId}/content_publishing_limit`, {
     access_token: token,
