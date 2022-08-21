@@ -26,15 +26,14 @@ module.exports = async function() {
     filesUpload
   } = await usage.findOne({subdomain});
 
-  /*const {token, userId} = social.Instagram.findOne({subdomain}, 'token userId');
+  const {token, userId} = social.Instagram.findOne({subdomain}, 'token userId');
 
   const {data} = await api(`/${userId}/content_publishing_limit`, {
     access_token: token,
     fields: 'quota_usage'
   });
 
-  const isUsed = data[0].quota_usage*/
-  const isUsed = 10;
+  const isUsed = data[0].quota_usage;
 
   const limits = {
     posts: {
