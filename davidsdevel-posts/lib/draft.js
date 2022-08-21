@@ -31,12 +31,20 @@ module.exports = async function() {
   
   fetch(`https://${subdomain}.lettercms.vercel.app/api/revalidate`, {
     method: 'POST',
+    mode: 'cors',
+    headers: {
+      'Content-Type': 'application/json'
+    },
     body: JSON.stringify({
       path: `/_blogs/${subdomain}/${_url}` 
     })
   });
   fetch(`https://${subdomain}.lettercms.vercel.app/api/revalidate`, {
     method: 'POST',
+    mode: 'cors',
+    headers: {
+      'Content-Type': 'application/json'
+    },
     body: JSON.stringify({
       path: `/_blogs/${subdomain}` 
     })

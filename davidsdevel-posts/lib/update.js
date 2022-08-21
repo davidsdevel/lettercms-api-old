@@ -55,10 +55,15 @@ module.exports = async function() {
   if (postStatus === 'published') {
     fetch(`https://${subdomain}.lettercms.vercel.app/api/revalidate`, {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      mode: 'cors',
       body: JSON.stringify({
         path: `/_blogs/${subdomain}/${_url}` 
       })
-    });}
+    });
+  }
 
   res.json({
     status: 'OK',
