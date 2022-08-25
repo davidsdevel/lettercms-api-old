@@ -19,7 +19,7 @@ module.exports = async function() {
   }
 
   await pages.deleteOne(deleteCondition);
-  await usage.updateOne(deleteCondition, {$inc: {pages: -1}});
+  await usage.updateOne({subdomain}, {$inc: {pages: -1}});
 
   res.json({
     status: 'OK'
