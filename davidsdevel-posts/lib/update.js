@@ -30,7 +30,7 @@ module.exports = async function() {
         message: 'A page with same URL already exists'
       });
 
-    const existsPost = await posts.exists({subdomain, url: req.body.url});
+    const existsPost = await posts.exists({subdomain, url: req.body.url, postStatus: 'published'});
 
     if (existsPost)
       return res.status(400).json({
