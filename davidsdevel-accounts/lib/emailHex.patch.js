@@ -1,5 +1,6 @@
 const {accounts, posts, users: {Users}} = require('@lettercms/models')(['accounts', 'posts', 'users']);
 const {isValidObjectId} = require('mongoose');
+const fetch = require('node-fetch');
 
 module.exports = async function() {
   const {
