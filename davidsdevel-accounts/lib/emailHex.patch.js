@@ -8,7 +8,8 @@ module.exports = async function() {
   } = this;
 
   const {
-    isAdmin
+    isAdmin,
+    subdomain
   } = req;
 
   if (req.body.subdomain && !isAdmin)
