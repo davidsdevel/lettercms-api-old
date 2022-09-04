@@ -24,7 +24,7 @@ module.exports = async function() {
 
   const countryName = look ? countries.getName(look.country, 'es') : 'Unknown';
 
-  const {mainUrl} = await blogs.exists({subdomain}, 'mainUrl', {lean: true});
+  const {mainUrl} = await blogs.findOne({subdomain}, 'mainUrl', {lean: true});
   const existsPost = await posts.exists({url, subdomain});
 
   if (!existsPost && '/' + url !== mainUrl)
