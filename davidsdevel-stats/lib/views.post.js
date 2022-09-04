@@ -46,7 +46,7 @@ module.exports = async function() {
   if (referrer && referrer != 'undefined' && referrer != 'null')
     viewData.referrer = referrer;
 
-  await stats.Views.create();
+  await stats.Views.create(viewData);
 
   res.json({
     status: 'OK'
