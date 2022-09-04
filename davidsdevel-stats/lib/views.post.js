@@ -1,4 +1,4 @@
-const {stats, posts} = require('@lettercms/models')(['posts', 'views', 'stats']);
+const {stats, posts, blogs} = require('@lettercms/models')(['posts', 'blogs', 'views', 'stats']);
 const parser = require('ua-parser-js');
 const geoip = require('geoip-lite');
 const countries = require('i18n-iso-countries');
@@ -24,14 +24,15 @@ module.exports = async function() {
 
   const countryName = look ? countries.getName(look.country, 'es') : 'Unknown';
 
+  const {mainUrl} = await blogs.exists({subdomain}, 'mainUrl', {lean: true});
   const existsPost = await posts.exists({url, subdomain});
 
-  if (!existsPost && url !== '/')
+  if (!existsPost && '/' + url !== mainUrl)
     return res.status(404).json({
       status: 'not-found'
     });
 
-  if (url !== '/')    
+  if ('/' + url !== mainUrl)    
     await posts.updateOne({url, subdomain}, {$inc: {views: 1}});
 
   await stats.Stats.updateOne({subdomain}, {$inc: {totalViews: 1}});
