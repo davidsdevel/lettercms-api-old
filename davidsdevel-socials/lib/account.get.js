@@ -41,7 +41,7 @@ module.exports = async function() {
     if (error) {
       socials.facebook = {
         status: 'auth-error'
-      }
+      };
     } else {
       socials.facebook  = {
         subdomain,
@@ -69,7 +69,7 @@ module.exports = async function() {
     if (error) {
       socials.instagram = {
         status: 'auth-error'
-      }
+      };
     } else {
       socials.instagram = {
         userId,

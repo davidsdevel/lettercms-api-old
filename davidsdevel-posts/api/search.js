@@ -1,4 +1,4 @@
-const {manageMethods} = require('@lettercms/utils')
+const {manageMethods} = require('@lettercms/utils');
 const GET = require('../lib/search');
 
 module.exports = manageMethods({

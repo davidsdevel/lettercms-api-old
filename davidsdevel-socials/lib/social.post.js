@@ -35,7 +35,7 @@ module.exports = async function() {
     return res.json({
       status: 'OK',
       id: publishRes.id
-    })
+    });
 
     } catch(err) {
       return res.status(500).json({

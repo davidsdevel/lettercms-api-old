@@ -11,7 +11,7 @@ module.exports = async function() {
   if (status === 'COMPLETED') {
     const amount = purchase_units[0].payments.captures[0].amount.value;
     if (type === 'funds')
-      await payment.Payment.updateOne({subdomain}, {$inc: {balance: +amount}})
+      await payment.Payment.updateOne({subdomain}, {$inc: {balance: +amount}});
     else if (type === 'payment') {
       const {lastPayment} = await payment.Payment.findOne({subdomain}, 'lastPayment', {lean: true});
       
@@ -33,4 +33,4 @@ module.exports = async function() {
     res.json({
       status: 'already-captured'
     });
-}
+};

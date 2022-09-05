@@ -3,4 +3,4 @@ const GET = require('../lib/index.get');
 
 module.exports = manageMethods({
   GET
-})
+});

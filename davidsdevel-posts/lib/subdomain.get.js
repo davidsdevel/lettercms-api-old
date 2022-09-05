@@ -15,7 +15,7 @@ module.exports = async function() {
     subdomain
   };
 
-  const {url: urlID} = await blogs.findOne({subdomain}, 'url mainUrl');
+  const {url: urlID, mainUrl} = await blogs.findOne({subdomain}, 'url mainUrl');
 
   if (status)
     condition.postStatus = status;

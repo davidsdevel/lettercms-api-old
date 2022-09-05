@@ -13,7 +13,7 @@ const parseFields = fields => {
   });
 
   return fieldsObj;
-}
+};
 
 function increment(key, value) {
   if (!value)
@@ -82,7 +82,7 @@ const generateHour = date => {
     hour = '12AM';
 
   return hour;
-}
+};
 
 const generateDates = (daysCount, dateEnd) => {
   const dates = {};

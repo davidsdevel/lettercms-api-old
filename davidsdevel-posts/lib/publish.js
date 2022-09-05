@@ -56,7 +56,7 @@ module.exports = async function() {
     updated: date,
     published: date,
     postStatus: 'published'
-  }
+  };
 
   const {tags, _id: postID, url: _url, description} = await posts.findOneAndUpdate(updateCondition, newData, {select: 'description _id tags url'});
 
@@ -102,7 +102,7 @@ module.exports = async function() {
           subdomain,
           rating
         });
-      })
+      });
   });
 
   res.json({

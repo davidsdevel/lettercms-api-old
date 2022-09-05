@@ -7,4 +7,4 @@ module.exports = url => {
 
   if (!url)
     return 'direct';
-}
+};

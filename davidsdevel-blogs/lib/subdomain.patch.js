@@ -95,7 +95,7 @@ module.exports = async function() {
           path: `/_blogs/${subdomain}${newUrl}` 
         })
       });
-    })
+    });
 
   }
 

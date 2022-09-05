@@ -46,4 +46,4 @@ module.exports = exports = {
       quota: 0.05 / 1000 //per upload
     }
   }
-}
+};

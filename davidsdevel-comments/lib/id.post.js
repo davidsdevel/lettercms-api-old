@@ -1,4 +1,4 @@
-const {comments, posts, users: {Users}, stats: {Stats}} = require('@lettercms/models')(['stats', 'comments', 'posts', 'users'])
+const {comments, posts, users: {Users}, stats: {Stats}} = require('@lettercms/models')(['stats', 'comments', 'posts', 'users']);
 
 module.exports = async function() {
   const {
@@ -52,4 +52,4 @@ module.exports = async function() {
     status: 'OK',
     id: _id
   });
-}
+};

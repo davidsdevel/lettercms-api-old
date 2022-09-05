@@ -47,7 +47,7 @@ module.exports = async function() {
   const newData = {
     ...body,
     updated: date
-  }
+  };
 
   const {_id: postID, url: _url, postStatus} = await posts.findOneAndUpdate(updateCondition, newData, {select: '_id url postStatus'});
 

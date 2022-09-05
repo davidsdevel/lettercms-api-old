@@ -20,7 +20,7 @@ const generateConditions = query => {
     conditions.$where = conditions.$where ? [conditions.$where,  str].join(' && ') : str;
   }
 
-}
+};
 
 module.exports = async function() {
   const {req: {subdomain, query}, res, findSingle} = this;
@@ -33,7 +33,7 @@ module.exports = async function() {
     year
   } = query;
 
-  let conditions = {}
+  let conditions = {};
 
   const isId = isValidObjectId(url) && !url.includes('-');
 
@@ -55,7 +55,7 @@ module.exports = async function() {
 
   const {url: urlID, mainUrl} = await blogs.findOne({subdomain}, 'url mainUrl');
 
-  const select = query.fields?.split(',').filter(e=> e.includes('author.')).map(e => e.split('.')[1]).join(' ');
+  const select = query.fields?.split(',').filter(e => e.includes('author.')).map(e => e.split('.')[1]).join(' ');
   
   const data = await  findSingle({
     ...query,

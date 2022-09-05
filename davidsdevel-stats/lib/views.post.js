@@ -2,7 +2,7 @@ const {stats, posts, blogs} = require('@lettercms/models')(['posts', 'blogs', 'v
 const parser = require('ua-parser-js');
 const geoip = require('geoip-lite');
 const countries = require('i18n-iso-countries');
-const url = require('url')
+const _url = require('url');
 
 module.exports = async function() {
   const {
@@ -43,9 +43,9 @@ module.exports = async function() {
     os: os.name ||'Unknown',
     browser: browser.name ||'Unknown',
     url
-  }
+  };
   if (referrer && referrer != 'undefined' && referrer != 'null')
-    viewData.referrer = url.parse(referrer).hostname;
+    viewData.referrer = _url.parse(referrer).hostname;
 
   await stats.Views.create(viewData);
 

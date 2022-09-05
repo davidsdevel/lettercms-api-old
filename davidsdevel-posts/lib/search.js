@@ -22,7 +22,7 @@ module.exports = async function() {
   if (tag)
     condition.tags = {
       $in: tag
-    }
+    };
 
   if (query.fields)
     query.fields += ',published,postStatus';
@@ -43,5 +43,5 @@ module.exports = async function() {
     };
   });
 
-  res.json(posts)
+  res.json(posts);
 };

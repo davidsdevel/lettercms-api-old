@@ -9,7 +9,7 @@ const parseTags = arr => {
   arr.forEach(e => tags[e] = 1);
 
   return tags;
-}
+};
 
 module.exports = async function() {
   const {

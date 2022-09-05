@@ -27,7 +27,7 @@ module.exports = async function() {
     return res.status(404).json({
       status: 'not-found',
       message: 'Post not found'
-    })
+    });
 
   let recommended = null;
 
@@ -55,7 +55,7 @@ module.exports = async function() {
     return {
       matches,
       _id: e._id
-    }
+    };
   }).sort((a,b) => a.matches > b.matches ? -1 : +1);
 
   if (ordered.length < 1) {

@@ -15,7 +15,7 @@ module.exports = async function() {
             subdomain
           });
         })
-      ).then(() => console.log('Done'))
+      ).then(() => console.log('Done'));
     });
 
   res.json({

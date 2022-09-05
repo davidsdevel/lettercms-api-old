@@ -24,7 +24,7 @@ const POST = async function() {
   const {req, res} = this;
 
   res.sendStatus(200);
-}
+};
 
 module.exports = manageMethods({
   POST

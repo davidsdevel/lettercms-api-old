@@ -8,7 +8,7 @@ const compare = (a, b) => {
   const buffer = scryptSync(a, salt, 64);
 
   return timingSafeEqual(Buffer.from(pass, 'hex'), buffer);
-}
+};
 
 module.exports = async function() {
   const {

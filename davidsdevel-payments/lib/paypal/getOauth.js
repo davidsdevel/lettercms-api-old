@@ -15,4 +15,4 @@ module.exports = async () => {
   });
 
   return res.json();
-}
+};

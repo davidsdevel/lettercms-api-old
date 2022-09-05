@@ -116,4 +116,4 @@ module.exports = async function() {
   };
 
   res.json(limits);
-}
+};

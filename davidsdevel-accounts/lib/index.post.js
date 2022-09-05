@@ -9,7 +9,7 @@ const generateSecretHash = key => {
   const buffer = scryptSync(key, salt, 64);
 
   return `${buffer.toString('hex')}.${salt}`;
-}
+};
 
 module.exports = async function() {
   const {req,res} = this;

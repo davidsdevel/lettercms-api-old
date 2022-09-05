@@ -12,7 +12,7 @@ module.exports = async function() {
   query.populate = {
     path: 'blog',
     select: 'title subdomain'
-  }
+  };
 
   const data = await findSingle(query, accounts.Invitations, {_id: id});
 

@@ -25,7 +25,7 @@ const POST = async function() {
   res.json({
     status:'OK'
   });
-}
+};
 
 module.exports = manageMethods({
   POST

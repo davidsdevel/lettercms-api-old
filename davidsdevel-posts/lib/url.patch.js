@@ -67,7 +67,7 @@ module.exports = async function() {
   if (action === 'publish' && !data.exists) {
     Facebook.findOne({subdomain}).then({
       subdomain
-    })
+    });
     
     Users.find({subdomain}, '_id hasRecommendations mlModel')
       .then(users => {
@@ -95,7 +95,7 @@ module.exports = async function() {
           })
         ).then(() => {
           delete data.tags;
-        })
+        });
       });
   }
 

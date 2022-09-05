@@ -1,4 +1,4 @@
-const {comments, posts, users: {Users}} = require('@lettercms/models')(['comments', 'posts', 'users'])
+const {comments, posts, users: {Users}} = require('@lettercms/models')(['comments', 'posts', 'users']);
 const {isValidObjectId} = require('mongoose');
 
 module.exports = async function() {
@@ -18,14 +18,14 @@ module.exports = async function() {
 
   const conditions = {};
 
-  const isId = isValidObjectId(query.id)
+  const isId = isValidObjectId(query.id);
 
   if (isId)
     conditions.post = query.id;
   else {
     const {_id} = await posts.findOne({url: query.id, subdomain}, '_id');
     
-    conditions.post = _id
+    conditions.post = _id;
   }
 
   const existsPost = await posts.exists({_id: conditions.post});
@@ -44,4 +44,4 @@ module.exports = async function() {
   }, comments, conditions);
 
   res.json(data);
-}
+};

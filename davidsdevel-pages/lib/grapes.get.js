@@ -9,7 +9,7 @@ module.exports = async function() {
     fields: 'html css'
   }, pages, {_id});
 
-  res.setHeader('Content-Type', 'application/json')
+  res.setHeader('Content-Type', 'application/json');
   res.send({
     html,
     css
