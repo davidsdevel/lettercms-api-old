@@ -1,5 +1,5 @@
-const getFullUrl = (url, urlID, data) => {
-  const base = process.env.ENV === 'staging' ? `/${data.subdomain}`  : '';
+const getFullUrl = (url, urlID, data, _base = '') => {
+  const base = `/${_base}`;
 
   if (urlID == '1')
     return `${base}/${url}`;

@@ -1,4 +1,4 @@
-const {accounts, posts, users: {Users}} = require('@lettercms/models')(['accounts', 'posts', 'users']);
+const {accounts, posts} = require('@lettercms/models')(['accounts', 'posts', 'users']);
 const {isValidObjectId} = require('mongoose');
 const fetch = require('node-fetch');
 
@@ -34,23 +34,6 @@ module.exports = async function() {
   const account = await accounts.Accounts.findOneAndUpdate(condition, req.body);
 
   const paths = await posts.find({author: account._id}, 'url', {lean: true});
-
-  Users.find({subdomain}, '_id', {lean: true}).then(users => {
-    users.forEach(() => {
-      paths.forEach(({url}) => {
-        fetch(`https://${subdomain}.lettercms.vercel.app/api/revalidate`, {
-          method: 'POST',
-          mode: 'cors',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            path: `/_recommendations/${_id}/${subdomain}/${url}` 
-          })
-        })
-      });
-    });
-  });
 
   paths.forEach(({url}) => {
     fetch(`https://${subdomain}.lettercms.vercel.app/api/revalidate`, {

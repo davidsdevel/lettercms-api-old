@@ -60,13 +60,13 @@ module.exports = async function() {
 
   const {tags, _id: postID, url: _url, description} = await posts.findOneAndUpdate(updateCondition, newData, {select: 'description _id tags url'});
 
-  Facebook.findOne({subdomain}, 'pageId token').then(({pageId, token}) => {
+  /*Facebook.findOne({subdomain}, 'pageId token').then(({pageId, token}) => {
     const fb = new FB(pageId, token);
 
     fb.publishPost(description, {
       link: `https://${subdomain}.lettercms.vercel.app/${_url}`
     });
-  });
+  });*/
 
   fetch(`https://${subdomain}.lettercms.vercel.app/api/revalidate`, {
     method: 'POST',
@@ -94,27 +94,6 @@ module.exports = async function() {
 
           rating = net.run(parsedTags);
         }
-
-        fetch(`https://${subdomain}.lettercms.vercel.app/api/revalidate`, {
-          method: 'POST',
-          mode: 'cors',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            path: `/_recommendations/${_id}/${subdomain}/${_url}` 
-          })
-        });
-        fetch(`https://${subdomain}.lettercms.vercel.app/api/revalidate`, {
-          method: 'POST',
-          mode: 'cors',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            path: `/_recommendations/${_id}/${subdomain}`
-          })
-        });
 
         return Ratings.create({
           userID: _id,

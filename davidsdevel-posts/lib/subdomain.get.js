@@ -15,7 +15,7 @@ module.exports = async function() {
     subdomain
   };
 
-  const {url: urlID} = await blogs.findOne({subdomain}, 'url');
+  const {url: urlID} = await blogs.findOne({subdomain}, 'url mainUrl');
 
   if (status)
     condition.postStatus = status;
@@ -50,7 +50,7 @@ module.exports = async function() {
     let fullUrl;
 
     if (e.postStatus === 'published')
-      fullUrl = getFullUrl(e.url, urlID, e);
+      fullUrl = getFullUrl(e.url, urlID, e, mainUrl);
 
     return {
       ...e,

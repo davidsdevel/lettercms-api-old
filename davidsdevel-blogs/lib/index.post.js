@@ -23,7 +23,10 @@ module.exports = async function() {
     });
 
   //Create Blog
-  const blog = await blogs.create(req.body);
+  const blog = await blogs.create({
+    ...req.body,
+    mainUrl: ''
+  });
 
   //Initialize Blog Data
   await stats.Stats.create({subdomain});

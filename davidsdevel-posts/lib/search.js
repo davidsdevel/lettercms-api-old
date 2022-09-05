@@ -27,7 +27,7 @@ module.exports = async function() {
   if (query.fields)
     query.fields += ',published,postStatus';
 
-  const {url: urlID} = await blogs.findOne({subdomain}, 'url');
+  const {url: urlID, mainUrl} = await blogs.findOne({subdomain}, 'url mainUrl');
 
   const posts = await find({...query, path}, postsModel, conditions);
 
@@ -35,7 +35,7 @@ module.exports = async function() {
     let fullUrl;
 
     if (e.postStatus === 'published')
-      fullUrl = getFullUrl(e.url, urlID, e);
+      fullUrl = getFullUrl(e.url, urlID, e, mainUrl);
 
     return {
       ...e,

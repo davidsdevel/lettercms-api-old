@@ -1,6 +1,5 @@
 const {posts, users: {Users, Ratings}} = require('@lettercms/models')(['posts', 'users', 'ratings']);
 const jwt = require('jsonwebtoken');
-const fetch = require('node-fetch');
 
 const endpoint = process.env.NODE_ENV === 'production' ? 'https://lettercms-recommendation.herokuapp.com' : 'http://localhost:3008';
 
@@ -60,7 +59,7 @@ module.exports = async function() {
     headers: {
       Authorization: token
     }
-  })
+  });
 
   res.json({
     status: 'OK'

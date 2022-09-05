@@ -53,7 +53,7 @@ module.exports = async function() {
       status: 'not-found'
     });
 
-  const {url: urlID} = await blogs.findOne({subdomain}, 'url');
+  const {url: urlID, mainUrl} = await blogs.findOne({subdomain}, 'url mainUrl');
 
   const select = query.fields?.split(',').filter(e=> e.includes('author.')).map(e => e.split('.')[1]).join(' ');
   
@@ -66,7 +66,7 @@ module.exports = async function() {
   }, posts, conditions);
 
   if (data.postStatus === 'published')
-    data.fullUrl = getFullUrl(url, urlID, data);
+    data.fullUrl = getFullUrl(url, urlID, data, mainUrl);
 
   res.json(data);
 };

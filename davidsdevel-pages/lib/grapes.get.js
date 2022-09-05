@@ -5,14 +5,13 @@ module.exports = async function() {
 
   const {_id} = req.query;
 
-  const data = await findSingle({
-    fields: 'components,html,css,styles'
+  const {html, css} = await findSingle({
+    fields: 'html css'
   }, pages, {_id});
 
-  res.json({
-    'gjs-components': data.components || '',
-    'gjs-html': data.html || '',
-    'gjs-css': data.css || '',
-    'gjs-styles': data.styles || ''
+  res.setHeader('Content-Type', 'application/json')
+  res.send({
+    html,
+    css
   });
 };

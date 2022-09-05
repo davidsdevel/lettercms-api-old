@@ -1,4 +1,4 @@
-const {accounts, blogs} = require('@lettercms/models')(['invitations', 'blog', 'accounts']);
+const {accounts, blogs} = require('@lettercms/models')(['invitations', 'blogs', 'accounts']);
 const {sendMail} = require('@lettercms/utils');
 const {writeFileSync} = require('fs');
 const {join} = require('path');
