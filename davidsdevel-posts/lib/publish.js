@@ -1,4 +1,4 @@
-const {posts, pages, users: {Ratings, Users}, socials: {Facebook}} = require('@lettercms/models')(['facebook', 'pages', 'posts', 'ratings', 'users']);
+const {posts, pages, users: {Ratings, Users}, socials: {Facebook}} = require('@lettercms/models')(['facebook', 'pages', 'posts', 'ratings', 'users', 'blogs']);
 const {isValidObjectId} = require('mongoose');
 const brain = require('../../brain');
 const FB = require('../../davidsdevel-socials/lib/social/Facebook');
@@ -67,6 +67,7 @@ module.exports = async function() {
       link: `https://${subdomain}.lettercms.vercel.app/${_url}`
     });
   });*/
+  const {mainUrl} = await blogs.find({subdomain}, 'mainUrl', {lean: true});
 
   fetch(`https://${subdomain}.lettercms.vercel.app/api/revalidate`, {
     method: 'POST',
@@ -75,7 +76,7 @@ module.exports = async function() {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      path: `/_blogs/${subdomain}` 
+      path: `/_blogs/${subdomain}${mainUrl}` 
     })
   });
 

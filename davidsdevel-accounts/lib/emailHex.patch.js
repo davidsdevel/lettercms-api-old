@@ -1,6 +1,24 @@
-const {accounts, posts} = require('@lettercms/models')(['accounts', 'posts', 'users']);
+const {accounts, posts, blogs} = require('@lettercms/models')(['accounts', 'posts', 'blogs']);
 const {isValidObjectId} = require('mongoose');
 const fetch = require('node-fetch');
+
+const getFullUrl = (post, urlID) => {
+  if (urlID == '1')
+    return `/${post.url}`;
+
+  if (urlID == '2')
+    return `/${post.category}/${post.url}`;
+
+  const year = post.published.getFullYear();
+  const month = post.published.getMonth() + 1;
+
+  if (urlID == '3')
+    return `/${year}/${month}/${url}`;
+
+  const date = post.published.getDate();
+
+  return `/${year}/${month}/${date}/${post.url}`;
+};
 
 module.exports = async function() {
   const {
@@ -33,9 +51,12 @@ module.exports = async function() {
 
   const account = await accounts.Accounts.findOneAndUpdate(condition, req.body);
 
-  const paths = await posts.find({author: account._id}, 'url', {lean: true});
+  const paths = await posts.find({author: account._id, views: {$gt: 0}, postStatus: 'published'}, 'url category published', {lean: true});
+  const {mainUrl, url: urlID} = await blogs.find({subdomain}, 'mainUrl url', {lean: true});
 
-  paths.forEach(({url}) => {
+  paths.forEach(e => {
+    const url = mainUrl + getFullUrl(e, urlID);
+
     fetch(`https://${subdomain}.lettercms.vercel.app/api/revalidate`, {
       method: 'POST',
       mode: 'cors',
@@ -43,7 +64,7 @@ module.exports = async function() {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        path: `/_blogs/${subdomain}/${url}` 
+        path: `/_blogs/${subdomain}${url}` 
       })
     });
   });
