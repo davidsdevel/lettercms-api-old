@@ -4,10 +4,14 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://gitlab.com/lettercms/microservices/accounts.git"
+    "url": "git+https://gitlab.com/lettercms/api.git"
   },
   "author": "David's Devel <davidsdevel@gmail.com>",
   "license": "MIT",
+  "bugs": {
+    "url": "https://gitlab.com/lettercms/api/issues"
+  },
+  "homepage": "https://gitlab.com/lettercms/api#readme",
   "dependencies": {
     "@lettercms/utils": "latest",
     "@lettercms/models": "latest",

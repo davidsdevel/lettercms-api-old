@@ -4,18 +4,17 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://gitlab.com/lettercms/microservices/users.git"
+    "url": "git+https://gitlab.com/lettercms/api.git"
   },
   "author": "David's Devel <davidsdevel@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://gitlab.com/lettercms/microservices/users/issues"
+    "url": "https://gitlab.com/lettercms/api/issues"
   },
-  "homepage": "https://gitlab.com/lettercms/microservices/users#readme",
+  "homepage": "https://gitlab.com/lettercms/api#readme",
   "dependencies": {
-    "@lettercms/sdk": "*",
-    "@lettercms/utils": "*",
-    "jsonwebtoken": "^8.5.1",
+    "@lettercms/models": "latest",
+    "@lettercms/utils": "latest",
     "mongoose": "^5.11.10"
   },
   "description": ""
