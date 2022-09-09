@@ -1,8 +1,0 @@
-{
-  "name": "lettercms-accounts",
-  "env": {
-    "MONGO_URL": "@my-mongodb-uri",
-    "SENTRY_DSN": "@sentry-dsn",
-    "JWT_AUTH": "@jwt-auth"
-  }
-}
