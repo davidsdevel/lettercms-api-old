@@ -1,7 +1,7 @@
-const {posts, pages} = require('@lettercms/models')(['pages', 'posts']);
+const {posts, pages, blogs} = require('@lettercms/models')(['pages', 'posts', 'blogs']);
 const {isValidObjectId} = require('mongoose');
-const brain = require('../../brain');
-const fetch = require('node-fetch');
+const revalidate = require('@lettercms/utils/lib/revalidate');
+const {getFullUrl} = require('@lettercms/utils/lib/posts');
 
 
 module.exports = async function() {
@@ -49,20 +49,14 @@ module.exports = async function() {
     updated: date
   };
 
-  const {_id: postID, url: _url, postStatus} = await posts.findOneAndUpdate(updateCondition, newData, {select: '_id url postStatus'});
-
+  const updatedPost = await posts.findOneAndUpdate(updateCondition, newData, {select: 'url postStatus category published'});
 
   if (postStatus === 'published') {
-    fetch(`https://${subdomain}.lettercms.vercel.app/api/revalidate`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      mode: 'cors',
-      body: JSON.stringify({
-        path: `/_blogs/${subdomain}/${_url}` 
-      })
-    });
+    blogs.findOne({subdomain}, 'mainUrl url', {lean: true})
+      .then(({mainUrl, url: urlID}) => {
+        const url = mainUrl + getFullUrl(updatedPost, urlID);
+        revalidate(subdomain, url);
+      });
   }
 
   res.json({

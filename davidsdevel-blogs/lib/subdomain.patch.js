@@ -1,23 +1,7 @@
 const {blogs, posts} = require('@lettercms/models')(['blogs', 'posts']);
 const fetch = require('node-fetch');
-
-const getFullUrl = (post, urlID) => {
-  if (urlID == '1')
-    return `/${post.url}`;
-
-  if (urlID == '2')
-    return `/${post.category}/${post.url}`;
-
-  const year = post.published.getFullYear();
-  const month = post.published.getMonth() + 1;
-
-  if (urlID == '3')
-    return `/${year}/${month}/${url}`;
-
-  const date = post.published.getDate();
-
-  return `/${year}/${month}/${date}/${post.url}`;
-};
+const revalidate = require('@lettercms/utils/lib/revalidate');
+const {getFullUrl} = require('@lettercms/utils/lib/posts');
 
 module.exports = async function() {
   const {
@@ -35,71 +19,34 @@ module.exports = async function() {
 
   const db = await blogs.findOneAndUpdate(condition, req.body, {select: 'mainUrl url'});
 
+  revalidate(subdomain, prevBase);
+
   if (req.body.url || req.body.mainUrl) {
     const prevUrlID = db.url;
     const prevBase = db.mainUrl;
     const urlID = req.body.url;
     const base = req.body.mainUrl;
 
-    fetch(`https://${subdomain}.lettercms.vercel.app/api/revalidate`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      mode: 'cors',
-      body: JSON.stringify({
-        path: `/_blogs/${subdomain}${prevBase}` 
-      })
-    });
-    if (base) {
-      fetch(`https://${subdomain}.lettercms.vercel.app/api/revalidate`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        mode: 'cors',
-        body: JSON.stringify({
-          path: `/_blogs/${subdomain}${base}` 
-        })
-      });
+    if (prevBase !== base) {
+      revalidate(subdomain, base);
     }
 
+    if (prevUrlID !== urlID) {
+      const _posts = await posts.find({subdomain, views: {$gt: 0}, postStatus: 'published'}, 'url published category', {lean: true});
 
-    const _posts = await posts.find({subdomain, views: {$gt: 0}, postStatus: 'published'}, 'url published category', {lean: true});
+      _posts.forEach(e => {
+        let _base = base || prevBase;
+        let oldBase = prevBase;
 
-    _posts.forEach(e => {
-      let _base = base || prevBase;
-      let oldBase = prevBase;
+        const url = _base + getFullUrl(e, prevUrlID);
+        const newUrl = oldBase + getFullUrl(e, urlID);
 
-      const url = _base + getFullUrl(e, prevUrlID);
-      const newUrl = oldBase + getFullUrl(e, urlID);
-
-
-      fetch(`https://${subdomain}.lettercms.vercel.app/api/revalidate`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        mode: 'cors',
-        body: JSON.stringify({
-          path: `/_blogs/${subdomain}${url}` 
-        })
+        revalidate(subdomain, url);
+        revalidate(subdomain, newUrl);
       });
-      fetch(`https://${subdomain}.lettercms.vercel.app/api/revalidate`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        mode: 'cors',
-        body: JSON.stringify({
-          path: `/_blogs/${subdomain}${newUrl}` 
-        })
-      });
-    });
-
+    }
   }
-
-
+  
   if (db.ok)
     return res.json({
       status: 'OK'

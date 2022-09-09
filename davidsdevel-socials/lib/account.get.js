@@ -15,7 +15,7 @@ const {api} = require('./social/base');
 module.exports = async function() {
   const {req, res} = this;
 
-  const {include, fields} = req.query;
+  const {include} = req.query;
   const {subdomain} = req;
 
   const socialIncludes = include ? include.split(/\s*,\s*/g) : [];
@@ -23,7 +23,7 @@ module.exports = async function() {
   const sendAll = !include;
 
   const socials = {};
-  const parsedFields = fields ? fields.replace(/\s*,\s*/g, ' ') : [];
+  //const parsedFields = fields ? fields.replace(/\s*,\s*/g, ' ') : [];
 
   const hasIG = await socialModel.Instagram.exists({subdomain});
   const hasFB = await socialModel.Facebook.exists({subdomain});

@@ -1,7 +1,8 @@
 const {pages: pagesModel} = require('@lettercms/models')(['pages']);
+const {find} = require('@lettercms/utils/lib/findHelpers/pages');
 
 module.exports = async function() {
-  const {req, res, find} = this;
+  const {req, res} = this;
 
   const {subdomain, path} = req;
   const {status} = req.query;
@@ -13,19 +14,7 @@ module.exports = async function() {
   if (status)
     condition.pageStatus = status;
 
-  const pages = await find({
-    ...req.query,
-    path
-  }, pagesModel, condition);
-
-  const draft = await pagesModel.countDocuments({subdomain, pageStatus: 'draft'});
-  const published = await pagesModel.countDocuments({subdomain, pageStatus: 'published'});
-
-  pages.total = {
-    draft,
-    published,
-    all: draft + published
-  };
+  const pages = await find(pagesModel, condition, req.query);
 
   res.json(pages);
 };

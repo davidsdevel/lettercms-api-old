@@ -1,32 +1,18 @@
-const {scryptSync, randomBytes} = require('crypto');
-const fetch = require('node-fetch');
 const mongoose = require('mongoose');
 const factory = require('@lettercms/models');
+const {sign, verify} = require('@lettercms/utils/lib/crypto');
 const jwt = require('jsonwebtoken');
 
-const generateSecretHash = key => {
+const testMiddleware = require('../../testing/fetchMiddleware');
 
-  const salt = randomBytes(8).toString('hex');
-  const buffer = scryptSync(key, salt, 64);
-
-  return `${buffer.toString('hex')}.${salt}`;
-}
-
-const generateToken = (data, key) => {
-  const secret = generateSecretHash(key);
+const generateToken = async (data, key) => {
+  const secret = await sign(key);
   const hex = Buffer.from(JSON.stringify(data)).toString('hex');
 
   return `${secret}@${hex}`;
 }
 
-const mongo = mongoose.createConnection('mongodb://localhost/blog', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useFindAndModify: false,
-  useCreateIndex: true
-});
-
-const {accounts: {Accounts}} = factory(mongo, ['accounts']);
+const {accounts: {Accounts}} = factory(['accounts']);
 const testID = 'accounts-verify';
 
 describe('Verify API Testing', () => {
@@ -40,16 +26,13 @@ describe('Verify API Testing', () => {
       code: '1234'
     }, JWT_AUTH);
 
-    const verifyRes = await fetch('http://microservices:3009/api/account/verify', {
-      headers: {
-        Authorization: jwt.sign({subdomain: testID}, JWT_AUTH),
-        'Content-Type': 'application/json'
-      }
+    const verifyRes = await testMiddleware('/api/account/verify', {
+      method: 'POST',
+      authorization: jwt.sign({subdomain: testID}, JWT_AUTH)
     });
-    expect(verifyRes.status).toBe(200);
 
-    const verifyJson = await verifyRes.json();
-    expect(verifyJson).toMatchObject({
+    expect(verifyRes.status).toBe(200);
+    expect(verifyRes.body).toMatchObject({
       status: 'OK'
     });
     const acc = await Accounts.findOne({email: 'verify@test.com'}, null, {lean: true});
@@ -67,7 +50,7 @@ describe('Verify API Testing', () => {
     });
   });
   test('POST - Existing Data', async () => {
-    const token = generateToken({
+    const token = await generateToken({
       name: 'David',
       lastname: 'Gonzalez',
       email: 'verify@test.com',
@@ -75,26 +58,23 @@ describe('Verify API Testing', () => {
       code: '1234'
     }, JWT_AUTH);
 
-    const verifyRes = await fetch('http://microservices:3009/api/account/verify', {
-      headers: {
-        Authorization: jwt.sign({subdomain: testID}, JWT_AUTH),
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
+    const verifyRes = await testMiddleware('/api/account/verify', {
+      method: 'POST',
+      authorization: jwt.sign({subdomain: testID}, JWT_AUTH),
+      body: {
         token
-      })
+      }
     });
-    expect(verifyRes.status).toBe(200);
 
-    const verifyJson = await verifyRes.json();
-    expect(verifyJson).toMatchObject({
+    expect(verifyRes.status).toBe(200);
+    expect(verifyRes.body).toMatchObject({
         status: 'aready-exists',
         message: `Account with email "verify@test.com" already exists`
       });
   });
   test('POST - Verify Data', async () => {
 
-    const token = generateToken({
+    const token = await generateToken({
       name: 'David',
       lastname: 'Gonzalez',
       email: 'verify@test.com',
@@ -102,19 +82,16 @@ describe('Verify API Testing', () => {
       code: '1234'
     }, JWT_AUTH);
 
-    const verifyRes = await fetch('http://microservices:3009/api/account/verify', {
-      headers: {
-        Authorization: jwt.sign({subdomain: testID}, JWT_AUTH),
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
+    const verifyRes = await testMiddleware('/api/account/verify', {
+      method: 'POST',
+      authorization: jwt.sign({subdomain: testID}, JWT_AUTH),
+      body: {
         token
-      })
+      }
     });
-    expect(verifyRes.status).toBe(200);
 
-    const verifyJson = await verifyRes.json();
-    expect(verifyJson).toMatchObject({
+    expect(verifyRes.status).toBe(200);
+    expect(verifyRes.body).toMatchObject({
       status: 'OK'
     });
     const acc = await Accounts.findOne({email: 'verify@test.com'}, null, {lean: true});
@@ -133,38 +110,32 @@ describe('Verify API Testing', () => {
   });
   test('POST - Bad Request', async () => {
 
-    const verifyRes = await fetch('http://microservices:3009/api/account/verify', {
-      headers: {
-        Authorization: jwt.sign({subdomain: testID}, JWT_AUTH),
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
+    const verifyRes = await testMiddleware('/api/account/verify', {
+      method: 'POST',
+      authorization: jwt.sign({subdomain: testID}, JWT_AUTH),
+      body: {
         noToken: 'hola mundo'
-      })
+      }
     });
-    expect(verifyRes.status).toBe(400);
 
-    const verifyJson = await verifyRes.json();
-    expect(verifyJson).toMatchObject({
+    expect(verifyRes.status).toBe(400);
+    expect(verifyRes.body).toMatchObject({
       status: 'bad-request',
       message: 'You must set a valid code'
     });
   });
   test('POST - Bad Request', async () => {
 
-    const verifyRes = await fetch('http://microservices:3009/api/account/verify', {
-      headers: {
-        Authorization: jwt.sign({subdomain: testID}, JWT_AUTH),
-        'Content-Type': 'application/json'
-      },
+    const verifyRes = await testMiddleware('/api/account/verify', {
+      method: 'POST',
+      authorization: jwt.sign({subdomain: testID}, JWT_AUTH),
       body: JSON.stringify({
         token: 'hola@mundo'
       })
     });
-    expect(verifyRes.status).toBe(200);
 
-    const verifyJson = await verifyRes.json();
-    expect(verifyJson).toMatchObject({
+    expect(verifyRes.status).toBe(200);
+    expect(verifyRes.body).toMatchObject({
       status: 'invalid-token'
     });
   });

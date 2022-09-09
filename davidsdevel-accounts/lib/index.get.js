@@ -1,18 +1,12 @@
-const {accounts} = require('@lettercms/models')(['accounts']);
+const {accounts: {Accounts}} = require('@lettercms/models')(['accounts']);
+const {find} = require('@lettercms/utils/lib/findHelpers/accounts');
 
 module.exports = async function() {
   const {
-    req: {query, subdomain, isAdmin, path},
-    res,
-    find
+    req: {query, subdomain},
+    res
   } = this;
 
-  if (isAdmin)
-    return res.json(await find({
-    ...query,
-    path,
-    accounts: true
-  }, accounts.Accounts, {}));
 
   const {
     role
@@ -25,21 +19,7 @@ module.exports = async function() {
   if (subdomain)
     conditions.subdomain = subdomain;
 
-  const data = await find({
-    ...query,
-    path,
-    accounts: true
-  }, accounts.Accounts, conditions);
-
-  const collaborator = await accounts.Accounts.countDocuments({subdomain, role: 'collaborator'});
-  const single = await accounts.Accounts.countDocuments({subdomain, role: 'single'});
-
-  data.total = {
-    collaborator,
-    single,
-    all: collaborator + single
-  };
-
+  const data = await find(Accounts, conditions, query);
 
   res.json(data);
 };

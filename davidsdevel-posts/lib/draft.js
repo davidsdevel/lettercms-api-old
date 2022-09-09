@@ -1,31 +1,13 @@
 const {posts, users: {Ratings}, blogs} = require('@lettercms/models')(['posts', 'ratings', 'blogs']);
 const {isValidObjectId} = require('mongoose');
-const brain = require('../../brain');
-const fetch = require('node-fetch');
-
-const getFullUrl = (post, urlID) => {
-  if (urlID == '1')
-    return `/${post.url}`;
-
-  if (urlID == '2')
-    return `/${post.category}/${post.url}`;
-
-  const year = post.published.getFullYear();
-  const month = post.published.getMonth() + 1;
-
-  if (urlID == '3')
-    return `/${year}/${month}/${url}`;
-
-  const date = post.published.getDate();
-
-  return `/${year}/${month}/${date}/${post.url}`;
-};
+const revalidate = require('@lettercms/utils/lib/revalidate');
+const {getFullUrl} = require('@lettercms/utils/lib/posts');
 
 module.exports = async function() {
   const {req, res} = this;
 
   const {url} = req.query;
-  const {subdomain, body} = req;
+  const {subdomain} = req;
 
   const isId = isValidObjectId(url);
 
@@ -48,28 +30,12 @@ module.exports = async function() {
   Ratings.deleteMany({post: postID});
   const {mainUrl, url: urlID} = await blogs.find({subdomain}, 'mainUrl url', {lean: true});
 
-  if (views > 0)
-    fetch(`https://${subdomain}.lettercms.vercel.app/api/revalidate`, {
-      method: 'POST',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        path: `/_blogs/${subdomain}${mainUrl + getFullUrl({category, published,url: _url}, urlID)}` 
-      })
-    });
+  if (views > 0) {
+    const revalidateUrl = mainUrl + getFullUrl({category, published,url: _url}, urlID);
+    revalidate(subdomain, revalidateUrl);
+  }
 
-  fetch(`https://${subdomain}.lettercms.vercel.app/api/revalidate`, {
-    method: 'POST',
-    mode: 'cors',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      path: `/_blogs/${subdomain}${mainUrl}` 
-    })
-  });
+  revalidate(subdomain, mainUrl);
 
   res.json({
     status: 'OK',

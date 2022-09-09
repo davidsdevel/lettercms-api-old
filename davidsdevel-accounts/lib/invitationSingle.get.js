@@ -1,20 +1,15 @@
-const {accounts} = require('@lettercms/models')(['invitations']);
+const {accounts: {Invitations}} = require('@lettercms/models')(['invitations']);
+const {findOne} = require('@lettercms/utils/lib/findUtils');
 
 module.exports = async function() {
   const {
     req:{query},
-    res,
-    findSingle
+    res
   } = this;
 
   const {id} = query;
 
-  query.populate = {
-    path: 'blog',
-    select: 'title subdomain'
-  };
-
-  const data = await findSingle(query, accounts.Invitations, {_id: id});
+  const data = await findOne(Invitations, {_id: id}, query);
 
   if (data === null)
     return res.status(404).json({message: 'Invitation not found'});

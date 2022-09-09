@@ -2,7 +2,7 @@ const captureOrder = require('./paypal/captureOrder');
 const {payment} = require('@lettercms/models')(['payment']);
 
 module.exports = async function() {
-  const {req: {body: {orderID, amount, email, type}, subdomain}, res} = this;
+  const {req: {body: {orderID, type}, subdomain}, res} = this;
 
   //Check exists order on DB
 

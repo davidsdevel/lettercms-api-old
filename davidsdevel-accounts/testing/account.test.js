@@ -1,26 +1,25 @@
-const fetch = require('node-fetch');
-const mongoose = require('mongoose');
 const factory = require('@lettercms/models');
 const jwt = require('jsonwebtoken');
+const testMiddleware = require('../../testing/fetchMiddleware');
 
-const mongo = mongoose.createConnection('mongodb://localhost/blog', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useFindAndModify: false,
-  useCreateIndex: true
-});
 
-const {accounts: {Accounts}} = factory(mongo, ['accounts']);
+
+const {accounts: {Accounts}} = factory(['accounts']);
+
 const testID = 'accounts-account';
-const token = jwt.sign({subdomain: testID}, JWT_AUTH);
+const token = jwt.sign({subdomain: testID}, process.env.JWT_AUTH);
 
-const generatePromise = async (key, value, id, headers) => {
-  const r = await fetch(`http://microservices:3009/api/account/${id}?fields=${key}`, headers)
-  expect(r.status).toBe(200);
+const generatePromise = async (key, value, id) => {
+  const {body, statusCode} = await testMiddleware('.//api/account/[emailHex]', {
+    authorization: token,
+    query: {
+      fields: key,
+      emailHex: id
+    }
+  });
 
-  const data = await r.json();
-
-  expect(data).toMatchObject({
+  expect(statusCode).toBe(200);
+  expect(body).toMatchObject({
     [key]: value,
     _id: /[a-z0-9]{12,24}/i
   });
@@ -49,13 +48,6 @@ describe('Account API Testing', () => {
       role: 'admin'
     });
 
-    const header = {
-      headers: {
-        Authorization: token,
-        'Content-Type': 'application/json'
-      }
-    };
-
     const matchObj = {
       name: 'David',
       lastname: 'Gonzalez',
@@ -75,19 +67,27 @@ describe('Account API Testing', () => {
       __v: 0
     }
 
-    const idRes = await fetch(`http://microservices:3009/api/account/${id}`, header);
-    expect(idRes.status).toBe(200);
+    const idRes = await testMiddleware('/api/account/[emailHex]', {
+      authorization: token,
+      query: {
+        emailHex: id
+      }
+    });
 
-    const idJson = await idRes.json();
-    expect(idJson).toMatchObject(matchObj);
+    expect(idRes.statusCode).toBe(200);
+    expect(idRes.body).toMatchObject(matchObj);
 
-    const emailHex = Buffer.from('account@test.com').toString('hex')
+    const emailHex = Buffer.from('account@test.com').toString('hex');
 
-    const emailRes = await fetch(`http://microservices:3009/api/account/${emailHex}`, header);
-    expect(emailRes.status).toBe(200);
+    const emailRes = await testMiddleware('/api/account/[emailHex]', {
+      authorization: token,
+      query: {
+        emailHex
+      }
+    });
 
-    const emailJson = await emailRes.json();
-    expect(emailJson).toMatchObject(matchObj);
+    expect(emailRes.statusCode).toBe(200);
+    expect(emailRes.body).toMatchObject(matchObj);
   });
   test('GET - Fields Data', async () => {
     const now = new Date();
@@ -109,45 +109,36 @@ describe('Account API Testing', () => {
       role: 'admin'
     });
 
-    const headers = {
-      headers: {
-        Authorization: token,
-        'Content-Type': 'application/json'
-      }
-    }
-
     const promises = [
-      generatePromise('name',  'David', id, headers),
-      generatePromise('lastname',  'Gonzalez', id, headers),
-      generatePromise('lastLogin',  now.toISOString(), id, headers),
-      generatePromise('description',  'Test description', id, headers),
-      generatePromise('ocupation',  'developer', id, headers),
-      generatePromise('permissions',  ['posts'], id, headers),
-      generatePromise('photo',  'photo-url', id, headers),
-      generatePromise('website',  'website-url', id, headers),
-      generatePromise('facebook',  'facebook-url', id, headers),
-      generatePromise('twitter',  'twitter-url', id, headers),
-      generatePromise('instagram',  'instagram-url', id, headers),
-      generatePromise('linkedin',  'linkedin-url', id, headers),
-      generatePromise('email',  'account-fields@test.com', id, headers),
-      generatePromise('role',  'admin', id, headers)
+      generatePromise('name',  'David', id),
+      generatePromise('lastname',  'Gonzalez', id),
+      generatePromise('lastLogin',  now.toISOString(), id),
+      generatePromise('description',  'Test description', id),
+      generatePromise('ocupation',  'developer', id),
+      generatePromise('permissions',  ['posts'], id),
+      generatePromise('photo',  'photo-url', id),
+      generatePromise('website',  'website-url', id),
+      generatePromise('facebook',  'facebook-url', id),
+      generatePromise('twitter',  'twitter-url', id),
+      generatePromise('instagram',  'instagram-url', id),
+      generatePromise('linkedin',  'linkedin-url', id),
+      generatePromise('email',  'account-fields@test.com', id),
+      generatePromise('role',  'admin', id)
     ];
 
     await Promise.all(promises);
   });
   test('GET - Not Found', async () => {
-    const header = {
-      headers: {
-        Authorization: token,
-        'Content-Type': 'application/json'
+
+    const idRes = await testMiddleware(`/api/account/[emailHex]`, {
+      authorization: token,
+      query: {
+        emailHex: 'some-id'
       }
-    }
+    });
 
-    const idRes = await fetch(`http://microservices:3009/api/account/some-id`, header);
-    expect(idRes.status).toBe(404);
-
-    const idJson = await idRes.json();
-    expect(idJson).toMatchObject({
+    expect(idRes.statusCode).toBe(404);
+    expect(idRes.body).toMatchObject({
       status: 'not-found',
       message:'Account does not exists'
     });
@@ -164,22 +155,21 @@ describe('Account API Testing', () => {
 
     const header = {
       method: 'PATCH',
-      headers: {
-        Authorization: token,
-        'Content-Type': 'application/json'
+      authorization: token,
+      query: {
+        emailHex: id
       }
     }
 
-    const addData = await fetch(`http://microservices:3009/api/account/${id}`, {
+    const addData = await testMiddleware('/api/account/[emailHex]', {
       ...header,
-      body: JSON.stringify({
-        ocupation: 'developer'
-      })
+      body: {
+        ocupation: 'developer',
+      }
     });
-    expect(addData.status).toBe(200);
 
-    const addDataJson = await addData.json();
-    expect(addDataJson).toMatchObject({
+    expect(addData.statusCode).toBe(200);
+    expect(addData.body).toMatchObject({
       status: 'OK'
     });
     
@@ -207,16 +197,15 @@ describe('Account API Testing', () => {
       ]
     });
 
-    const patchData = await fetch(`http://microservices:3009/api/account/${id}`, {
+    const patchData = await testMiddleware('/api/account/[emailHex]', {
       ...header,
-      body: JSON.stringify({
+      body: {
         name: 'Juan'
-      })
+      }
     });
-    expect(patchData.status).toBe(200);
 
-    const patchDataJson = await patchData.json();
-    expect(patchDataJson).toMatchObject({
+    expect(patchData.statusCode).toBe(200);
+    expect(patchData.body).toMatchObject({
       status: 'OK'
     });
 
@@ -249,7 +238,5 @@ describe('Account API Testing', () => {
     await Accounts.deleteMany({
       subdomain: testID
     });
-
-    mongo.close();
   })
 });

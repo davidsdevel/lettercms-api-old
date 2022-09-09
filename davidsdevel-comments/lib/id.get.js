@@ -1,16 +1,11 @@
-const {comments, posts, users: {Users}} = require('@lettercms/models')(['comments', 'posts', 'users']);
+const {comments, posts} = require('@lettercms/models')(['comments', 'posts', 'users']);
 const {isValidObjectId} = require('mongoose');
+const {find} = require('@lettercms/utils/lib/findUtils');
 
 module.exports = async function() {
   const {
-    find,
     req: {
       subdomain,
-      body: {
-        userID,
-        postID,
-        comment
-      },
       query
     },
     res
@@ -35,13 +30,7 @@ module.exports = async function() {
       message: 'Post not found'
     });
 
-  const data = await find({
-    ...query,
-    populate: {
-      path: 'user',
-      select: 'name lastname'
-    }
-  }, comments, conditions);
+  const data = await find(comments, conditions, query);
 
   res.json(data);
 };

@@ -1,10 +1,5 @@
 const router = require('express').Router();
 
-const postsRoutes = [
-  'exists',
-  'merge'
-];
-
 const mapQueries = (req, res, next) => {
   req.query = Object.assign({}, req.query, req.params);
   next();

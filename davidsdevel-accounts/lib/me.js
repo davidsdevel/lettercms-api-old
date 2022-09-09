@@ -1,18 +1,15 @@
-const {accounts} = require('@lettercms/models')(['accounts']);
+const {accounts: {Accounts}} = require('@lettercms/models')(['accounts']);
+const {findOne} = require('@lettercms/utils/lib/findHelpers/accounts');
 
 module.exports = async function() {
   const {
     req,
-    res,
-    findSingle
+    res
   } = this;
 
   const {account} = req;
 
-  let data = await findSingle({
-    ...req.query,
-    accounts: true
-  }, accounts.Accounts, {_id: account});
+  const data = await findOne(Accounts, {_id: accounts}, query);
 
   if (data === null)
     return res.sendStatus(404);

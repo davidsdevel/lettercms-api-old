@@ -1,15 +1,9 @@
 const {accounts} = require('@lettercms/models')(['accounts']);
 const {sendMail} = require('@lettercms/utils');
-const {scryptSync, randomBytes} = require('crypto');
+const {sign} = require('@lettercms/utils/lib/crypto');
 const {writeFileSync} = require('fs');
 const {join} = require('path');
 
-const generateSecretHash = key => {
-  const salt = randomBytes(8).toString('hex');
-  const buffer = scryptSync(key, salt, 64);
-
-  return `${buffer.toString('hex')}.${salt}`;
-};
 
 module.exports = async function() {
   const {req,res} = this;
@@ -56,7 +50,7 @@ module.exports = async function() {
 
   req.body.role = 'admin';
 
-  const key = generateSecretHash(process.env.JWT_AUTH); //jwt.sign(req.body, process.env.JWT_AUTH, { expiresIn: 60 * 5 });
+  const key = await sign(process.env.JWT_AUTH); //jwt.sign(req.body, process.env.JWT_AUTH, { expiresIn: 60 * 5 });
   const hex = Buffer.from(JSON.stringify(req.body)).toString('hex');
 
   try {

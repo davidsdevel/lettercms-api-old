@@ -1,23 +1,16 @@
-const {posts: postModel, blogs, users: {Users, Ratings}} = require('@lettercms/models')(['posts', 'blogs', 'users', 'ratings']);
-const getFullUrl = require('./getFullUrl');
+const {posts: postModel, blogs, users: {Ratings}} = require('@lettercms/models')(['posts', 'blogs', 'users', 'ratings']);
+const {findOne: findRecommendation} = require('@lettercms/utils/lib/findHelpers/recommendations');
+const {findOne: findPost, find: findPosts} = require('@lettercms/utils/lib/findHelpers/posts');
 const {isValidObjectId} = require('mongoose');
-
-const isDev = process.env.NODE_ENV !== 'production';
-const ORIGIN = isDev ? 'http://localhost:3000' : 'https://lettercms-api-staging.herokuapp.com';
 
 module.exports = async function() {
   const {
     req,
-    res,
-    find
+    res
   } = this;
 
-  const {subdomain, path} = req;
+  const {subdomain} = req;
   const {id, postID} = req.query;
-
-  const select = req.query.fields ? req.query.fields.split(',').join(' ') : null;
-  
-  const {url: urlID} = await blogs.findOne({subdomain}, 'url');
 
   const condition = isValidObjectId(postID) && !postID.includes('-') ? {_id: postID} : {subdomain, url: postID};
 
@@ -29,73 +22,79 @@ module.exports = async function() {
       message: 'Post not found'
     });
 
+  const {url: urlID, mainUrl} = await blogs.findOne({subdomain}, 'url mainUrl');
+
+  req.query.urlID = urlID;
+  req.query.mainUrl = mainUrl;
+
   let recommended = null;
 
-  const {tags, _id} = await postModel.findOne(condition, 'tags');
+  const {tags, _id} = await findPost(postModel, condition, {fields: 'tags'});
 
   const tagsMapped = tags.map(e => ({tags: {$in: e}}));
-  
-  const similars = await postModel.find({
+
+  let customFields = null;
+
+  if (req.query.fields) {
+    const splitted = req.query.fields.split(',');
+
+    if (!splitted.includes('tags'))
+      splitted.push('tags');
+
+    customFields = splitted.join(',');
+  } else {
+    customFields = 'tags';
+  }
+
+  const similars = await findPosts(postModel, {
     subdomain,
     $nor:[{_id}],
     $or: tagsMapped,
     postStatus: 'published'
-  },
-  'tags',
-  {
-    lean: true
+  }, {
+    ...req.query,
+    fields: customFields
   });
+  
 
   let ordered = similars.map(e => {
     let matches = 0;
+
     e.tags.forEach(t => {
       if (tags.includes(t))
         matches++;
     });
+
     return {
       matches,
-      _id: e._id
+      ...e
     };
-  }).sort((a,b) => a.matches > b.matches ? -1 : +1);
+  })
+  .sort((a,b) => a.matches > b.matches ? -1 : +1)
+  .map(e => {
+    delete e.matches;
+    return e;
+  });
 
   if (ordered.length < 1) {
-    ordered = await postModel.find({_id: {$ne: _id}, subdomain, postStatus: 'published'}, '_id', {lean: true, sort: {published: -1}, limit: 2});
+    ordered = await findPosts(postModel, {_id: {$ne: _id}, subdomain, postStatus: 'published'}, {limit: 2, ...req.query});
   } else if (ordered.length < 2) {
-    ordered[1] = await postModel.findOne({_id: {$ne: _id}, subdomain, postStatus: 'published'}, '_id', {lean: true, sort: {published: -1}});   
+    ordered[1] = await findPost(postModel, {_id: {$ne: _id}, subdomain, postStatus: 'published'}, req.query);
   }
 
-  const similar = await postModel.findOne({_id: ordered[0]._id}, select, {lean: true});
+  const similar = ordered[0];
   
   if (id.includes('no-user'))
-    recommended = await postModel.findOne({_id: ordered[1]._id}, select, {lean: true});
+    recommended = ordered[1];
   else {
-
-    const rated = await Ratings.findOne({
+    recommended = await findRecommendation(Ratings, {
       subdomain,
       $and: [
         {post: {$ne: _id}},
         {post: {$ne: similar._id}}
       ]
     },
-    'post'
-    , {
-      populate: {
-        path: 'post',
-        select
-      },
-      sort: {
-        viewed: 1,
-        rating: -1
-      },
-      lean: true
-    });
-
-    recommended = rated.post;
-  }
-
-  if (req.query.fields?.includes('url')) {
-    similar.fullUrl = getFullUrl(similar.url, urlID, similar);
-    recommended.fullUrl = getFullUrl(recommended.url, urlID, recommended);
+    req.query);
   }
 
   res.json({

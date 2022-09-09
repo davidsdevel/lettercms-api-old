@@ -1,5 +1,5 @@
 const {stats} = require('@lettercms/models')(['sessions', 'stats']);
-const parser = require('ua-parser-js');
+//const parser = require('ua-parser-js');
 const getEntry = require('./generateEntryChannel');
 
 module.exports = async function() {
@@ -17,7 +17,7 @@ module.exports = async function() {
   const ua = req.headers['user-agent'];
 
 
-  const {os} = parser(ua);
+  //const {os} = parser(ua);
   const device = /Android|iPhone|iPad/.test(ua) ? 'mobile' : 'desktop';
 
   if (action === 'start') {

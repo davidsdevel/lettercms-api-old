@@ -2,23 +2,13 @@ const fetch = require('node-fetch');
 const mongoose = require('mongoose');
 const factory = require('@lettercms/models');
 
-const mongo = mongoose.createConnection('mongodb://localhost/blog', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useFindAndModify: false,
-  useCreateIndex: true
-});
+const testMiddleware = require('../../testing/fetchMiddleware');
 
-const {accounts: {Accounts}} = factory(mongo, ['accounts']);
+const {accounts: {Accounts}} = factory(['accounts']);
 const testID = 'accounts-login';
 
 const baseRequest = {
-  headers: {
-    Authorization: ACCESS_TOKEN,
-    'Content-Type': 'application/json'
-  },
-  mode: 'cors',
-  credentials: 'include'
+  authorization: ACCESS_TOKEN,
 }
 
 describe('Login API Testing', () => {
@@ -29,39 +19,37 @@ describe('Login API Testing', () => {
       role: 'admin'
     });
 
-    const loginRes = await fetch('http://microservices:3009/api/account/login', {
+    const loginRes = await testMiddleware('/api/account/login', {
       ...baseRequest,
       method: 'POST',
-      body: JSON.stringify({
+      body: {
         email: 'login@test.com',
         password: '1234'
-      })
+      }
     });
-    expect(loginRes.status).toBe(200);
 
-    const loginJson = await loginRes.json();
-    expect(loginJson).toMatchObject({
+    expect(loginRes.statusCode).toBe(200);
+    expect(loginRes.body).toMatchObject({
       id: /[a-z0-9]{24}/i,
       accessToken: /\w*\.\w*\.\w*/i
     });
   });
 
   test('POST - Invalid Email', async () => {
-    const loginRes = await fetch('http://microservices:3009/api/account/login', {
+    const loginRes = await testMiddleware('/api/account/login', {
       ...baseRequest,
       method: 'POST',
-      body: JSON.stringify({
+      body: {
         email: 'no-email@test.com',
         password: '1234'
-      })
+      }
     });
-    expect(loginRes.status).toBe(200);
 
-    const loginJson = await loginRes.json();
-    expect(loginJson).toEqual({
+    expect(loginRes.statusCode).toBe(200);
+    expect(loginRes.body).toEqual({
       status: 'no-account',
       message: 'Email does not exists'
-    })
+    });
   });
 
   test('POST - Invalid Password', async () => {
@@ -71,72 +59,60 @@ describe('Login API Testing', () => {
       role: 'admin'
     });
 
-    const loginRes = await fetch('http://microservices:3009/api/account/login', {
+    const loginRes = await testMiddleware('/api/account/login', {
       ...baseRequest,
       method: 'POST',
-      body: JSON.stringify({
+      body: {
         email: 'bad-pass@test.com',
         password: 'bad-pass'
-      })
+      }
     });
 
-    expect(loginRes.status).toBe(200);
-
-    const loginJson = await loginRes.json();
-
-    expect(loginJson).toEqual({
+    expect(loginRes.statusCode).toBe(200);
+    expect(loginRes.body).toEqual({
       status: 'invalid-password',
       message: 'Invalid Password'
     });
   });
   test('POST - No Email', async () => {
-    const loginRes = await fetch('http://microservices:3009/api/account/login', {
+    const loginRes = await testMiddleware('/api/account/login', {
       ...baseRequest,
       method: 'POST',
-      body: JSON.stringify({
+      body: {
         password: '1234'
-      })
+      }
     });
 
-    expect(loginRes.status).toBe(400);
-
-    const loginJson = await loginRes.json();
-
-    expect(loginJson).toEqual({
+    expect(loginRes.statusCode).toBe(400);
+    expect(loginRes.body).toEqual({
       status: 'bad-request',
       message: 'Email must be set'
     });
   });
   test('POST - No Password', async () => {
-    const loginRes = await fetch('http://microservices:3009/api/account/login', {
+    const loginRes = await testMiddleware('/api/account/login', {
       ...baseRequest,
       method: 'POST',
-      body: JSON.stringify({
+      body: {
         email: 'login@test.com'
-      })
+      }
     });
 
-    expect(loginRes.status).toBe(400);
-
-    const loginJson = await loginRes.json();
-
-    expect(loginJson).toEqual({
+    expect(loginRes.statusCode).toBe(400);
+    expect(loginRes.body).toEqual({
       status: 'bad-request',
       message: 'Password must be set'
     });
   });
   test('POST - No Data', async () => {
-    const loginRes = await fetch('http://microservices:3009/api/account/login', {
+    const loginRes = await testMiddleware('/api/account/login', {
       ...baseRequest,
       method: 'POST',
-      body: JSON.stringify({})
+      body: {}
     });
 
-    expect(loginRes.status).toBe(400);
-
-    const loginJson = await loginRes.json();
-
-    expect(loginJson).toEqual({
+    expect(loginRes.statusCode).toBe(400);
+    expect(loginRes.body).toEqual({
       status: 'bad-request',
       message: 'Email must be set'
     });

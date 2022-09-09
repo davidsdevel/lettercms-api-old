@@ -1,36 +1,29 @@
-const getFullUrl = require('./getFullUrl');
-const appendOnFields = require('./appendOnFields');
-const {posts, blogs, accounts: {Accounts}} = require('@lettercms/models')(['posts', 'blogs', 'accounts']);
+const {posts: postsModel, blogs} = require('@lettercms/models')(['posts', 'blogs', 'accounts']);
 const {isValidObjectId} = require('mongoose');
-
+const {findOne} = require('@lettercms/utils/lib/findHelpers/posts');
 
 const generateConditions = query => {
   const conditions = {};
 
   if (query.category)
-    conditions.category = category;
+    conditions.category = query.category;
   if (query.day)
-    conditions.$where = `this.published.getDate() === ${day}`;
+    conditions.$where = `this.published.getDate() === ${query.day}`;
   if (query.month) {
-    let str = `this.published.getMonth() === ${month - 1}`;
+    let str = `this.published.getMonth() === ${query.month - 1}`;
     conditions.$where = conditions.$where ? [conditions.$where,  str].join(' && ') : str;
   }
   if (query.year) {
-    let str = `this.published.getFullYear() === ${year}`;
+    let str = `this.published.getFullYear() === ${query.year}`;
     conditions.$where = conditions.$where ? [conditions.$where,  str].join(' && ') : str;
   }
-
 };
 
 module.exports = async function() {
   const {req: {subdomain, query}, res, findSingle} = this;
 
   const {
-    url,
-    category,
-    day,
-    month,
-    year
+    url
   } = query;
 
   let conditions = {};
@@ -46,27 +39,21 @@ module.exports = async function() {
       url
     };
 
-  const existsPost = await posts.exists(conditions);
+  const posts = await postsModel.exists(conditions);
 
-  if (!existsPost)
+  if (!posts)
     return res.status(404).json({
       status: 'not-found'
     });
 
   const {url: urlID, mainUrl} = await blogs.findOne({subdomain}, 'url mainUrl');
 
-  const select = query.fields?.split(',').filter(e => e.includes('author.')).map(e => e.split('.')[1]).join(' ');
-  
-  const data = await  findSingle({
+  const data = await findOne(postsModel, conditions, {
     ...query,
-    populate: {
-      path: 'author',
-      select
-    }
-  }, posts, conditions);
+    urlID,
+    mainUrl
+  });
 
-  if (data.postStatus === 'published')
-    data.fullUrl = getFullUrl(url, urlID, data, mainUrl);
 
   res.json(data);
 };

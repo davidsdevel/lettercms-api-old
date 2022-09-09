@@ -1,11 +1,11 @@
-const {accounts} = require('@lettercms/models')(['accounts']);
+const {accounts: {Accounts}} = require('@lettercms/models')(['accounts']);
 const {isValidObjectId} = require('mongoose');
+const {findOne} = require('@lettercms/utils/lib/findHelpers/accounts');
 
 module.exports = async function() {
   const {
     req,
-    res,
-    findSingle
+    res
   } = this;
 
   const {
@@ -21,15 +21,12 @@ module.exports = async function() {
   else
     condition.email = Buffer.from(emailHex, 'hex').toString('utf-8');
 
-  let data = await findSingle({
-    ...req.query,
-    accounts: true
-  }, accounts.Accounts, condition);
+  let data = await findOne(Accounts, condition, req.query);
 
   if (data === null && isId)
-    data = await findSingle(req.query, accounts.Accounts, {
+    data = await findOne(Accounts, {
       email: Buffer.from(emailHex, 'hex').toString('utf-8')
-    });
+    }, req.query);
 
   if (data === null)
     return res.status(404).json({

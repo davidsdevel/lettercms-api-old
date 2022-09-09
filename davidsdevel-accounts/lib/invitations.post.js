@@ -31,7 +31,7 @@ module.exports = async function() {
     });
 
   const blog = await blogs.findOne({subdomain}, 'title', {lean: true});
-  const token = jwt.sign({subdomain}, process.env,JWT_AUTH);
+  const token = jwt.sign({subdomain}, process.env.JWT_AUTH);
 
   const {_id} = await accounts.Invitations.create({
     ...body,
@@ -45,8 +45,8 @@ module.exports = async function() {
   else
     await sendMail(body.email, `Has sido invitado a colaborar en ${blog.title} - LetterCMS`, {
       type: 'invitation',
-      title,
-      url: `https://lettercms-dashboard-davidsdevel.vercel.app/invitation/${_id}?token=${token}`
+      title: blog.title,
+      url: `https://lettercms.vercel.app/invitation/${_id}?token=${token}`
     });
 
   res.json({

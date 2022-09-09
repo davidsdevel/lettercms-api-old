@@ -1,8 +1,8 @@
-const {posts, pages, users: {Ratings, Users}, socials: {Facebook}} = require('@lettercms/models')(['facebook', 'pages', 'posts', 'ratings', 'users', 'blogs']);
+const {posts, pages, users: {Ratings, Users}, blogs, socials: {Facebook}} = require('@lettercms/models')(['facebook', 'pages', 'posts', 'ratings', 'users', 'blogs']);
 const {isValidObjectId} = require('mongoose');
 const brain = require('../../brain');
 const FB = require('../../davidsdevel-socials/lib/social/Facebook');
-const fetch = require('node-fetch');
+const revalidate = require('@lettercms/utils/lib/revalidate');
 
 module.exports = async function() {
   const {req, res} = this;
@@ -69,21 +69,13 @@ module.exports = async function() {
   });*/
   const {mainUrl} = await blogs.find({subdomain}, 'mainUrl', {lean: true});
 
-  fetch(`https://${subdomain}.lettercms.vercel.app/api/revalidate`, {
-    method: 'POST',
-    mode: 'cors',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      path: `/_blogs/${subdomain}${mainUrl}` 
-    })
-  });
+  revalidate(subdomain, mainUrl);
 
-  Users.find({subdomain}, '_id hasRecommendations mlModel')
+  Users.find({subdomain}, '_id mlModel')
     .then(users => {
-      users.map(({_id, hasRecommendations, mlModel}) => {
+      users.map(({_id, mlModel}) => {
         let rating = 0;
+
         if (mlModel) {
           const parsedTags = {};
 

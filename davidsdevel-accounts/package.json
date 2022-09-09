@@ -11,6 +11,6 @@
   "dependencies": {
     "@lettercms/utils": "latest",
     "@lettercms/models": "latest",
-    "mongoose": "^5.11.10"
+    "mongoose": "6"
   }
 }

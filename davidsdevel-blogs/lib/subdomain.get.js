@@ -1,19 +1,16 @@
 const {blogs} = require('@lettercms/models')(['blogs']);
+const {findOne} = require('@lettercms/utils/lib/findUtils');
 
 module.exports = async function() {
   const {
-    req,
-    res,
-    findSingle
+    req: {
+      subdomain,
+      query
+    },
+    res
   } = this;
 
-  const {
-    subdomain
-  } = req;
-
-  let data = await findSingle(req.query, blogs, {
-    subdomain
-  });
+  const data = await findOne(blogs, {subdomain}, query);
 
   res.json(data);
 };

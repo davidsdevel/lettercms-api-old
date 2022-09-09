@@ -1,28 +1,23 @@
 const {pages} = require('@lettercms/models')(['pages']);
 const {isValidObjectId} = require('mongoose');
+const {findOne} = require('@lettercms/utils/lib/findUtils');
 
 module.exports = async function() {
-  const {req, res, findSingle} = this;
+  const {req: {
+    subdomain,
+    query
+  }, res} = this;
 
-  const {url} = req.query;
-  const {subdomain} = req;
+  const {url} = query;
 
   let data;
   const isId = isValidObjectId(url);
 
-  if (isId) {
-    data = await findSingle(req.query, pages, {
-      _id: url
-    });
+  if (isId)
+    data = await findOne(pages, {_id: url}, query);
 
-    if (data !== null)
-      return res.json(data);
-  }
-
-  data = await findSingle(req.query, pages, {
-    url,
-    subdomain
-  });
+  if (data === null)
+    data = await findOne(pages, {url, subdomain}, query);
 
   if (data === null)
     res.sendStatus(404);

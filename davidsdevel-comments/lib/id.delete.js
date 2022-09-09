@@ -4,9 +4,8 @@ module.exports = async function() {
   const {req, res} = this;
 
   const {id} = req.query;
-  const {subdomain} = req;
 
-  await pages.deleteOne({_id: id});
+  await comments.deleteOne({_id: id});
 
   res.json({
     status: 'OK'

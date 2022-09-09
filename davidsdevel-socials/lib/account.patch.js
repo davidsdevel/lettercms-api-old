@@ -4,9 +4,7 @@ const {exchangeToken, api} = require('./social/base');
 module.exports = async function() {
   const {req: {subdomain, body}, res} = this;
 
-  const {type, accessToken, pageID} = body;
-
-  let account;
+  const {type, accessToken} = body;
 
   if (type === 'facebook') {
     const fbData = await socials.Facebook.findOne({subdomain}, 'pageId', {lean: true});

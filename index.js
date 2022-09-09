@@ -1,8 +1,22 @@
 const {version} = require('./package.json');
 global.mongo = require('mongoose');
 
-if (process.env.NODE_ENV !== 'production')
+if (process.env.NODE_ENV !== 'production') {
+  var Module = require('module');
+  
   require('dotenv').config();
+  
+  var originalRequire = Module.prototype.require;
+
+  Module.prototype.require = function() {
+    const str = arguments[0]
+
+    if (str.startsWith('@lettercms'))
+      arguments[0] = str.replace('@lettercms', process.cwd());
+
+    return originalRequire.apply(this, arguments)
+  }
+}
 
 const PORT = process.env.PORT || 3009;
 
@@ -57,28 +71,21 @@ app
   .use(cors(corsOpts))
   .get('/', (req, res) => res.send(version));
 
-/*Object.entries(routesHandlers).forEach(([path, handler]) => app.all(path, (req, res, next) => {
-  req.query = Object.assign({}, req.query, req.params);
-  console.log(req.query, req.params)
-  next();
-}, handler))*/
+Object.entries(routesHandlers)
+  .sort(e => e[0].includes(':') ? +1 : -1)
+  .forEach(([path, handler]) =>
+    app.all(path, (req, res, next) => {
+      req.query = Object.assign({}, req.query, req.params);
+      next();
+    }, handler)
+  );
 
 app
-  .use(accountsMiddleware(routesHandlers))
-  .use(pagesMiddleware(routesHandlers))
-  .use(postsMiddleware(routesHandlers))
-  .use(socialMiddleware(routesHandlers))
-  .use(commentsMiddleware(routesHandlers))
-  .use(usersMiddleware(routesHandlers))
   .all('*', (req, res) => {
-    if (Object.keys(routesHandlers).indexOf(req.path) === -1)
-      return res.status(404).json({
-        status: 'not-found',
-        message: `Resource "${req.path}" not found`
-      });
-
-    return routesHandlers[req.path](req, res);
-
+    res.status(404).json({
+      status: 'not-found',
+      message: `Resource "${req.path}" not found`
+    });
   });
 
 module.exports = exports = {

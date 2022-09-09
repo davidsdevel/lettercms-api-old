@@ -1,14 +1,5 @@
-const crypto = require('crypto');
 const {accounts} = require('@lettercms/models')(['accounts']);
-const {scryptSync, timingSafeEqual} = require('crypto');
-
-const compare = (a, b) => {
-  const [pass, salt] = b.split('.');
-
-  const buffer = scryptSync(a, salt, 64);
-
-  return timingSafeEqual(Buffer.from(pass, 'hex'), buffer);
-};
+const {verify} = require('@lettercms/utils/lib/crypto');
 
 module.exports = async function() {
   const {
@@ -26,7 +17,7 @@ module.exports = async function() {
 
   const [key, dataHex] = token.split('@');
 
-  const isValid = compare(process.env.JWT_AUTH, key);
+  const isValid = await verify(process.env.JWT_AUTH, key);
 
   if (!isValid)
     return res.json({

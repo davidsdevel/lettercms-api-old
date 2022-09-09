@@ -33,7 +33,7 @@ module.exports = async function() {
     user: userID,
     comment
   });
-  await posts.updateOne({_id: postID}, {$inc: {comments: 1}});totalComments;
+  await posts.updateOne({_id: postID}, {$inc: {comments: 1}});
   await Stats.updateOne({subdomain}, {$inc: {totalComments: 1}});
 
   res.json({

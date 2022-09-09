@@ -3,23 +3,21 @@ const mongoose = require('mongoose');
 const factory = require('@lettercms/models');
 const jwt = require('jsonwebtoken');
 
-const mongo = mongoose.createConnection('mongodb://localhost/blog', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useFindAndModify: false,
-  useCreateIndex: true
-});
+const testMiddleware = require('../../testing/fetchMiddleware');
 
-const {accounts: {Accounts}} = factory(mongo, ['accounts']);
+const {accounts: {Accounts}} = factory(['accounts']);
 const testID = 'accounts-me';
 
-const generatePromise = async (key, value, headers) => {
-  const r = await fetch(`http://microservices:3009/api/account/me?fields=${key}`, headers)
-  expect(r.status).toBe(200);
+const generatePromise = async (key, value, token) => {
+  const r = await testMiddleware('/api/account/me', {
+    authorization: token,
+    query: {
+      fields: key
+    }
+  })
 
-  const data = await r.json();
-
-  expect(data).toMatchObject({
+  expect(r.statusCode).toBe(200);
+  expect(r.body).toMatchObject({
     [key]: value,
     _id: /[a-z0-9]{12,24}/i
   });
@@ -48,16 +46,12 @@ describe('Me API Testing', () => {
       role: 'admin'
     });
 
-    const loginRes = await fetch('http://microservices:3009/api/account/me', {
-      headers: {
-        Authorization: jwt.sign({subdomain: testID, account: id}, JWT_AUTH),
-        'Content-Type': 'application/json'
-      }
+    const _me = await testMiddleware('/api/account/me', {
+      authorization: jwt.sign({subdomain: testID, account: id}, JWT_AUTH),
     });
-    expect(loginRes.status).toBe(200);
 
-    const loginJson = await loginRes.json();
-    expect(loginJson).toMatchObject({
+    expect(_me.statusCode).toBe(200);
+    expect(_me.body).toMatchObject({
       name: 'David',
       lastname: 'Gonzalez',
       lastLogin: now.toISOString(),
@@ -97,28 +91,22 @@ describe('Me API Testing', () => {
     });
 
     const token = jwt.sign({subdomain: testID, account: id}, JWT_AUTH);
-    const headers = {
-      headers: {
-        Authorization: token,
-        'Content-Type': 'application/json'
-      }
-    }
 
     const promises = [
-      generatePromise('name',  'David', headers),
-      generatePromise('lastname',  'Gonzalez', headers),
-      generatePromise('lastLogin',  now.toISOString(), headers),
-      generatePromise('description',  'Test description', headers),
-      generatePromise('ocupation',  'developer', headers),
-      generatePromise('permissions',  ['posts'], headers),
-      generatePromise('photo',  'photo-url', headers),
-      generatePromise('website',  'website-url', headers),
-      generatePromise('facebook',  'facebook-url', headers),
-      generatePromise('twitter',  'twitter-url', headers),
-      generatePromise('instagram',  'instagram-url', headers),
-      generatePromise('linkedin',  'linkedin-url', headers),
-      generatePromise('email',  'me-fields@test.com', headers),
-      generatePromise('role',  'admin', headers)
+      generatePromise('name',  'David', token),
+      generatePromise('lastname',  'Gonzalez', token),
+      generatePromise('lastLogin',  now.toISOString(), token),
+      generatePromise('description',  'Test description', token),
+      generatePromise('ocupation',  'developer', token),
+      generatePromise('permissions',  ['posts'], token),
+      generatePromise('photo',  'photo-url', token),
+      generatePromise('website',  'website-url', token),
+      generatePromise('facebook',  'facebook-url', token),
+      generatePromise('twitter',  'twitter-url', token),
+      generatePromise('instagram',  'instagram-url', token),
+      generatePromise('linkedin',  'linkedin-url', token),
+      generatePromise('email',  'me-fields@test.com', token),
+      generatePromise('role',  'admin', token)
     ];
 
     await Promise.all(promises);

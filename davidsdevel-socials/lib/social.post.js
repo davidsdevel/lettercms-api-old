@@ -1,6 +1,7 @@
 const {socials, usage} = require('@lettercms/models')(['facebook', 'instagram', 'usage']);
 const {schedule} = require('@lettercms/utils');
 const {Facebook, Instagram} = require('./social');
+const jwt = require('jsonwebtoken');
 
 module.exports = async function() {
   const {req, res} = this;
@@ -8,7 +9,7 @@ module.exports = async function() {
   const {subdomain} = req;
   const {social} = req.query;
 
-  const {feed, message, images} = req.body;
+  const {message, images} = req.body;
 
   const hasIg = social === 'instagram';
 
