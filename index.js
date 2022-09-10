@@ -89,5 +89,6 @@ app
   });
 
 module.exports = exports = {
+  app,
   init: () => app.listen(PORT, () => console.log('Listen'))
 };
