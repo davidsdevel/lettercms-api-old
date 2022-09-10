@@ -7,7 +7,7 @@ const {readdirSync} = require('fs')
 
 module.exports = (req, res) => {
   const base = process.cwd();
-  const b = readdirSync(base)
+  const b = readdirSync(base + '/__vc')
 
   res.write(JSON.stringify(b));
 
