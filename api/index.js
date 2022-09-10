@@ -2,6 +2,8 @@ const pathToRegexp = require('path-to-regexp');
 const manifest = require('../manifest.json');
 const requireRuntime = require('require-runtime')
 
+const base = process.cwd();
+
 module.exports = (req, res) => {
   console.log(req.path, req.pathname, req.url, req.page)
   if (!req.url.startsWith('/api/'))
@@ -38,5 +40,5 @@ module.exports = (req, res) => {
 
   req.query = Object.assign({}, req.query, params);
 
-  return requireRuntime(handler)(req, res);
+  return requireRuntime(base + handler)(req, res);
 }
