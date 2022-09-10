@@ -7,7 +7,7 @@ const routes = mapR(routesPath);
 
 
 const mapped = Object.values(routes).flat().map(e => {
-  e.file = e.file.replace(/.*path0/', ..');
+  e.file = e.file.replace(/.*path0/, '..');
 
   return e;
 }).sort(e => e.url.includes(':') ? +1 : -1);
