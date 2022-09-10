@@ -2,13 +2,17 @@ const pathToRegexp = require('path-to-regexp');
 const manifest = require('../manifest.json');
 const requireRuntime = require('require-runtime')
 const {readdirSync} = require('fs')
-const base = process.cwd();
 
 
-console.log(readdirSync(base))
 
 module.exports = (req, res) => {
-  console.log(req.path, req.pathname, req.url, req.page)
+  const base = process.cwd();
+  const b = readdirSync(base)
+
+  res.write(JSON.stringify(b));
+
+  return res.end();
+
   if (!req.url.startsWith('/api/'))
     return res.status(404);
 
