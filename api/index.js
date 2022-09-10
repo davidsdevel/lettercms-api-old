@@ -1,8 +1,11 @@
 const pathToRegexp = require('path-to-regexp');
 const manifest = require('../manifest.json');
 const requireRuntime = require('require-runtime')
-
+const {readdirSync} = require('fs')
 const base = process.cwd();
+
+
+console.log(readdirSync(base))
 
 module.exports = (req, res) => {
   console.log(req.path, req.pathname, req.url, req.page)
