@@ -1,0 +1,16 @@
+const generateRoutes = require('./lib/generateRoutes');
+const mapR = require('./lib/mapUrl');
+const {appendFile} = require('fs');
+
+const routesPath = generateRoutes();
+const routes = mapR(routesPath);
+
+const mapped = Object.values(routes).flat().sort(e => e.url.includes(':') ? +1 : -1);
+
+appendFile('manifest.json', JSON.stringify(mapped), err => {
+  if (err)
+    throw err;
+
+  console.log('Done');
+});
+
