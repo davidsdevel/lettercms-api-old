@@ -37,5 +37,5 @@ module.exports = (req, res) => {
 
   req.query = Object.assign({}, req.query, params);
 
-  return require(handler)(req, res);
+  return require(handler.replace(/.*path0/, '..'))(req, res);
 }

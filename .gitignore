@@ -4,3 +4,4 @@ coverage
 SDK
 utils
 *.log
+.vercel
