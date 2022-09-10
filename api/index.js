@@ -1,7 +1,10 @@
 const pathToRegexp = require('path-to-regexp');
 const manifest = require('../manifest.json');
 
-module.exports = (res, res) => {
+module.exports = (req, res) => {
+  if (!req.pathname.startsWith('/api/'))
+    return res.status(404);
+
   const params = {}
   let handler = '';
 
@@ -27,6 +30,9 @@ module.exports = (res, res) => {
 
     handler = file;
   });
+
+  if (!handler)
+    return res.status(404);
 
   req.query = Object.assign({}, req.query, params);
 
