@@ -2,7 +2,8 @@ const pathToRegexp = require('path-to-regexp');
 const manifest = require('../manifest.json');
 
 module.exports = (req, res) => {
-  if (!req.path.startsWith('/api/'))
+  console.log(req.path, req.pathname, req.url, req.page)
+  if (!req.url.startsWith('/api/'))
     return res.status(404);
 
   const params = {}
@@ -12,7 +13,7 @@ module.exports = (req, res) => {
     const keys = []
     
     const r = pathToRegexp(url, keys);
-    const match = r.exec(req.pathname);
+    const match = r.exec(req.url);
     
     if (!match)
       return
