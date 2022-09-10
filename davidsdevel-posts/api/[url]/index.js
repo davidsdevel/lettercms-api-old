@@ -2,7 +2,7 @@ const {manageMethods} = require('@lettercms/utils');
 const GET = require('../../lib/find');
 const DELETE = require('../../lib/url.delete');
 
-module.exports = manageMethods({
+export default manageMethods({
   GET,
   DELETE
 });
