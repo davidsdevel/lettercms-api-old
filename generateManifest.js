@@ -5,9 +5,11 @@ const {appendFile} = require('fs');
 const routesPath = generateRoutes();
 const routes = mapR(routesPath);
 
+console.log(routes)
+
 const mapped = Object.values(routes).flat().sort(e => e.url.includes(':') ? +1 : -1);
 
-appendFile('manifest.json', JSON.stringify(mapped), err => {
+appendFile('./manifest.json', JSON.stringify(mapped), err => {
   if (err)
     throw err;
 
